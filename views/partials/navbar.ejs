@@ -1,0 +1,142 @@
+<head>
+
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<nav class="navbar">
+    <div class="navbar-top">
+      <div class="logo">
+        <a href="/"><img src="/images/logo.png" height="60px" width="60px" alt="Logo"></a>
+      </div>
+      <div class="nav-links">
+        <a href="#">Lojas</a>
+        <a href="#">Sobre Nós</a>
+        <a href="#">Mapa</a>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search">
+        <button>
+          <img src="/images/search-icon.png" alt="Search" height="20px" width="20px">
+        </button>
+      </div>
+      <div class="nav-links">
+        <a href="/">Início</a>
+        <a href="#">Carrinho</a>
+        <a href="/login">Entrar</a>
+        <a href="/signup" class="signup" >Cadastre-se</a>
+      </div>
+    </div>
+  </nav>
+<nav class="navbar-2">
+    <div class="navbar-bottom">
+        <a href="#" id="btn-corda">Instrumentos de Corda</a>
+        <a href="#">Percussão</a>
+        <a href="#">Teclados e Pianos</a>
+        <a href="#">Sopro</a>
+        <a href="#">Áudio</a>
+        <a href="#">Acessórios</a>
+        <a class="sell-now" href="/cadastro-item">VENDA AGORA!</a>
+        <a href="#">Ajuda</a>
+        <a href="#">Sobre o Marketplace</a>
+    </div>
+    <div id="painel-filtro" class="painel-filtro">
+      <div class="painel-conteudo">
+        <span class="fechar-filtro">&times;</span>
+        <a>Instrumentos de Corda</a>
+    
+        <div class="grid-categorias">
+          <!-- Coluna 1 -->
+          <div class="coluna">
+            <h3>Guitarras Elétricas</h3>
+            <ul>
+              <li><a href="/produtos">Stratocaster</a></li>
+              <li><a href="#">Telecaster</a></li>
+              <li><a href="#">Les Paul</a></li>
+              <li><a href="#">Super Strato</a></li>
+              <li><a href="#">Semiacústica</a></li>
+              <li><a href="#">Hollow Body</a></li>
+              <li><a href="#">7 Cordas</a></li>
+              <li><a href="#">Canhota</a></li>
+              <li><a href="#">Guitarras para Iniciantes</a></li>
+            </ul>
+    
+            <h3>Baixos</h3>
+            <ul>
+              <li><a href="#">4 Cordas</a></li>
+              <li><a href="#">5 Cordas</a></li>
+              <li><a href="#">Ativos</a></li>
+              <li><a href="#">Passivos</a></li>
+              <li><a href="#">Canhoto</a></li>
+              <li><a href="#">Acústico</a></li>
+            </ul>
+          </div>
+    
+          <!-- Coluna 2 -->
+          <div class="coluna">
+            <h3>Violões</h3>
+            <ul>
+              <li><a href="#">Clássico (Nylon)</a></li>
+              <li><a href="#">Folk (Aço)</a></li>
+              <li><a href="#">Eletroacústico</a></li>
+              <li><a href="#">Cutaway</a></li>
+              <li><a href="#">Flat</a></li>
+              <li><a href="#">Mini/Viagem</a></li>
+              <li><a href="#">12 Cordas</a></li>
+              <li><a href="#">Canhoto</a></li>
+              <li><a href="#">Para Iniciantes</a></li>
+            </ul>
+          </div>
+    
+          <!-- Coluna 3 -->
+          <div class="coluna">
+            <h3>Acessórios e Peças</h3>
+            <ul>
+              <li><a href="#">Cordas</a></li>
+              <li><a href="#">Captadores</a></li>
+              <li><a href="#">Afinadores</a></li>
+              <li><a href="#">Correias</a></li>
+              <li><a href="#">Pedais</a></li>
+              <li><a href="#">Capotrastes</a></li>
+              <li><a href="#">Ponte / Nut</a></li>
+              <li><a href="#">Trastes</a></li>
+              <li><a href="#">Escudos</a></li>
+              <li><a href="#">Tarraxas</a></li>
+            </ul>
+          </div>
+    
+          <!-- Coluna 4 -->
+          <div class="coluna">
+            <h3>Mais Buscados</h3>
+            <ul>
+              <li><a href="#">Tagima Stratocaster</a></li>
+              <li><a href="#">Giannini Clássico</a></li>
+              <li><a href="#">Fender Telecaster</a></li>
+              <li><a href="#">Gibson Les Paul</a></li>
+              <li><a href="#">Yamaha C40</a></li>
+              <li><a href="#">Tagima Dallas</a></li>
+              <li><a href="#">Michael VM925</a></li>
+              <li><a href="#">Ibanez RG</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+</nav>
+
+
+<script>
+  const abrirPainelBtn = document.getElementById("btn-corda");
+  const painel = document.getElementById("painel-filtro");
+  const fecharBtn = document.querySelector(".fechar-filtro");
+
+  abrirPainelBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    painel.classList.toggle("ativo");
+  });
+
+  fecharBtn.addEventListener("click", () => {
+    painel.classList.remove("ativo");
+  });
+</script>
+

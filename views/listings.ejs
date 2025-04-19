@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lista de Produtos</title>
+  <link rel="stylesheet" href="/css/listings.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <%- include('partials/navbar.ejs') %>
+
+  <main class="listagem-container">
+    <!-- Filtros laterais -->
+    <aside class="filtros">
+      <h2>Filtrar por</h2>
+
+      <div class="filtro-box">
+        <h3>Pesquisa</h3>
+        <input type="text" placeholder="Buscar instrumento..." />
+      </div>
+
+      <div class="filtro-box">
+        <h3>Preço</h3>
+        <input type="number" placeholder="Mínimo R$" />
+        <input type="number" placeholder="Máximo R$" />
+      </div>
+
+      <div class="filtro-box">
+        <h3>Tipo de Instrumento</h3>
+        <label><input type="checkbox" /> Guitarra</label>
+        <label><input type="checkbox" /> Violão</label>
+        <label><input type="checkbox" /> Baixo</label>
+        <label><input type="checkbox" /> Teclado</label>
+        <label><input type="checkbox" /> Bateria</label>
+      </div>
+
+      <div class="filtro-box">
+        <h3>Marcas</h3>
+        <label><input type="checkbox" /> Fender</label>
+        <label><input type="checkbox" /> Tagima</label>
+        <label><input type="checkbox" /> Gibson</label>
+        <label><input type="checkbox" /> Yamaha</label>
+        <label><input type="checkbox" /> Ibanez</label>
+      </div>
+
+      <div class="filtro-box">
+        <h3>Condição</h3>
+        <label><input type="checkbox" /> Novo</label>
+        <label><input type="checkbox" /> Usado</label>
+      </div>
+    </aside>
+
+    <!-- Lista de produtos -->
+    <section class="produtos">
+      <h2>Instrumentos Disponíveis</h2>
+      <div class="grid-produtos">
+        <% produtos.forEach(item => { %>
+          <div class="card-produto">
+            <img src="<%= item.imagem_url %>" alt="Imagem do produto">
+            <h4><%= item.nome %></h4>
+            <p>R$ <%= item.preco %></p>
+            <button>Ver mais</button>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>

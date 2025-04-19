@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= titulo %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+  <div class="most-viewed-gallery-wrap">
+    <div class="most-viewed-gallery-title">
+      <h1>Itens mais acessados</h1>
+    </div>
+    <div class="most-viewed-gallery">
+      <div>
+        <img src="/images/item.png" class="img1">
+        <img src="/images/item2.png" class="img2">
+        <img src="/images/item3.png" class="img3">
+        <img src="/images/item4.png" class="img4">
+        <img src="/images/item5.png" class="img5">
+        <img src="/images/item6.png" class="img6">
+        <img src="/images/item6.png" class="img7">
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="brands-filter-gallery-wrap">
+    <div class="brands-gallery-title">
+      <h2>Marcas</h2>
+    </div>
+    <div class="brands-carousel-row">
+      <img src="/images/back.png" id="backBtn">
+      <div class="brands-filter-gallery">
+        <div>
+          <div><img src="/images/brand_logos/brand_fender.png"></div>
+          <div><img src="/images/brand_logos/brand_tagima.png"></div>
+          <div><img src="/images/brand_logos/brand_yamaha.png"></div>
+          <div><img src="/images/brand_logos/brand_ibanez.png"></div>
+          <div><img src="/images/brand_logos/brand_gibson.png"></div>
+          <div><img src="/images/brand_logos/brand_godin.png"></div>
+          <div><img src="/images/brand_logos/brand_guild.png"></div>
+          <div><img src="/images/brand_logos/brand_luna.png"></div>
+          <div><img src="/images/brand_logos/brand_gretsch.png"></div>
+          <div><img src="/images/brand_logos/brand_jackson.png"></div>
+        </div>
+      </div>
+      <img src="/images/forward.png" id="forwardBtn">
+    </div>
+  </div>
+
+  <div class="stores-carousel-wrap">
+    <div class="stores-title">
+      <h2>Lojas Favoritas:</h2>
+    </div>
+  
+    <div class="stores-carousel-row">
+      <img src="/images/back.png" id="storesBackBtn">
+  
+      <div class="stores-carousel">
+        <div>
+          <div><img src="/images/store_logos/store.png" alt="Store 1"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 2"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 3"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 4"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 5"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 6"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 7"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 8"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 9"></div>
+          <div><img src="/images/store_logos/store.png" alt="Store 10"></div>
+          <!-- Add more as needed -->
+        </div>
+      </div>
+  
+      <img src="/images/forward.png" id="storesForwardBtn">
+    </div>
+  </div>
+  
+
+  <script>
+    const backBtn = document.getElementById("backBtn");
+    const forwardBtn = document.getElementById("forwardBtn");
+    const carousel = document.querySelector(".brands-filter-gallery");
+  
+    const scrollAmount = 400; // Adjust based on how much you want to scroll
+  
+    backBtn.addEventListener("click", () => {
+      carousel.scrollBy({
+        left: -scrollAmount,
+        behavior: "smooth"
+      });
+    });
+  
+    forwardBtn.addEventListener("click", () => {
+      carousel.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth"
+      });
+    });
+  </script>
+
+<script>
+  const storesbackBtn = document.getElementById("storesBackBtn");
+  const storesforwardBtn = document.getElementById("storesForwardBtn");
+  const storescarousel = document.querySelector(".stores-carousel");
+
+  const storesScrollAmount = 400; // Adjust based on how much you want to scroll
+
+  storesbackBtn.addEventListener("click", () => {
+    storescarousel.scrollBy({
+      left: -storesScrollAmount,
+      behavior: "smooth"
+    });
+  });
+
+  storesforwardBtn.addEventListener("click", () => {
+    storescarousel.scrollBy({
+      left: storesScrollAmount,
+      behavior: "smooth"
+    });
+  });
+</script>
+
+<%- include('partials/footer.ejs') %>
+
+
+
+ <!--<h1><%= titulo %></h1>
+  <p>Bem-vindo ao seu primeiro projeto com Express + EJS!</p>
+  <a href="/outra-pagina">Ir para Sobre</a>--> 
+</body>
+</html>

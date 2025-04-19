@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('/images/background.png') no-repeat center center fixed;
+    background-size: cover;
+  }
+  
+  .listagem-container {
+    display: flex;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 40px 60px;
+    gap: 40px;
+  }
+  
+  .filtros {
+    width: 260px;
+    min-width: 260px;
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 25px 20px;
+    border-radius: 0 15px 15px 0;
+    color: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    height: fit-content;
+    position: sticky;
+    top: 120px; /* opcional: fixa no scroll */
+  }
+  
+  .filtros h2 {
+    margin-bottom: 20px;
+  }
+  
+  .filtro-box {
+    margin-bottom: 25px;
+    margin-right: 20px;
+  }
+  
+  .filtro-box input[type="text"],
+  .filtro-box input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+  }
+  
+  .filtro-box label {
+    display: block;
+    margin: 6px 0;
+    font-size: 14px;
+  }
+  
+  .produtos {
+    flex: 1;
+    color: white;
+  }
+  
+  .grid-produtos {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* ✅ 5 itens por linha */
+    gap: 20px; /* ✅ reduz o espaço entre os cards */
+    margin-top: 20px;
+  }
+  
+  
+  .card-produto {
+    background-color: rgba(255, 255, 255, 0.06);
+    padding: 10px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 240px;
+    height: 240px;
+  
+  }
+  
+  .card-produto img {
+    width: 100%;
+    height: 100%;         /* ✅ altura padronizada */
+    object-fit: cover;     /* ✅ garante corte bonito e proporcional */
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  
+  .card-produto h4 {
+    margin: 10px 0 5px;
+  }
+  
+  .card-produto p {
+    font-weight: bold;
+    color: #ff4800;
+  }
+  
+  .card-produto button {
+    background: #ff4800;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
+  }
+  
+  .card-produto button:hover {
+    background: #e03e00;
+  }
+  
