@@ -20,11 +20,18 @@
       </div>
 
       <div class="filtro-box">
-        <h3>Preço</h3>
-        <input type="number" placeholder="Mínimo R$" />
-        <input type="number" placeholder="Máximo R$" />
+        <h3>Preço (R$)</h3>
+        <div class="slider-preco">
+          <span>Mín: R$ <span id="preco-min">0</span></span>
+          <input type="range" id="range-min" min="0" max="10000" step="50" value="0">
+      
+          <span>Máx: R$ <span id="preco-max">10000</span></span>
+          <input type="range" id="range-max" min="0" max="10000" step="50" value="10000">
+        </div>
       </div>
-
+      <div class="filtro-box">
+        <label><input type="checkbox" /> Produtos em Promoção</label>
+      </div>
       <div class="filtro-box">
         <h3>Tipo de Instrumento</h3>
         <label><input type="checkbox" /> Guitarra</label>
@@ -42,12 +49,36 @@
         <label><input type="checkbox" /> Yamaha</label>
         <label><input type="checkbox" /> Ibanez</label>
       </div>
+      <!-- Cor -->
+      <div class="filtro-box">
+        <h3>Cor</h3>
+        <select class="select-cor">
+          <option value="">Todas</option>
+          <option value="Preto">Preto</option>
+          <option value="Branco">Branco</option>
+          <option value="Vermelho">Vermelho</option>
+          <option value="Azul">Azul</option>
+          <option value="Natural">Natural</option>
+          <option value="Sunburst">Sunburst</option>
+        </select>
+      </div>
 
+      <!-- Condição -->
       <div class="filtro-box">
         <h3>Condição</h3>
-        <label><input type="checkbox" /> Novo</label>
-        <label><input type="checkbox" /> Usado</label>
+        <select class="select-condicao">
+          <option value="">Todas</option>
+          <option value="Novo">Novo (lacrado)</option>
+          <option value="Usado - excelente">Usado (excelente estado)</option>
+          <option value="Usado - bom">Usado (bom estado)</option>
+          <option value="Com marcas de uso">Com marcas de uso</option>
+          <option value="Para peças/reparo">Somente para peças/reparo</option>
+        </select>
       </div>
+
+      <!-- Promoção -->
+
+
     </aside>
 
     <!-- Lista de produtos -->
@@ -59,6 +90,7 @@
             <img src="<%= item.imagem_url %>" alt="Imagem do produto">
             <h4><%= item.nome %></h4>
             <p>R$ <%= item.preco %></p>
+            <p class="tags"><strong>Tags:</strong> <%= item.tags %></p>
             <button>Ver mais</button>
           </div>
         <% }) %>

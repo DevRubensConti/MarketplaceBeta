@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -48,11 +52,76 @@ body {
   }
   
   .filtro-box label {
-    display: block;
-    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .filtro-box select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: none;
+  }
+
+  .filtro-box input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ff4800;
+    border-radius: 4px;
+    background-color: transparent;
+    cursor: pointer;
+    position: relative;
+    margin-right: 8px;
+  }
+  
+  .filtro-box input[type="checkbox"]:checked {
+    background-color: #ff4800;
+  }
+  
+  .filtro-box input[type="checkbox"]:checked::after {
+    content: 'X';
+    position: absolute;
+    top: 0;
+    left: 2px;
+    font-size: 12px;
+    color: white;
+  }
+
+  .slider-preco {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     font-size: 14px;
   }
   
+  .slider-preco input[type="range"] {
+    width: 100%;
+    appearance: none;
+    background: #ff4800;
+    height: 4px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  
+  .slider-preco input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    background: white;
+    border-radius: 50%;
+    border: 2px solid #ff4800;
+    cursor: pointer;
+  }
+
   .produtos {
     flex: 1;
     color: white;
@@ -108,5 +177,10 @@ body {
   
   .card-produto button:hover {
     background: #e03e00;
+  }
+
+  .tags {
+    font-size: 14px;
+    color: #ccc;
   }
   

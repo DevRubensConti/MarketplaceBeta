@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title><%= titulo %></title>
-  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
   <%- include('partials/navbar.ejs') %>
@@ -12,15 +12,19 @@
       <h1>Itens mais acessados</h1>
     </div>
     <div class="most-viewed-gallery">
-      <div>
-        <img src="/images/item.png" class="img1">
-        <img src="/images/item2.png" class="img2">
-        <img src="/images/item3.png" class="img3">
-        <img src="/images/item4.png" class="img4">
-        <img src="/images/item5.png" class="img5">
-        <img src="/images/item6.png" class="img6">
-        <img src="/images/item6.png" class="img7">
-      </div>
+      <% produtos.forEach(item => { %>
+        <div class="card-produto">
+          <img src="<%= item.imagem_url %>" alt="Imagem do produto">
+          <div class="descricao-hover">
+            <p><%= item.descricao %></p>
+            <p><b>Marca:</b> <%= item.marca %></p>
+            <p><b>Tipo: </b><%= item.tipo %></p>
+            <p><b>Condição: </b><%= item.condicao %></p>
+            <p><b>R$ <%= item.preco %></b></p>
+            <button class="btn-vermais">Ver mais</button>
+          </div>
+        </div>
+      <% }) %>
     </div>
   </div>
   
@@ -126,8 +130,5 @@
 
 
 
- <!--<h1><%= titulo %></h1>
-  <p>Bem-vindo ao seu primeiro projeto com Express + EJS!</p>
-  <a href="/outra-pagina">Ir para Sobre</a>--> 
 </body>
 </html>
