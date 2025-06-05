@@ -44,19 +44,19 @@
             <div class="right-column">
               <div class="form-group">
                 <label>Tipo de Produto</label>
-                <select id="tipo-produto" required>
-                  <option value="">Selecione...</option>
-                  <option value="corda">Corda</option>
-                  <option value="percussao">Percussão</option>
-                  <option value="teclado">Teclado/Piano</option>
-                  <option value="sopro">Sopro</option>
-                  <option value="audio">Áudio</option>
-                  <option value="acessorio">Acessório</option>
-                </select>
+                  <select id="tipo-produto" name="tipo" required>
+                    <option value="">Selecione...</option>
+                    <option value="corda">Corda</option>
+                    <option value="percussao">Percussão</option>
+                    <option value="teclado">Teclado/Piano</option>
+                    <option value="sopro">Sopro</option>
+                    <option value="audio">Áudio</option>
+                    <option value="acessorio">Acessório</option>
+                  </select>
               </div>
               <div class="form-group" id="categoria-corda" style="display: none;">
                 <label>Categoria (Instrumento de Corda)</label>
-                <select id="categoria-corda-select">
+                <select id="categoria-corda-select" name="categoria">
                   <option value="">Selecione...</option>
                   <option value="guitarra">Guitarra</option>
                   <option value="violao">Violão</option>
@@ -64,18 +64,18 @@
                 </select>
               </div>
               <div class="form-group" id="guitarra-modelos" style="display: none;">
-                <label>Modelo de Guitarra</label>
-                <div class="tipo-lista">
-                  <div class="tipo-opcao" data-descricao="Modelo Telecaster" data-img="/images/guitar_models/telecaster.png">Telecaster</div>
-                  <div class="tipo-opcao" data-descricao="Modelo Les Paul" data-img="/images/guitar_models/lespaul.png">Les Paul</div>
-                  <div class="tipo-opcao" data-descricao="Modelo Stratocaster" data-img="/images/guitar_models/stratocaster.png">Stratocaster</div>
-                  <div class="tipo-opcao" data-descricao="Modelo SG" data-img="/images/guitar_models/sg.png">SG</div>
-                  <div class="tipo-opcao" data-descricao="Modelo Flying V" data-img="/images/guitar_models/flyingv.png">Flying V</div>
-                  <div class="tipo-opcao" data-descricao="Modelo Explorer" data-img="/images/guitar_models/explorer.png">Explorer</div>
-                  <div class="tipo-opcao" id="outro-opcao">Outro</div>
-                </div>
-                <input type="hidden" name="modelo_guitarra" id="modelo-guitarra">
+              <label>Modelo de Guitarra</label>
+              <div class="tipo-lista">
+                <div class="tipo-opcao" data-descricao="Modelo Telecaster" data-img="/images/guitar_models/telecaster.png">Telecaster</div>
+                <div class="tipo-opcao" data-descricao="Modelo Les Paul" data-img="/images/guitar_models/lespaul.png">Les Paul</div>
+                <div class="tipo-opcao" data-descricao="Modelo Stratocaster" data-img="/images/guitar_models/stratocaster.png">Stratocaster</div>
+                <div class="tipo-opcao" data-descricao="Modelo SG" data-img="/images/guitar_models/sg.png">SG</div>
+                <div class="tipo-opcao" data-descricao="Modelo Flying V" data-img="/images/guitar_models/flyingv.png">Flying V</div>
+                <div class="tipo-opcao" data-descricao="Modelo Explorer" data-img="/images/guitar_models/explorer.png">Explorer</div>
+                <div class="tipo-opcao" id="outro-opcao">Outro</div>
               </div>
+              <input type="hidden" name="modelo" id="modelo-guitarra">
+            </div>
               <div class="form-group" id="outro-tipo" style="display: none;">
                 <label>Especifique o modelo</label>
                 <input type="text" name="outro_tipo" id="outro_tipo" placeholder="Digite o modelo...">
@@ -113,9 +113,11 @@
               <div class="form-group">
                 <label>Condição</label>
                 <select name="condicao" required>
-                  <option value="">Selecione...</option>
-                  <option value="Novo">Novo</option>
-                  <option value="Usado">Usado</option>
+                <option value="Novo (Lacrado)">Novo (Lacrado)</option>
+                <option value="Usado - Estado de Novo">Usado (Estado de Novo)</option>
+                <option value="Usado - Com Leves Marcas">Usado (Com Leves Marcas)</option>
+                <option value="Usado - Sinais Evidentes">Usado (Sinais Evidentes)</option>
+                <option value="Defeituoso ou para peças">Defeituoso / Para peças</option>
                 </select>
               </div>
             </div>
@@ -141,8 +143,15 @@
             </div>
             <div class="form-group">
               <label>Acabamento</label>
-              <input type="text" name="acabamento">
+              <select name="acabamento" required>
+                <option value="">Selecione...</option>
+                <option value="Brilhante">Brilhante</option>
+                <option value="Fosco">Fosco</option>
+                <option value="Satinado">Satinado</option>
+                <option value="Relíquia / Envelhecido">Relíquia / Envelhecido</option>
+              </select>
             </div>
+
           </div>
       
           <div class="right-column">
@@ -153,16 +162,14 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Madeira (Corpo)</label>
-                <input type="text" name="madeira_corpo">
+                <input type="text" name="madeira">
               </div>
-
-           
               <div class="form-group">
                 <label>Configuração de Captadores 
                   <span class="info-hover" data-img="/images/infos/captadores.png" 
                         data-texto="S = Single Coil (som mais limpo e brilhante), H = Humbucker (mais encorpado e potente)">[?]</span>
                 </label>
-                <input type="text" name="captadores" placeholder="Ex: HSS, SSS, HH...">
+                <input type="text" name="captadores_config" placeholder="Ex: HSS, SSS, HH...">
               </div>
 
               <div class="form-group">

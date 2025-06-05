@@ -1,0 +1,78 @@
+@import url('/css/style.css');
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('/images/background.png') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--cor-letras-navbar);
+}
+
+.assinatura-container {
+  max-width: 600px;
+  margin: 120px auto;
+  padding: 40px;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  text-align: center;
+  color: white;
+}
+
+.assinatura-container h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: var(--cor-letras-navbar);
+  text-shadow: 
+    1px 1px 0 #28573F,
+    2px 2px 0 #28573F,
+    3px 3px 0 #28573F,
+    4px 4px 0 #28573F;
+}
+
+.assinatura-container p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.btn-assinar {
+  padding: 14px 28px;
+  font-size: 18px;
+  background-color: #ff4800;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-assinar:hover {
+  background-color: #e63f00;
+}
+
+.peixe-img {
+  width: 160px;
+  margin-bottom: 10px;
+}
+
+.saiba-mais-btn {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: transparent;
+  border: 2px solid var(--cor-letras-navbar);
+  border-radius: 8px;
+  color: var(--cor-letras-navbar);
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.saiba-mais-btn:hover {
+  background-color: var(--cor-letras-navbar);
+  color: #333;
+}

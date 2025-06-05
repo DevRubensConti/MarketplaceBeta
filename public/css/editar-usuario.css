@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url('/images/background.png') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--cor-secundaria);
+}
+
+.painel-container {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.painel-container h2 {
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: var(--cor-letras-navbar);
+  margin-bottom: 30px;
+}
+
+.form-usuario {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-usuario label {
+  font-weight: bold;
+  color: var(--cor-letras-navbar);
+}
+
+.form-usuario input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+}
+
+.botoes-painel {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.btn-voltar-painel,
+.btn-filtrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-voltar-painel {
+  background-color: #888;
+  color: white;
+}
+
+.btn-voltar-painel:hover {
+  background-color: #666;
+}
+
+.btn-filtrar {
+  background-color: var(--cor-primaria);
+  color: white;
+}
+
+.btn-filtrar:hover {
+  background-color: var(--cor-primaria-escura);
+}

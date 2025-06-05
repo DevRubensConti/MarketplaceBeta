@@ -1,3 +1,5 @@
+@import url('/css/style.css');
+
 html, body {
   max-width: 100%;
   overflow-x: hidden;
@@ -9,14 +11,14 @@ html, body {
 
 a,
 a:visited {
-  color: white;
+  color: var(--cor-secundaria); /* branco */
   text-decoration: none;
 }
 
 body {
   background: url('/images/background.png') no-repeat center center fixed;
   background-size: cover;
-  color: white;
+  color: var(--cor-secundaria); /* branco */
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -25,7 +27,7 @@ body {
 main.form-etapas-wrapper {
   padding: 80px;
   backdrop-filter: blur(10px);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); /* fundo escuro translúcido */
 }
 
 h2 {
@@ -40,7 +42,7 @@ form {
 form details {
   margin-bottom: 20px;
   border: none;
-  border-top: 4px solid #ff4800;
+  border-top: 4px solid var(--cor-primaria); /* #ff4800 */
   padding-top: 20px;
   background-color: transparent;
 }
@@ -51,12 +53,12 @@ details summary {
   padding: 10px 0;
   cursor: pointer;
   list-style: none;
-  color: #ff4800;
+  color: var(--cor-primaria); /* #ff4800 */
   transition: color 0.3s;
 }
 
 details[open] summary {
-  color: #ffffff;
+  color: var(--cor-secundaria); /* branco */
 }
 
 .form-row {
@@ -85,7 +87,7 @@ textarea {
   border-radius: 8px;
   border: none;
   font-size: 16px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.9); /* mantém branco translúcido */
   color: #333;
 }
 
@@ -98,15 +100,15 @@ button {
   font-size: 16px;
   border: none;
   border-radius: 8px;
-  background-color: #ff4800;
-  color: white;
+  background-color: var(--cor-primaria); 
+  color: var(--cor-secundaria); 
   cursor: pointer;
   margin-top: 20px;
   transition: background 0.3s;
 }
 
 button:hover {
-  background-color: #e63f00;
+  background-color: var(--cor-primaria-escura); /* #e63f00 */
 }
 
 select#tipo {

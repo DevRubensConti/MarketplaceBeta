@@ -5,53 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro</title>
   <link rel="stylesheet" href="/css/signup.css">
-  <style>
-    body {
-      background: url('/images/background.png') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-
-    .form-etapas-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 60px;
-      padding: 80px;
-      backdrop-filter: blur(10px);
-      background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .form-etapas-wrapper h2 {
-      font-size: 28px;
-      margin-bottom: 30px;
-    }
-
-    .etapa legend {
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-
-    fieldset {
-      border: none;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 14px 24px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #ff4800;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #e63f00;
-    }
-  </style>
 </head>
 <body>
   <%- include('partials/navbar.ejs') %>
@@ -165,8 +118,8 @@
         <summary>Etapa 1 - Informações da Loja</summary>
         <div class="form-row">
           <div class="form-group">
-            <label>Nome</label>
-            <input type="text" name="nome" required placeholder="Digite seu nome">
+            <label>Nome Fantasia</label>
+            <input type="text" name="nomeFantasia" placeholder="Digite o Nome Fantasia da sua loja" required>
           </div>
           <div class="form-group">
             <label>CNPJ</label>
@@ -175,17 +128,12 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Nome Fantasia</label>
-            <input type="text" name="nomeFantasia" placeholder="Digite o Nome Fantasia da sua loja" required>
-          </div>
-          <div class="form-group">
             <label>Razão Social</label>
             <input type="text" name="razaoSocial" placeholder="Digite a Razão Social da sua loja"required>
           </div>
         </div>
         <button type="button" onclick="desbloquearEtapaProxima('etapa-pj-1', 'etapa-pj-2')">Continuar</button>
       </details>
-    
       <details id="etapa-pj-2">
         <summary>Etapa 2 - Contato e Acesso</summary>
         <div class="form-row">

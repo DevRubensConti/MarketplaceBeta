@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Perfil</title>
+  <link rel="stylesheet" href="/css/editar-usuario.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <main class="painel-container">
+    <h2>Editar Perfil</h2>
+
+    <form action="/painel/editar-usuario" method="POST" class="form-usuario">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" name="nome" value="<%= usuario.nome %>" required>
+
+      <label for="telefone">Telefone:</label>
+      <input type="text" id="telefone" name="telefone" value="<%= usuario.telefone || '' %>">
+
+      <label for="icone_url">URL da Imagem de Perfil:</label>
+      <input type="text" id="icone_url" name="icone_url" value="<%= usuario.icone_url || '' %>">
+
+      <div class="botoes-painel">
+        <a href="/painel/usuario" class="btn-voltar-painel">← Voltar ao Painel</a>
+        <button type="submit" class="btn-filtrar">Salvar Alterações</button>
+      </div>
+    </form>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

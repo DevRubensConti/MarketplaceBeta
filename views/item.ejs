@@ -2,72 +2,101 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Detalhes do Produto</title>
+  <title><%= item.nome %> - Detalhes do Produto</title>
   <link rel="stylesheet" href="/css/item.css" />
 </head>
 <body>
   <%- include('partials/navbar.ejs') %>
 
   <main class="item-container">
-    <!-- Título -->
-    <h1 class="item-title">GUITARRA FENDER STRATOCASTER AMERICAN DELUXE - USADA - SSS</h1>
-
+    <a href="<%= voltar || '/produtos' %>" class="btn-voltar-img" title="Voltar para a listagem">
+      <img src="/images/return_listings.png" alt="Voltar para a listagem">
+    </a>
+    <h1 class="item-title"><%= item.nome %> - <%= item.condicao %></h1>
     <div class="item-main">
-      <!-- Imagem principal -->
       <div class="item-gallery">
-        <img src="/images/item.png" class="item-img" alt="Imagem principal do produto" />
+        <img src="<%= item.imagem_url.split(',')[0] %>" class="item-img" alt="Imagem principal do produto" />
         <div class="thumbnail-list">
-          <img src="/images/item.png" alt="thumb 1" />
-          <img src="/images/item.png" alt="thumb 2" />
-          <img src="/images/item.png" alt="thumb 3" />
-          <img src="/images/item.png" alt="thumb 4" />
+          <% item.imagem_url.split(',').forEach(url => { %>
+            <img src="<%= url.trim() %>" alt="Thumbnail" />
+          <% }) %>
         </div>
       </div>
 
-      <!-- Informações e Ações -->
       <div class="item-info">
         <div class="buttons">
-          <button class="btn-buy">Compre Agora!</button>
-          <button class="btn-cart">Adicione ao Carrinho</button>
-          <button class="btn-offer">Fazer Oferta</button>
+          <form action="/comprar/<%= item.id %>" method="POST">
+            <button class="btn-buy">Compre Agora!</button>
+          </form>
+          <form action="/carrinho/adicionar/<%= item.id %>" method="POST">
+            <button class="btn-cart">Adicione ao Carrinho</button>
+          </form>
+          <form action="/oferta/<%= item.id %>" method="GET">
+            <button class="btn-offer">Fazer Oferta</button>
+          </form>
         </div>
 
         <div class="price-rating">
-          <h2>R$ 7.999,99</h2>
+          <h2>R$ <%= item.preco %></h2>
           <p class="rating">★★★★★</p>
         </div>
 
-        <p class="description">
-          Tradição com inovação. A American Deluxe é a resposta aos músicos modernos que exigem mais de seus instrumentos...
-        </p>
+        <p class="description"><%= item.descricao %></p>
 
-        <div class="loja">
-          <h3>Ir para a loja:</h3>
-          <p>Nome da Loja</p>
-          <img>Icone da Loja</img>
-        </div>
+        <% if (dono) { %>
+          <div class="loja">
+            <h3><%= item.tipo_usuario === 'pj' ? 'Loja Vendedora' : 'Vendedor' %></h3>
+            <p><strong><%= item.tipo_usuario === 'pj' ? dono.nomeFantasia : dono.nome %></strong></p>
+            
+            <% if (dono.icone_url) { %>
+              <img src="<%= dono.icone_url %>" alt="Ícone do Vendedor" class="banner-logo">
+            <% } %>
+
+            <% if (item.tipo_usuario === 'pj' && dono.nota) { %>
+              <p>Nota: <%= dono.nota %> ⭐</p>
+            <% } %>
+
+            <a href="<%= item.tipo_usuario === 'pj' ? '/loja/' + dono.id : '/usuario/' + dono.id %>">
+              <button class="btn-buy">Ver Perfil</button>
+            </a>
+          </div>
+        <% } %>
+
       </div>
     </div>
 
-    <!-- Especificações -->
     <div class="item-specs">
       <h3>Especificações Técnicas</h3>
-      <ul>
-        <li><strong>Modelo:</strong> DELUXE</li>
-        <li><strong>Braço:</strong> Maple modern "C" shape</li>
-        <li><strong>Captadores:</strong> 3 Noiseless N3</li>
-        <li><strong>Cor:</strong> Black</li>
-        <li><strong>Escala:</strong> 25.5" com raio composto</li>
-        <li><strong>Marca:</strong> FENDER</li>
-      </ul>
+        <ul>
+          <li><strong>Marca:</strong> <%= item.marca %></li>
+          <li><strong>Tipo:</strong> <%= item.tipo %></li>
+          <li><strong>Modelo:</strong> <%= item.modelo %></li>
+          <li><strong>Cor:</strong> <%= item.cor %></li>
+          <li><strong>Acabamento:</strong> <%= item.acabamento %></li>
+          <li><strong>Ano de Fabricação:</strong> <%= item.ano_fabricacao %></li>
+          <li><strong>Configuração de Captadores:</strong> <%= item.captadores_config %></li>
+        </ul>
     </div>
 
-    <!-- Gráfico ou extras -->
     <div class="extras">
-      <div class="grafico">Gráfico de preços</div>
+      <div class="grafico">
+        Gráfico de preços (em desenvolvimento)
+      </div>
     </div>
   </main>
 
   <%- include('partials/footer.ejs') %>
+
+  <script>
+  const mainImage = document.querySelector('.item-img');
+  const thumbnails = document.querySelectorAll('.thumbnail-list img');
+
+  thumbnails.forEach(thumbnail => {
+    thumbnail.addEventListener('click', () => {
+      const newSrc = thumbnail.getAttribute('src');
+      mainImage.setAttribute('src', newSrc);
+    });
+  });
+</script>
 </body>
 </html>

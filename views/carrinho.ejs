@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seu Carrinho</title>
+  <link rel="stylesheet" href="/css/carrinho.css" />
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main class="carrinho-container">
+    <div class="carrinho-header">
+      <h2>Seu Carrinho</h2>
+    </div>
+
+    <% if (itens.length === 0) { %>
+      <p>Seu carrinho está vazio.</p>
+    <% } else { 
+      let total = 0;
+      itens.forEach(item => {
+        total += item.preco * item.quantidade;
+      });
+    %>
+
+      <% itens.forEach(item => { %>
+        <div class="item-carrinho">
+          <img src="<%= item.imagem_url.split(',')[0] %>" alt="Imagem do Produto" />
+          <div class="item-info">
+            <h4><%= item.nome %></h4>
+            <p class="quantidade">Qtd: <%= item.quantidade %></p>
+          </div>
+          <p class="preco">R$ <%= (item.preco * item.quantidade).toFixed(2) %></p>
+          <form method="POST" action="/carrinho/remover/<%= item.id %>">
+            <button class="remover-btn" type="submit">Remover</button>
+          </form>
+        </div>
+      <% }) %>
+
+      <div class="total">
+        <strong>Total: R$ <%= total.toFixed(2) %></strong>
+      </div>
+
+      <form method="POST" action="/checkout">
+        <button type="submit" class="btn-finalizar">Finalizar Compra</button>
+      </form>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>

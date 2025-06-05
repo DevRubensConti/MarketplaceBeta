@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel do Usuário</title>
+  <link rel="stylesheet" href="/css/painel-usuario.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <main class="painel-container">
+    <h2>Olá, <%= usuario.nome %>!</h2>
+
+    <section class="dados-usuario">
+      <p><strong>Email:</strong> <%= usuario.email %></p>
+      <p><strong>Telefone:</strong> <%= usuario.telefone || 'Não informado' %></p>
+      <a href="/painel/editar-usuario" class="btn-editar">Editar perfil</a>
+    </section>
+
+    <section class="produtos-listados">
+      <h3>Seus Anúncios</h3>
+      <a href="/cadastro-item" class="btn-novo-produto">+ Novo Produto</a>
+      <div class="grid-produtos">
+        <% produtos.forEach(item => { 
+             const imagemPrincipal = item.imagem_url ? item.imagem_url.split(',')[0].trim() : '/images/sem-imagem.png';
+        %>
+          <div class="card-produto">
+            <img src="<%= imagemPrincipal %>" alt="Imagem do produto">
+            <h4><%= item.nome %></h4>
+            <p>R$ <%= item.preco %></p>
+            <div class="botoes">
+              <a href="/painel/produto/<%= item.id %>/editar" class="btn-editar">Editar</a>
+              <form action="/painel/produto/<%= item.id %>/excluir" method="POST">
+                <button type="submit" class="btn-excluir">Excluir</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,246 @@
+@import url('/css/style.css');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  position: relative;
+  background: url('/images/background.png') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--cor-secundaria);
+  z-index: 0;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65); /* Ajuste aqui a opacidade do escurecimento */
+  z-index: -1;
+}
+
+.listagem-container {
+  display: flex;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 40px 60px;
+  gap: 40px;
+}
+
+.filtros {
+  width: 260px;
+  min-width: 260px;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 25px 20px;
+  border-radius: 0 15px 15px 0;
+  color: var(--cor-secundaria);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  height: fit-content;
+  position: sticky;
+  top: 120px;
+}
+
+.filtros h2 {
+  margin-bottom: 20px;
+}
+
+.filtro-box {
+  margin-bottom: 25px;
+  margin-right: 20px;
+}
+
+.filtro-box input[type="text"],
+.filtro-box input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: none;
+  font-size: 14px;
+}
+
+.filtro-box label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--cor-secundaria);
+  cursor: pointer;
+}
+
+.filtro-box select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+}
+
+.produtos {
+  flex: 1;
+  color: var(--cor-secundaria);
+}
+
+.grid-produtos {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+  margin-bottom: 60px;
+}
+
+.card-produto {
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-produto h4 {
+  margin: 10px 0 5px;
+}
+
+.card-produto p {
+  font-weight: bold;
+  color: var(--cor-primaria);
+}
+
+.card-produto button {
+  background: var(--cor-primaria);
+  color: var(--cor-secundaria);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.card-produto button:hover {
+  background: var(--cor-primaria-escura);
+}
+
+.tags {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 4;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.carousel-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  border-radius: 8px;
+}
+
+.carousel-img.active {
+  display: block;
+}
+
+.carousel-controls {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  padding: 0 8px;
+}
+
+.carousel-controls button {
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: var(--cor-secundaria);
+  font-size: 22px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-controls button:hover {
+  background: var(--cor-primaria);
+}
+
+/* --- Loja Banner --- */
+
+.banner-loja {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px 30px;
+  margin-bottom: 40px;
+  color: var(--cor-secundaria);
+}
+
+.banner-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.banner-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--cor-secundaria);
+}
+
+.banner-textos h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.banner-textos p {
+  margin: 2px 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.banner-avaliacao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.banner-avaliacao p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.estrelas {
+  font-size: 20px;
+  color: var(--cor-destaque);
+}

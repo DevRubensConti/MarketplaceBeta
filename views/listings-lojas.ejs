@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lojas</title>
+  <link rel="stylesheet" href="/css/listings-lojas.css" />
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main class="listagem-container">
+    <h2 style="margin-bottom: 30px;">Lojas Cadastradas</h2>
+
+    <form method="GET" class="filtros-lojas" style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+    <input type="text" name="nome" placeholder="Buscar por nome da loja" value="<%= query?.nome || '' %>" style="padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+
+    <select name="estado" style="padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+        <option value="">Todos os estados</option>
+        <option value="SP" <%= query?.estado === 'SP' ? 'selected' : '' %>>São Paulo</option>
+        <option value="RJ" <%= query?.estado === 'RJ' ? 'selected' : '' %>>Rio de Janeiro</option>
+        <option value="MG" <%= query?.estado === 'MG' ? 'selected' : '' %>>Minas Gerais</option>
+        <!-- Adicione mais se quiser -->
+    </select>
+
+    <select name="nota_min" style="padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+        <option value="">Qualquer nota</option>
+        <option value="4" <%= query?.nota_min == '4' ? 'selected' : '' %>>4 estrelas ou mais</option>
+        <option value="3" <%= query?.nota_min == '3' ? 'selected' : '' %>>3 estrelas ou mais</option>
+        <option value="2" <%= query?.nota_min == '2' ? 'selected' : '' %>>2 estrelas ou mais</option>
+    </select>
+
+    <button type="submit" class="btn-filtrar">Filtrar</button>
+    </form>
+
+
+    <% if (lojas.length === 0) { %>
+      <p style="color: #888; font-style: italic;">Nenhuma loja cadastrada até o momento.</p>
+    <% } else { %>
+      <div class="grid-produtos">
+        <% lojas.forEach(loja => { %>
+          <div class="card-produto">
+            <div class="mini-galeria">
+              <img src="<%= loja.icone_url || '/images/store_logos/store.png' %>" alt="Logo da Loja" class="banner-logo" style="max-height: 100px;">
+            </div>
+            <h4><%= loja.nomeFantasia %></h4>
+            <p><strong>Nota:</strong> <%= loja.nota %> ⭐</p>
+            <a href="/loja/<%= loja.id %>">
+              <button class="btn-vermais">Ver Produtos</button>
+            </a>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>

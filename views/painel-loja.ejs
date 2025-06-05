@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel da Loja</title>
+  <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <main class="painel-container">
+    <h2>Bem-vindo, <%= loja.nomeFantasia %>!</h2>
+
+    <section class="dados-loja">
+      <img src="<%= loja.icone_url || '/images/store_logos/store.png' %>" alt="Logo da loja" class="logo-loja">
+      <p><strong>CNPJ:</strong> <%= loja.cnpj %></p>
+      <p><strong>Email:</strong> <%= loja.email %></p>
+      <p><strong>Telefone:</strong> <%= loja.telefone %></p>
+      <a href="/painel/editar-loja" class="btn-editar">Editar dados da loja</a>
+    </section>
+
+    <section class="produtos-listados">
+      <h3>Produtos da Loja</h3>
+      <a href="/cadastro-item" class="btn-novo-produto">+ Novo Produto</a>
+      <div class="grid-produtos">
+        <% produtos.forEach(item => { %>
+          <div class="card-produto">
+            <img src="<%= item.imagem_url?.split(',')[0] %>" alt="Imagem do produto">
+            <h4><%= item.nome %></h4>
+            <p>R$ <%= item.preco %></p>
+            <div class="botoes">
+              <a href="/painel/produto/<%= item.id %>/editar" class="btn-editar">Editar</a>
+              <form action="/painel/produto/<%= item.id %>/excluir" method="POST">
+                <button type="submit" class="btn-excluir">Excluir</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

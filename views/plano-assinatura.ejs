@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Plano de Assinatura</title>
+  <link rel="stylesheet" href="/css/plano-assinatura.css">
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <div class="assinatura-container">
+    <img src="/images/peixe.png" alt="Peixe tocando guitarra" class="peixe-img">
+    <h2>Assine o Plano Mensal</h2>
+    <p>Desbloqueie recursos exclusivos por apenas <strong>R$ 15,00/mês</strong></p>
+    <form action="/assinatura-pf" method="POST">
+      <button class="btn-assinar" type="submit">Assinar Agora</button>
+    </form>
+
+    <a href="/saiba-mais-assinatura" class="saiba-mais-btn">Saiba Mais...</a>
+      </div>
+
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>

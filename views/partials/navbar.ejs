@@ -7,23 +7,52 @@
     <div class="logo">
       <a href="/"><img src="/images/logo.png" height="60px" width="60px" alt="Logo"></a>
     </div>
+
     <div class="nav-links">
-      <a href="#">Lojas</a>
+      <a href="/lojas">Lojas</a>
       <a href="#">Sobre Nós</a>
       <a href="#">Mapa</a>
     </div>
-    <div class="search-bar">
-      <input type="text" placeholder="Search">
-      <button>
-        <img src="/images/search-icon.png" alt="Search" height="20px" width="20px">
+
+    <form class="search-bar" action="/produtos" method="GET">
+      <input type="text" name="pesquisa" placeholder="Buscar produtos..." required>
+      <button type="submit">
+        <img src="/images/search-icon.png" alt="Buscar" height="20px" width="20px">
       </button>
-    </div>
+    </form>
+
     <div class="nav-links">
       <a href="/">Início</a>
       <a href="#">Carrinho</a>
-      <a href="/login">Entrar</a>
-      <a href="/signup" class="signup">Cadastre-se</a>
+
+      <% if (usuario) { %>
+        <% 
+          const iconePadrao = usuario.tipo === 'pj' 
+            ? '/images/store_logos/store.png' 
+            : '/images/user_default.png';
+          const iconePerfil = usuario.icone_url || iconePadrao;
+        %>
+        <div class="loja-dropdown">
+          <img src="<%= iconePerfil %>" alt="Perfil" class="icone-perfil" id="iconeLoja">
+
+          <div class="dropdown-conteudo" id="dropdownMenu">
+            <% if (usuario.tipo === 'pj') { %>
+              <a href="/painel/loja">Painel da Loja</a>
+              <a href="/loja/<%= usuario.id %>">Ver Loja Pública</a>
+              <a href="/cadastro-item">Novo Produto</a>
+            <% } else { %>
+              <a href="/painel/usuario">Painel do Usuário</a>
+              <a href="/usuario/<%= usuario.id %>">Ver Perfil Público</a>
+            <% } %>
+            <a href="/logout">Sair</a>
+          </div>
+        </div>
+      <% } else { %>
+        <a href="/login">Entrar</a>
+        <a href="/signup" class="signup">Cadastre-se</a>
+      <% } %>
     </div>
+
   </div>
 </nav>
 
@@ -49,25 +78,22 @@
         <div class="coluna">
           <h3>Guitarras Elétricas</h3>
           <ul>
-            <li><a href="/produtos">Stratocaster</a></li>
-            <li><a href="#">Telecaster</a></li>
-            <li><a href="#">Les Paul</a></li>
-            <li><a href="#">Super Strato</a></li>
-            <li><a href="#">Semiacústica</a></li>
-            <li><a href="#">Hollow Body</a></li>
-            <li><a href="#">7 Cordas</a></li>
-            <li><a href="#">Canhota</a></li>
-            <li><a href="#">Guitarras para Iniciantes</a></li>
+            <li><a href="/produtos?modelo[]=Stratocaster">Stratocaster</a></li>
+            <li><a href="/produtos?modelo[]=Telecaster">Telecaster</a></li>
+            <li><a href="/produtos?modelo[]=Les Paul">Les Paul</a></li>
+            <li><a href="/produtos?modelo[]=SG">SG</a></li>
+            <li><a href="/produtos?modelo[]=Explorer">Explorer</a></li>
+            <li><a href="/produtos?modelo[]=Flying V">Flying V</a></li>
           </ul>
 
           <h3>Baixos</h3>
           <ul>
-            <li><a href="#">4 Cordas</a></li>
-            <li><a href="#">5 Cordas</a></li>
-            <li><a href="#">Ativos</a></li>
-            <li><a href="#">Passivos</a></li>
-            <li><a href="#">Canhoto</a></li>
-            <li><a href="#">Acústico</a></li>
+            <li><a href="/produtos?categoria=baixo4cordas">4 Cordas</a></li>
+            <li><a href="/produtos?categoria=baixo5cordas">5 Cordas</a></li>
+            <li><a href="/produtos?categoria=ativos">Ativos</a></li>
+            <li><a href="/produtos?categoria=passivos">Passivos</a></li>
+            <li><a href="/produtos?categoria=canhoto">Canhoto</a></li>
+            <li><a href="/produtos?categoria=acustico">Acústico</a></li>
           </ul>
         </div>
 
@@ -75,15 +101,15 @@
         <div class="coluna">
           <h3>Violões</h3>
           <ul>
-            <li><a href="#">Clássico (Nylon)</a></li>
-            <li><a href="#">Folk (Aço)</a></li>
-            <li><a href="#">Eletroacústico</a></li>
-            <li><a href="#">Cutaway</a></li>
-            <li><a href="#">Flat</a></li>
-            <li><a href="#">Mini/Viagem</a></li>
-            <li><a href="#">12 Cordas</a></li>
-            <li><a href="#">Canhoto</a></li>
-            <li><a href="#">Para Iniciantes</a></li>
+            <li><a href="/produtos?categoria=classico">Clássico (Nylon)</a></li>
+            <li><a href="/produtos?categoria=folk">Folk (Aço)</a></li>
+            <li><a href="/produtos?categoria=eletroacustico">Eletroacústico</a></li>
+            <li><a href="/produtos?categoria=cutaway">Cutaway</a></li>
+            <li><a href="/produtos?categoria=flat">Flat</a></li>
+            <li><a href="/produtos?categoria=mini">Mini/Viagem</a></li>
+            <li><a href="/produtos?categoria=12cordas">12 Cordas</a></li>
+            <li><a href="/produtos?categoria=canhoto">Canhoto</a></li>
+            <li><a href="/produtos?categoria=iniciantes">Para Iniciantes</a></li>
           </ul>
         </div>
 
@@ -91,16 +117,16 @@
         <div class="coluna">
           <h3>Acessórios e Peças</h3>
           <ul>
-            <li><a href="#">Cordas</a></li>
-            <li><a href="#">Captadores</a></li>
-            <li><a href="#">Afinadores</a></li>
-            <li><a href="#">Correias</a></li>
-            <li><a href="#">Pedais</a></li>
-            <li><a href="#">Capotrastes</a></li>
-            <li><a href="#">Ponte / Nut</a></li>
-            <li><a href="#">Trastes</a></li>
-            <li><a href="#">Escudos</a></li>
-            <li><a href="#">Tarraxas</a></li>
+            <li><a href="/produtos?categoria=cordas">Cordas</a></li>
+            <li><a href="/produtos?categoria=captadores">Captadores</a></li>
+            <li><a href="/produtos?categoria=afinadores">Afinadores</a></li>
+            <li><a href="/produtos?categoria=correias">Correias</a></li>
+            <li><a href="/produtos?categoria=pedais">Pedais</a></li>
+            <li><a href="/produtos?categoria=capotrastes">Capotrastes</a></li>
+            <li><a href="/produtos?categoria=ponte">Ponte / Nut</a></li>
+            <li><a href="/produtos?categoria=trastes">Trastes</a></li>
+            <li><a href="/produtos?categoria=escudos">Escudos</a></li>
+            <li><a href="/produtos?categoria=tarraxas">Tarraxas</a></li>
           </ul>
         </div>
 
@@ -108,14 +134,14 @@
         <div class="coluna">
           <h3>Mais Buscados</h3>
           <ul>
-            <li><a href="#">Tagima Stratocaster</a></li>
-            <li><a href="#">Giannini Clássico</a></li>
-            <li><a href="#">Fender Telecaster</a></li>
-            <li><a href="#">Gibson Les Paul</a></li>
-            <li><a href="#">Yamaha C40</a></li>
-            <li><a href="#">Tagima Dallas</a></li>
-            <li><a href="#">Michael VM925</a></li>
-            <li><a href="#">Ibanez RG</a></li>
+            <li><a href="/produtos?categoria=tagima-stratocaster">Tagima Stratocaster</a></li>
+            <li><a href="/produtos?categoria=giannini-classico">Giannini Clássico</a></li>
+            <li><a href="/produtos?categoria=fender-telecaster">Fender Telecaster</a></li>
+            <li><a href="/produtos?categoria=gibson-lespaul">Gibson Les Paul</a></li>
+            <li><a href="/produtos?categoria=yamaha-c40">Yamaha C40</a></li>
+            <li><a href="/produtos?categoria=tagima-dallas">Tagima Dallas</a></li>
+            <li><a href="/produtos?categoria=michael-vm925">Michael VM925</a></li>
+            <li><a href="/produtos?categoria=ibanez-rg">Ibanez RG</a></li>
           </ul>
         </div>
       </div>
@@ -137,3 +163,23 @@
     painel.classList.remove("ativo");
   });
 </script>
+
+<script>
+  const icone = document.getElementById("iconeLoja");
+  const dropdown = document.getElementById("dropdownMenu");
+
+  if (icone && dropdown) {
+    icone.addEventListener("click", () => {
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!icone.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+  }
+</script>
+
+
+

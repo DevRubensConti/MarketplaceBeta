@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,49 +11,84 @@
   <%- include('partials/navbar.ejs') %>
 
   <main class="listagem-container">
+
+        <% const selected = {
+          marca: Array.isArray(query.marca) ? query.marca : query.marca ? [query.marca] : [],
+          tipo: Array.isArray(query.tipo) ? query.tipo : query.tipo ? [query.tipo] : [],
+          categoria: Array.isArray(query.categoria) ? query.categoria : query.categoria ? [query.categoria] : [],
+          modelo: Array.isArray(query.modelo) ? query.modelo : query.modelo ? [query.modelo] : [],
+          condicao: query.condicao || '',
+          preco_min: query.preco_min || '0',
+          preco_max: query.preco_max || '100000-',
+          acabamento: query.acabamento || ''
+        }; %>
+
+        <% if (mensagens.length > 0) { %>
+      <div class="flash-message">
+        <%= mensagens[0] %>
+      </div>
+        <% } %>
+
+    <form method="GET" action="/produtos">
     <!-- Filtros laterais -->
     <aside class="filtros">
       <h2>Filtrar por</h2>
 
       <div class="filtro-box">
         <h3>Pesquisa</h3>
-        <input type="text" placeholder="Buscar instrumento..." />
+        <input type="text" placeholder="Buscar instrumento..." name="pesquisa"/>
       </div>
 
       <div class="filtro-box">
         <h3>Preço (R$)</h3>
         <div class="slider-preco">
           <span>Mín: R$ <span id="preco-min">0</span></span>
-          <input type="range" id="range-min" min="0" max="10000" step="50" value="0">
+          <input type="range" id="range-min" name="preco_min" min="0" max="100000" step="50" value="<%= selected.preco_min %>">
       
-          <span>Máx: R$ <span id="preco-max">10000</span></span>
-          <input type="range" id="range-max" min="0" max="10000" step="50" value="10000">
+          <span>Máx: R$ <span id="preco-max">100000</span></span>
+          <input type="range" id="range-max" name="preco_max" min="0" max="100000" step="50" value="<%= selected.preco_max %>">
         </div>
       </div>
       <div class="filtro-box">
-        <label><input type="checkbox" /> Produtos em Promoção</label>
+        <label><input type="checkbox" name="promo"/> Produtos em Promoção</label>
       </div>
       <div class="filtro-box">
         <h3>Tipo de Instrumento</h3>
-        <label><input type="checkbox" /> Guitarra</label>
-        <label><input type="checkbox" /> Violão</label>
-        <label><input type="checkbox" /> Baixo</label>
-        <label><input type="checkbox" /> Teclado</label>
-        <label><input type="checkbox" /> Bateria</label>
+        <label><input type="checkbox" name="tipo[]" value="corda" <%= selected.tipo.includes('corda') ? 'checked' : '' %>> Corda</label>
+        <label><input type="checkbox" name="tipo[]" value="percussao" <%= selected.tipo.includes('percussao') ? 'checked' : '' %>> Percussão</label>
+        <label><input type="checkbox" name="tipo[]" value="teclado" <%= selected.tipo.includes('teclado') ? 'checked' : '' %>> Teclado/Piano</label>
+        <label><input type="checkbox" name="tipo[]" value="sopro" <%= selected.tipo.includes('sopro') ? 'checked' : '' %>> Sopro</label>
+        <label><input type="checkbox" name="tipo[]" value="audio" <%= selected.tipo.includes('audio') ? 'checked' : '' %>> Áudio</label>
+        <label><input type="checkbox" name="tipo[]" value="acessorio" <%= selected.tipo.includes('acessorio') ? 'checked' : '' %>> Acessório</label>
       </div>
-
       <div class="filtro-box">
-        <h3>Marcas</h3>
-        <label><input type="checkbox" /> Fender</label>
-        <label><input type="checkbox" /> Tagima</label>
-        <label><input type="checkbox" /> Gibson</label>
-        <label><input type="checkbox" /> Yamaha</label>
-        <label><input type="checkbox" /> Ibanez</label>
+        <h3>Categoria</h3>
+        <label><input type="checkbox" name="categoria[]" value="guitarra" <%= selected.categoria.includes('guitarra') ? 'checked' : '' %>> Guitarra</label>
+        <label><input type="checkbox" name="categoria[]" value="violao" <%= selected.categoria.includes('violao') ? 'checked' : '' %>> Violão</label>
+        <label><input type="checkbox" name="categoria[]" value="baixo" <%= selected.categoria.includes('baixo') ? 'checked' : '' %>> Baixo</label>
       </div>
+      <div class="filtro-box">
+        <h3>Modelo</h3>
+        <label><input type="checkbox" name="modelo[]" value="Stratocaster" <%= selected.modelo.includes('Stratocaster') ? 'checked' : '' %>> Stratocaster</label>
+        <label><input type="checkbox" name="modelo[]" value="Telecaster" <%= selected.modelo.includes('Telecaster') ? 'checked' : '' %>> Telecaster</label>
+        <label><input type="checkbox" name="modelo[]" value="Les Paul" <%= selected.modelo.includes('Les Paul') ? 'checked' : '' %>> Les Paul</label>
+        <label><input type="checkbox" name="modelo[]" value="SG" <%= selected.modelo.includes('SG') ? 'checked' : '' %>> SG</label>
+        <label><input type="checkbox" name="modelo[]" value="Explorer" <%= selected.modelo.includes('Explorer') ? 'checked' : '' %>> Explorer</label>
+        <label><input type="checkbox" name="modelo[]" value="Flying V" <%= selected.modelo.includes('Flying V') ? 'checked' : '' %>> Flying V</label>
+      </div>
+      <div class="filtro-box">
+      <h3>Marca</h3>
+      <label><input type="checkbox" name="marca[]" value="Fender" <%= selected.marca.includes('Fender') ? 'checked' : '' %>> Fender</label>
+      <label><input type="checkbox" name="marca[]" value="Gibson" <%= selected.marca.includes('Gibson') ? 'checked' : '' %>> Gibson</label>
+      <label><input type="checkbox" name="marca[]" value="Yamaha" <%= selected.marca.includes('Yamaha') ? 'checked' : '' %>> Yamaha</label>
+      <label><input type="checkbox" name="marca[]" value="Ibanez" <%= selected.marca.includes('Ibanez') ? 'checked' : '' %>> Ibanez</label>
+      <label><input type="checkbox" name="marca[]" value="Tagima" <%= selected.marca.includes('Tagima') ? 'checked' : '' %>> Tagima</label>
+    </div>
+
       <!-- Cor -->
       <div class="filtro-box">
         <h3>Cor</h3>
-        <select class="select-cor">
+        <select class="select-cor" name="cor">
           <option value="">Todas</option>
           <option value="Preto">Preto</option>
           <option value="Branco">Branco</option>
@@ -66,20 +102,37 @@
       <!-- Condição -->
       <div class="filtro-box">
         <h3>Condição</h3>
-        <select class="select-condicao">
+        <select name="condicao" class="select-condicao">
           <option value="">Todas</option>
-          <option value="Novo">Novo (lacrado)</option>
-          <option value="Usado - excelente">Usado (excelente estado)</option>
-          <option value="Usado - bom">Usado (bom estado)</option>
-          <option value="Com marcas de uso">Com marcas de uso</option>
-          <option value="Para peças/reparo">Somente para peças/reparo</option>
+          <option value="Novo (Lacrado)" <%= selected.condicao === 'Novo (Lacrado)' ? 'selected' : '' %>>Novo (Lacrado)</option>
+          <option value="Usado - Estado de Novo" <%= selected.condicao === 'Usado - Estado de Novo' ? 'selected' : '' %>>Usado (Estado de Novo)</option>
+          <option value="Usado - Com Leves Marcas" <%= selected.condicao === 'Usado - Com Leves Marcas' ? 'selected' : '' %>>Usado (Com Leves Marcas)</option>
+          <option value="Usado - Sinais Evidentes" <%= selected.condicao === 'Usado - Sinais Evidentes' ? 'selected' : '' %>>Usado (Sinais Evidentes)</option>
+          <option value="Defeituoso ou para peças" <%= selected.condicao === 'Defeituoso ou para peças' ? 'selected' : '' %>>Defeituoso / Para peças</option>
         </select>
       </div>
 
-      <!-- Promoção -->
+      <div class="filtro-box">
+        <h3>Acabamento</h3>
+        <select name="acabamento" class="select-acabamento">
+          <option value="">Todos</option>
+          <option value="Brilhante" <%= selected.acabamento === 'Brilhante' ? 'selected' : '' %>>Brilhante</option>
+          <option value="Fosco" <%= selected.acabamento === 'Fosco' ? 'selected' : '' %>>Fosco</option>
+          <option value="Satinado" <%= selected.acabamento === 'Satinado' ? 'selected' : '' %>>Satinado</option>
+          <option value="Relíquia / Envelhecido" <%= selected.acabamento === 'Relíquia / Envelhecido' ? 'selected' : '' %>>Relíquia / Envelhecido</option>
+        </select>
+      </div> 
 
+
+    <div class="filtro-box">
+        <button type="submit" class="btn-filtrar">Aplicar Filtros</button>
+        <a href="/produtos" class="btn-remover">Remover Filtros</a>
+    </div>
 
     </aside>
+
+
+    </form>
 
     <!-- Lista de produtos -->
     <section class="produtos">
@@ -87,11 +140,33 @@
       <div class="grid-produtos">
         <% produtos.forEach(item => { %>
           <div class="card-produto">
-            <img src="<%= item.imagem_url %>" alt="Imagem do produto">
+            <div class="mini-galeria">
+              <div class="carousel">
+                <% if (item.imagem_url) { 
+                    const imagens = item.imagem_url.split(','); %>
+                  
+                  <div class="carousel-wrapper">
+                    <% imagens.forEach((url, index) => { %>
+                      <img class="carousel-img <% if (index === 0) { %>active<% } %>" src="<%= url.trim() %>" alt="Imagem <%= index + 1 %>">
+                    <% }) %>
+                  </div>
+
+                  <div class="carousel-controls">
+                    <button class="prev">&#10094;</button>
+                    <button class="next">&#10095;</button>
+                  </div>
+
+                <% } else { %>
+                  <p style="color: #aaa; font-size: 12px;">(sem imagens)</p>
+                <% } %>
+              </div>
+            </div>
             <h4><%= item.nome %></h4>
             <p>R$ <%= item.preco %></p>
             <p class="tags"><strong>Tags:</strong> <%= item.tags %></p>
-            <button>Ver mais</button>
+            <a href="/item/<%= item.id %>?voltar=<%= encodeURIComponent(urlAtual) %>">
+              <button class="btn-vermais">Ver mais</button>
+            </a>
           </div>
         <% }) %>
       </div>
@@ -100,5 +175,58 @@
 
   <!-- Footer -->
   <%- include('partials/footer.ejs') %>
+  <script>
+  document.querySelectorAll('.carousel').forEach(carousel => {
+    const images = carousel.querySelectorAll('.carousel-img');
+    const nextBtn = carousel.querySelector('.next');
+    const prevBtn = carousel.querySelector('.prev');
+
+    let currentIndex = 0;
+
+    const showImage = index => {
+      images.forEach((img, i) => {
+        img.classList.toggle('active', i === index);
+      });
+    };
+
+    if (nextBtn && prevBtn && images.length > 0) {
+      nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+      });
+
+      prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+      });
+    }
+
+    showImage(currentIndex);
+  });
+</script>
+
+<script>
+  const rangeMin = document.getElementById('range-min');
+  const rangeMax = document.getElementById('range-max');
+  const precoMinLabel = document.getElementById('preco-min');
+  const precoMaxLabel = document.getElementById('preco-max');
+
+  function formatarValor(valor) {
+    return parseInt(valor).toLocaleString('pt-BR');
+  }
+
+  rangeMin.addEventListener('input', () => {
+    precoMinLabel.textContent = formatarValor(rangeMin.value);
+  });
+
+  rangeMax.addEventListener('input', () => {
+    precoMaxLabel.textContent = formatarValor(rangeMax.value);
+  });
+
+  // Atualiza os valores na primeira carga da página
+  precoMinLabel.textContent = formatarValor(rangeMin.value);
+  precoMaxLabel.textContent = formatarValor(rangeMax.value);
+</script>
+
 </body>
 </html>

@@ -1,0 +1,135 @@
+<%- include('partials/navbar.ejs') %>
+<head><link rel="stylesheet" href="/css/loja.css"></head>
+
+<body>
+<main class="listagem-container">
+
+    
+  <aside class="filtros">
+    <h2>Filtrar por</h2>
+    <form method="GET">
+      <div class="filtro-box">
+        <label>Marca:</label>
+        <input type="text" name="marca" placeholder="Ex: Fender" value="<%= typeof marca !== 'undefined' ? marca : '' %>">
+      </div>
+      <div class="filtro-box">
+        <label>Tipo:</label>
+        <input type="text" name="tipo" placeholder="Ex: Guitarra" value="<%= typeof tipo !== 'undefined' ? tipo : '' %>">
+      </div>
+      <div class="filtro-box">
+        <label>Preço Mín:</label>
+        <input type="number" name="preco_min" value="<%= typeof preco_min !== 'undefined' ? preco_min : 0 %>">
+      </div>
+      <div class="filtro-box">
+        <label>Preço Máx:</label>
+        <input type="number" name="preco_max" value="<%= typeof preco_max !== 'undefined' ? preco_max : 10000 %>">
+      </div>
+      <button type="submit">Filtrar</button>
+    </form>
+  </aside>
+
+  <section class="produtos">
+  
+  <!-- SUBSTITUI OU LOGO ABAIXO de "loja-info" -->
+
+  <div class="banner-loja">
+    <div class="banner-info">
+      <img src="<%= loja.icone_url %>" alt="Logo da Loja" class="banner-logo">
+      <div class="banner-textos">
+        <h2><%= loja.nomeFantasia %></h2>
+        <p><%= loja.endereco %></p>
+        <p><%= loja.telefone %></p>
+      </div>
+    </div>
+
+    <div class="banner-avaliacao">
+      <p>Nota da Loja</p>
+        <div class="estrelas">
+        <% for(let i = 1; i <= 5; i++) { %>
+            <% if(i <= loja.nota) { %>
+            <span>⭐</span>
+            <% } else { %>
+            <span style="opacity: 0.3;">⭐</span>
+            <% } %>
+        <% } %>
+        </div>
+    </div>
+  </div>
+
+  <% if (produtos.length > 0) { %>
+    <div class="grid-produtos">
+      <% produtos.forEach(item => { %>
+        <div class="card-produto">
+        <div class="mini-galeria">
+            <div class="carousel">
+            <% if (item.imagem_url) { 
+                const imagens = item.imagem_url.split(','); %>
+                
+                <div class="carousel-wrapper">
+                <% imagens.forEach((url, index) => { %>
+                    <img class="carousel-img <% if (index === 0) { %>active<% } %>" src="<%= url.trim() %>" alt="Imagem <%= index + 1 %>">
+                <% }) %>
+                </div>
+
+                <div class="carousel-controls">
+                <button class="prev">&#10094;</button>
+                <button class="next">&#10095;</button>
+                </div>
+
+            <% } else { %>
+                <p style="color: #aaa; font-size: 12px;">(sem imagens)</p>
+            <% } %>
+            </div>
+        </div>
+
+        <h4><%= item.nome %></h4>
+        <p>R$ <%= item.preco %></p>
+        <p class="tags"><strong>Tags:</strong> <%= item.tags %></p>
+        <a href="/item?id=<%= item.id %>">
+            <button>Ver mais</button>
+        </a>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p>Nenhum produto encontrado nesta loja.</p>
+  <% } %>
+
+</section>
+
+
+</main>
+
+<%- include('partials/footer.ejs') %>
+
+<script>
+  document.querySelectorAll('.carousel').forEach(carousel => {
+    const images = carousel.querySelectorAll('.carousel-img');
+    const nextBtn = carousel.querySelector('.next');
+    const prevBtn = carousel.querySelector('.prev');
+
+    let currentIndex = 0;
+
+    const showImage = index => {
+      images.forEach((img, i) => {
+        img.classList.toggle('active', i === index);
+      });
+    };
+
+    if (nextBtn && prevBtn && images.length > 0) {
+      nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+      });
+
+      prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+      });
+    }
+
+    showImage(currentIndex);
+  });
+</script>
+
+</body>

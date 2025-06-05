@@ -13,8 +13,8 @@
     </div>
     <div class="most-viewed-gallery">
       <% produtos.forEach(item => { %>
-        <div class="card-produto">
-          <img src="<%= item.imagem_url %>" alt="Imagem do produto">
+        <a href="/item/<%= item.id %>" class="card-produto">
+          <img src="<%= item.imagem_url.split(',')[0] %>" alt="Imagem do produto">
           <div class="descricao-hover">
             <p><%= item.descricao %></p>
             <p><b>Marca:</b> <%= item.marca %></p>
@@ -23,35 +23,37 @@
             <p><b>R$ <%= item.preco %></b></p>
             <button class="btn-vermais">Ver mais</button>
           </div>
-        </div>
+        </a>
       <% }) %>
     </div>
   </div>
+
   
   
-  <div class="brands-filter-gallery-wrap">
-    <div class="brands-gallery-title">
-      <h2>Marcas</h2>
-    </div>
-    <div class="brands-carousel-row">
-      <img src="/images/back.png" id="backBtn">
-      <div class="brands-filter-gallery">
-        <div>
-          <div><img src="/images/brand_logos/brand_fender.png"></div>
-          <div><img src="/images/brand_logos/brand_tagima.png"></div>
-          <div><img src="/images/brand_logos/brand_yamaha.png"></div>
-          <div><img src="/images/brand_logos/brand_ibanez.png"></div>
-          <div><img src="/images/brand_logos/brand_gibson.png"></div>
-          <div><img src="/images/brand_logos/brand_godin.png"></div>
-          <div><img src="/images/brand_logos/brand_guild.png"></div>
-          <div><img src="/images/brand_logos/brand_luna.png"></div>
-          <div><img src="/images/brand_logos/brand_gretsch.png"></div>
-          <div><img src="/images/brand_logos/brand_jackson.png"></div>
-        </div>
-      </div>
-      <img src="/images/forward.png" id="forwardBtn">
-    </div>
+<div class="brands-filter-gallery-wrap">
+  <div class="brands-gallery-title">
+    <h2>Marcas</h2>
   </div>
+  <div class="brands-carousel-row">
+    <img src="/images/back.png" id="backBtn">
+    <div class="brands-filter-gallery">
+      <div>
+        <a href="/produtos?marca=Fender"><img src="/images/brand_logos/brand_fender.png" alt="Fender"></a>
+        <a href="/produtos?marca=Tagima"><img src="/images/brand_logos/brand_tagima.png" alt="Tagima"></a>
+        <a href="/produtos?marca=Yamaha"><img src="/images/brand_logos/brand_yamaha.png" alt="Yamaha"></a>
+        <a href="/produtos?marca=Ibanez"><img src="/images/brand_logos/brand_ibanez.png" alt="Ibanez"></a>
+        <a href="/produtos?marca=Gibson"><img src="/images/brand_logos/brand_gibson.png" alt="Gibson"></a>
+        <a href="/produtos?marca=Godin"><img src="/images/brand_logos/brand_godin.png" alt="Godin"></a>
+        <a href="/produtos?marca=Guild"><img src="/images/brand_logos/brand_guild.png" alt="Guild"></a>
+        <a href="/produtos?marca=Luna"><img src="/images/brand_logos/brand_luna.png" alt="Luna"></a>
+        <a href="/produtos?marca=Gretsch"><img src="/images/brand_logos/brand_gretsch.png" alt="Gretsch"></a>
+        <a href="/produtos?marca=Jackson"><img src="/images/brand_logos/brand_jackson.png" alt="Jackson"></a>
+      </div>
+    </div>
+    <img src="/images/forward.png" id="forwardBtn">
+  </div>
+</div>
+
 
   <div class="stores-carousel-wrap">
     <div class="stores-title">
@@ -60,25 +62,24 @@
   
     <div class="stores-carousel-row">
       <img src="/images/back.png" id="storesBackBtn">
-  
+
       <div class="stores-carousel">
         <div>
-          <div><img src="/images/store_logos/store.png" alt="Store 1"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 2"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 3"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 4"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 5"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 6"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 7"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 8"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 9"></div>
-          <div><img src="/images/store_logos/store.png" alt="Store 10"></div>
-          <!-- Add more as needed -->
+          <% lojasTop.forEach(loja => { %>
+            <a href="/loja/<%= loja.id %>" title="<%= loja.nomeFantasia %>">
+              <img 
+                src="<%= loja.icone_url || '/images/store_logos/store.png' %>" 
+                alt="<%= loja.nomeFantasia %>" 
+                class="banner-logo"
+              >
+            </a>
+          <% }) %>
         </div>
       </div>
-  
+
       <img src="/images/forward.png" id="storesForwardBtn">
     </div>
+
   </div>
   
 

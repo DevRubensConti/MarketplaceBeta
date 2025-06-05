@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Meu Perfil</title>
+  <link rel="stylesheet" href="/css/perfil.css">
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main class="perfil-container">
+    <div class="perfil-card">
+      <img src="/images/avatar-default.png" alt="Avatar" class="perfil-avatar">
+
+      <h2><%= usuario.nome %> <%= usuario.sobrenome %></h2>
+      <p class="cpf">CPF: <%= usuario.cpf %></p>
+      <p>Nascimento: <%= usuario.data_nascimento %></p>
+
+      <hr>
+
+      <h3>Contato</h3>
+      <p>Email: <%= usuario.email %></p>
+      <p>Telefone: <%= usuario.telefone %></p>
+
+      <hr>
+
+      <h3>Endereço</h3>
+      <p><%= usuario.endereco %>, nº <%= usuario.numero %></p>
+      <p>Bairro: <%= usuario.bairro %> - CEP: <%= usuario.cep %></p>
+      <p><%= usuario.estado %></p>
+
+      <div class="botoes-acao">
+        <a href="/editar-perfil" class="btn-editar">Editar Perfil</a>
+        <form action="/deletar-conta" method="POST" onsubmit="return confirm('Deseja mesmo excluir sua conta?')">
+          <button type="submit" class="btn-excluir">Excluir Conta</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>
