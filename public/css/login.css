@@ -62,7 +62,7 @@ body {
   color: #333;
 }
 
-button[type="submit"] {
+#entrar {
   width: 100%;
   background-color: var(--cor-primaria);
   color: var(--cor-secundaria);
@@ -74,7 +74,7 @@ button[type="submit"] {
   transition: background 0.3s ease;
 }
 
-button[type="submit"]:hover {
+#entrar:hover {
   background-color: var(--cor-primaria-escura);
 }
 
@@ -91,4 +91,11 @@ button[type="submit"]:hover {
 
 .signup-link a:hover {
   text-decoration: underline;
+}
+
+.mensagem-erro {
+  margin-top: 12px;
+  color: var(--cor-secundaria-escura);
+  font-size: 14px;
+  text-align: center;
 }

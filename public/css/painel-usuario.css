@@ -132,3 +132,57 @@ body {
 .btn-novo-produto:hover {
   background-color: #219150;
 }
+
+  .popup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  .popup-conteudo {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .popup-conteudo p {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #333;
+  }
+
+  .popup-botoes button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  #cancelar-btn {
+    background-color: #ccc;
+  }
+
+  #confirmar-btn {
+    background-color: #ff5c5c;
+    color: white;
+  }
+
+  #cancelar-btn:hover {
+    background-color: #b3b3b3;
+  }
+
+  #confirmar-btn:hover {
+    background-color: #e60000;
+  }

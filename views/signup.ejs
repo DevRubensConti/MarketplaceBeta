@@ -8,10 +8,10 @@
 </head>
 <body>
   <%- include('partials/navbar.ejs') %>
-
+  
   <main class="form-etapas-wrapper">
     <h2><u>Cadastro</u></h2>
-
+    
     <div class="form-group">
       <label for="tipo">Tipo de Cadastro:</label>
       <select id="tipo" name="tipo">
@@ -20,7 +20,7 @@
         <option value="pj">Loja (PJ)</option>
       </select>
     </div>
-
+    
     <!-- Formulário PF -->
     <form id="form-pf" method="POST" action="/cadastro-pf" style="display: none;">
       <details id="etapa-1" open>
@@ -48,7 +48,7 @@
         </div>
         <button type="button" onclick="desbloquearEtapaProxima('etapa-1', 'etapa-2')">Continuar</button>
       </details>
-
+      
       <details id="etapa-2">
         <summary>Etapa 2 - Contato e Acesso</summary>
         <div class="form-row">
@@ -68,12 +68,12 @@
           </div>
         </div>
         <button type="button" onclick="desbloquearEtapaProxima('etapa-2', 'etapa-3')">Continuar</button>
-
-        </details>
-
-
-        <details id="etapa-3">
-          <summary>Etapa 3 - Endereço</summary>
+        
+      </details>
+      
+      
+      <details id="etapa-3">
+        <summary>Etapa 3 - Endereço</summary>
         <div class="form-row">
           <div class="form-group">
             <label>Estado</label>
@@ -111,26 +111,24 @@
           </div>
         </div>
         <button type="submit">Finalizar Cadastro</button>
-        </details>
+      </details>
     </form>
     <form id="form-pj" method="POST" action="/cadastro-loja" style="display: none;">
       <details id="etapa-pj-1">
         <summary>Etapa 1 - Informações da Loja</summary>
         <div class="form-row">
           <div class="form-group">
-            <label>Nome Fantasia</label>
-            <input type="text" name="nomeFantasia" placeholder="Digite o Nome Fantasia da sua loja" required>
-          </div>
-          <div class="form-group">
             <label>CNPJ</label>
             <input type="text" id="cnpj" name="cnpj" placeholder="Digite o CNPJ da sua loja" required>
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Razão Social</label>
-            <input type="text" name="razaoSocial" placeholder="Digite a Razão Social da sua loja"required>
-          </div>
+        <div class="form-group">
+          <label>Nome Fantasia (Detectado)</label>
+          <input type="text" id="nome-fantasia-auto" disabled>
+        </div>
+        <div class="form-group">
+          <label>Razão Social (Detectada)</label>
+          <input type="text" id="razao-social-auto" disabled>
         </div>
         <button type="button" onclick="desbloquearEtapaProxima('etapa-pj-1', 'etapa-pj-2')">Continuar</button>
       </details>
@@ -154,7 +152,7 @@
         </div>
         <button type="button" onclick="desbloquearEtapaProxima('etapa-pj-2', 'etapa-pj-3')">Continuar</button>
       </details>
-    
+      
       <details id="etapa-pj-3">
         <summary>Etapa 3 - Endereço</summary>
         <div class="form-row">
@@ -198,7 +196,7 @@
     </form>
     
   </main>
-
+  
   <script>
     document.getElementById('etapa-pj-2').addEventListener('toggle', function () {
       if (this.open && !etapaPreenchida('etapa-pj-1')) {
@@ -206,112 +204,177 @@
         this.open = false;
       }
     });
-  
+    
     document.getElementById('etapa-pj-3').addEventListener('toggle', function () {
       if (this.open && !etapaPreenchida('etapa-pj-2')) {
         alert('Por favor, preencha todos os campos da Etapa 2 antes.');
         this.open = false;
       }
     });
-
+    
     const cpfInput = document.getElementById('cpf');
-      if (cpfInput) {
-        cpfInput.addEventListener('input', function (e) {
-          let value = e.target.value.replace(/\D/g, '');
-          value = value.replace(/(\d{3})(\d)/, '$1.$2');
-          value = value.replace(/(\d{3})(\d)/, '$1.$2');
-          value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-          e.target.value = value;
-        });
-      }
-
-    const cnpjInput = document.getElementById('cnpj');
-      if (cnpjInput) {
-        cnpjInput.addEventListener('input', function (e) {
-          let value = e.target.value.replace(/\D/g, '');
-          value = value.replace(/^(\d{2})(\d)/, '$1.$2');
-          value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
-          value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
-          value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
-          e.target.value = value;
-        });
-      }
-      document.querySelectorAll('input[name="telefone"]').forEach(function (input) {
-  input.addEventListener('input', function (e) {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length <= 10) {
-      value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-    } else {
-      value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    if (cpfInput) {
+      cpfInput.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = value;
+      });
     }
-    e.target.value = value;
-  });
-});
-
-document.querySelectorAll('input[name="cep"]').forEach(function (input) {
-  input.addEventListener('input', function (e) {
-    let value = e.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{5})(\d)/, '$1-$2');
-    e.target.value = value.slice(0, 9); // Limita a 9 caracteres
-  });
-});
-  
+    
+    const cnpjInput = document.getElementById('cnpj');
+    if (cnpjInput) {
+      cnpjInput.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+        value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+        value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+        value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+        e.target.value = value;
+      });
+    }
+    document.querySelectorAll('input[name="telefone"]').forEach(function (input) {
+      input.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length <= 10) {
+          value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        } else {
+          value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        }
+        e.target.value = value;
+      });
+    });
+    
+    document.querySelectorAll('input[name="cep"]').forEach(function (input) {
+      input.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+        e.target.value = value.slice(0, 9); // Limita a 9 caracteres
+      });
+    });
+    
   </script>
-
+  
   <script>
     const tipoSelect = document.getElementById("tipo");
     const formPF = document.getElementById("form-pf");
     const formPJ = document.getElementById("form-pj");
-
+    
     tipoSelect.addEventListener("change", () => {
       formPF.style.display = tipoSelect.value === "pf" ? "block" : "none";
       formPJ.style.display = tipoSelect.value === "pj" ? "block" : "none";
     });
-
     
-  function desbloquearEtapaProxima(atual, proxima) {
-    const campos = document.querySelectorAll(`#${atual} input:required`);
-    let preenchido = true;
-
-    campos.forEach(input => {
-      if (!input.value.trim()) preenchido = false;
-    });
-
-    if (preenchido) {
-      document.getElementById(atual).removeAttribute('open');
-      document.getElementById(proxima).setAttribute('open', true);
-      document.getElementById(proxima).scrollIntoView({ behavior: 'smooth' });
-    } else {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+    
+    function desbloquearEtapaProxima(atual, proxima) {
+      const campos = document.querySelectorAll(`#${atual} input:required`);
+      let preenchido = true;
+      
+      campos.forEach(input => {
+        if (!input.value.trim()) preenchido = false;
+      });
+      
+      if (preenchido) {
+        document.getElementById(atual).removeAttribute('open');
+        document.getElementById(proxima).setAttribute('open', true);
+        document.getElementById(proxima).scrollIntoView({ behavior: 'smooth' });
+      } else {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+      }
     }
-  }
-
-  function etapaPreenchida(idEtapa) {
-  const campos = document.querySelectorAll(`#${idEtapa} input:required`);
-  for (let campo of campos) {
-    if (!campo.value.trim()) return false;
-  }
-  return true;
-}
-
-document.getElementById('etapa-2').addEventListener('toggle', function () {
-  if (this.open && !etapaPreenchida('etapa-1')) {
-    alert('Por favor, preencha todos os campos da Etapa 1 antes.');
-    this.open = false;
-  }
-});
-
-document.getElementById('etapa-3').addEventListener('toggle', function () {
-  if (this.open && !etapaPreenchida('etapa-2')) {
-    alert('Por favor, preencha todos os campos da Etapa 2 antes.');
-    this.open = false;
-  }
-});
-
-
-
+    
+    function etapaPreenchida(idEtapa) {
+      const campos = document.querySelectorAll(`#${idEtapa} input:required`);
+      for (let campo of campos) {
+        if (!campo.value.trim()) return false;
+      }
+      return true;
+    }
+    
+    document.getElementById('etapa-2').addEventListener('toggle', function () {
+      if (this.open && !etapaPreenchida('etapa-1')) {
+        alert('Por favor, preencha todos os campos da Etapa 1 antes.');
+        this.open = false;
+      }
+    });
+    
+    document.getElementById('etapa-3').addEventListener('toggle', function () {
+      if (this.open && !etapaPreenchida('etapa-2')) {
+        alert('Por favor, preencha todos os campos da Etapa 2 antes.');
+        this.open = false;
+      }
+    });
   </script>
+  <script>
+    function validarCNPJ(cnpj) {
+      cnpj = cnpj.replace(/[^\d]+/g, '');
+      
+      if (cnpj.length !== 14) return false;
+      if (/^(\d)\1+$/.test(cnpj)) return false;
+      
+      let tamanho = cnpj.length - 2;
+      let numeros = cnpj.substring(0, tamanho);
+      let digitos = cnpj.substring(tamanho);
+      let soma = 0;
+      let pos = tamanho - 7;
+      
+      for (let i = tamanho; i >= 1; i--) {
+        soma += parseInt(numeros.charAt(tamanho - i)) * pos--;
+        if (pos < 2) pos = 9;
+      }
+      
+      let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      if (resultado != parseInt(digitos.charAt(0))) return false;
+      
+      tamanho += 1;
+      numeros = cnpj.substring(0, tamanho);
+      soma = 0;
+      pos = tamanho - 7;
+      
+      for (let i = tamanho; i >= 1; i--) {
+        soma += parseInt(numeros.charAt(tamanho - i)) * pos--;
+        if (pos < 2) pos = 9;
+      }
+      
+      resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+      return resultado == parseInt(digitos.charAt(1));
+    }
+    
+    // Validação ao sair do campo
+    document.getElementById('cnpj').addEventListener('blur', function () {
+      const valido = validarCNPJ(this.value);
+      if (!valido) {
+        alert('CNPJ inválido!');
+        this.focus();
+      }
+    });
+    
+    // Validação antes de enviar o formulário
+    document.getElementById('form-pj').addEventListener('submit', function (e) {
+      const cnpjInput = document.getElementById('cnpj');
+      if (!validarCNPJ(cnpjInput.value)) {
+        alert('CNPJ inválido! Corrija antes de enviar.');
+        e.preventDefault();
+      }
+    });
+  </script>
+  <script>
+  function toggleSenha() {
+    const senhaInput = document.getElementById('senha');
+    const icone = document.getElementById('icone-senha');
 
+    const senhaVisivel = senhaInput.type === 'text';
+
+    senhaInput.type = senhaVisivel ? 'password' : 'text';
+    icone.src = senhaVisivel ? '/images/eye-open.png' : '/images/eye-closed.png';
+    icone.alt = senhaVisivel ? 'Mostrar senha' : 'Esconder senha';
+  }
+</script>
+
+  
+    <!-- Footer -->
   <%- include('partials/footer.ejs') %>
+  
 </body>
 </html>

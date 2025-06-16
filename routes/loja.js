@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const supabase = require('../supabase');
-const { requireLogin } = require('../middlewares/auth'); // ✅ ajuste aqui
+const { requireLogin } = require('../middlewares/auth'); 
 //listagem de lojas
 router.get('/lojas', async (req, res) => {
   const { data: lojas, error } = await supabase.from('usuarios_pj').select('*');

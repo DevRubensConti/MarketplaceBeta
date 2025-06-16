@@ -85,8 +85,8 @@
         <h4><%= item.nome %></h4>
         <p>R$ <%= item.preco %></p>
         <p class="tags"><strong>Tags:</strong> <%= item.tags %></p>
-        <a href="/item?id=<%= item.id %>">
-            <button>Ver mais</button>
+        <a href="/item/<%= item.id %>">
+          <button>Ver mais</button>
         </a>
         </div>
       <% }) %>

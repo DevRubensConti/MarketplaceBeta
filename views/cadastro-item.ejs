@@ -1,447 +1,448 @@
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Cadastrar Item</title>
-  <link rel="stylesheet" href="/css/cadastro-item.css">
-  <style>
-    body { background-color: red !important; }
-  </style>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+	<meta charset="UTF-8">
+	<title>Cadastrar Item</title>
+	<link rel="stylesheet" href="/css/cadastro-item.css">
+	<style>
+		body { background-color: red !important; }
+	</style>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 </head>
 <body>
-  <%- include('partials/navbar') %>
-
-  <div class="cadastro-item-container">
-    <h2><u>Cadastrar Novo Item</u></h2>
-    <form action="/cadastro-item" method="POST" enctype="multipart/form-data">
-      <details id="etapa-1" open>
-      <summary>Etapa 1 - Imagens do Produto</summary>
-      <div class="form-layout">
-        <div class="left-column">
-          <div class="form-group">
-            <label>📸 Dicas importantes:<br><br>Envie imagens claras e detalhadas do seu produto. Uma boa apresentação faz toda a diferença!<br><br>✅ Algumas sugestões úteis:<br><br>• Fotografe de vários ângulos (frente, costas, laterais, detalhes).<br>• Use boa iluminação, de preferência luz natural.<br>• Mantenha o fundo neutro (ex: parede clara ou tecido liso).<br>• Mostre possíveis desgastes ou marcas (se for usado).<br>• Evite imagens borradas ou com baixa resolução.</label>
-            <small><br>Você pode enviar até 12 imagens.</small>
-            <div id="preview-container" class="preview-grid"></div>
-          </div>
-        </div>
-      </div>
-      <button type="button" onclick="proximaEtapa('etapa-1', 'etapa-2')">Próximo</button>
-    </details>
-
-        <details id="etapa-2">
-          <summary>Etapa 2 - Marca e Tipo</summary>
-          <div class="form-layout">
-            <div class="left-column">
-              <div class="form-group">
-                <label>Marca</label>
-                <select name="marca" id="marca-select" label="Selecione a Marca" required></select>
-              </div>
-              <div class="form-group" id="outra-marca-group" style="display: none;">
-                <label>Digite a marca</label>
-                <input type="text" name="marca_personalizada" id="marca-personalizada" placeholder="Informe a marca">
-              </div>
-            </div>
-            <div class="right-column">
-              <div class="form-group">
-                <label>Tipo de Produto</label>
-                  <select id="tipo-produto" name="tipo" required>
-                    <option value="">Selecione...</option>
-                    <option value="corda">Corda</option>
-                    <option value="percussao">Percussão</option>
-                    <option value="teclado">Teclado/Piano</option>
-                    <option value="sopro">Sopro</option>
-                    <option value="audio">Áudio</option>
-                    <option value="acessorio">Acessório</option>
-                  </select>
-              </div>
-              <div class="form-group" id="categoria-corda" style="display: none;">
-                <label>Categoria (Instrumento de Corda)</label>
-                <select id="categoria-corda-select" name="categoria">
-                  <option value="">Selecione...</option>
-                  <option value="guitarra">Guitarra</option>
-                  <option value="violao">Violão</option>
-                  <option value="baixo">Baixo</option>
-                </select>
-              </div>
-              <div class="form-group" id="guitarra-modelos" style="display: none;">
-              <label>Modelo de Guitarra</label>
-              <div class="tipo-lista">
-                <div class="tipo-opcao" data-descricao="Modelo Telecaster" data-img="/images/guitar_models/telecaster.png">Telecaster</div>
-                <div class="tipo-opcao" data-descricao="Modelo Les Paul" data-img="/images/guitar_models/lespaul.png">Les Paul</div>
-                <div class="tipo-opcao" data-descricao="Modelo Stratocaster" data-img="/images/guitar_models/stratocaster.png">Stratocaster</div>
-                <div class="tipo-opcao" data-descricao="Modelo SG" data-img="/images/guitar_models/sg.png">SG</div>
-                <div class="tipo-opcao" data-descricao="Modelo Flying V" data-img="/images/guitar_models/flyingv.png">Flying V</div>
-                <div class="tipo-opcao" data-descricao="Modelo Explorer" data-img="/images/guitar_models/explorer.png">Explorer</div>
-                <div class="tipo-opcao" id="outro-opcao">Outro</div>
-              </div>
-              <input type="hidden" name="modelo" id="modelo-guitarra">
-            </div>
-              <div class="form-group" id="outro-tipo" style="display: none;">
-                <label>Especifique o modelo</label>
-                <input type="text" name="outro_tipo" id="outro_tipo" placeholder="Digite o modelo...">
-              </div>
-            </div>
-          </div>
-          <button type="button" onclick="proximaEtapa('etapa-2', 'etapa-3')">Próximo</button>
-        </details>
-
-      <details id="etapa-2">
-        <summary>Etapa 2 - Informações do Produto</summary>
-        <div class="form-layout">
-          <div class="left-column">
-            <div class="form-group">
-              <label>Nome do Item</label>
-              <input type="text" name="nome" required>
-            </div>
-            <div class="form-group">
-              <label>Descrição</label>
-              <textarea name="descricao" rows="6" required></textarea>
-            </div>
-            <div class="form-group">
-              <button type="button" id="gerar-descricao" style="align-self: flex-start;">
-                Gerar descrição automática ✨
-              </button>
-            </div>
-          </div>
-      
-          <div class="right-column">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Preço (R$)</label>
-                <input type="number" name="preco" step="0.01" required>
-              </div>
-              <div class="form-group">
-                <label>Condição</label>
-                <select name="condicao" required>
-                <option value="Novo (Lacrado)">Novo (Lacrado)</option>
-                <option value="Usado - Estado de Novo">Usado (Estado de Novo)</option>
-                <option value="Usado - Com Leves Marcas">Usado (Com Leves Marcas)</option>
-                <option value="Usado - Sinais Evidentes">Usado (Sinais Evidentes)</option>
-                <option value="Defeituoso ou para peças">Defeituoso / Para peças</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button type="button" onclick="proximaEtapa('etapa-2', 'etapa-3')">Próximo</button>
-      </details>     
-      <details id="etapa-3">
-        <summary>Etapa 3 - Especificações Técnicas</summary>
-        <div class="form-layout">
-          <div class="left-column">
-            <div class="form-group">
-              <label>Ano de Fabricação</label>
-              <input type="number" name="ano_fabricacao" min="1900" max="2099">
-            </div>
-            <div class="form-group">
-              <label>País de Fabricação</label>
-              <input type="text" name="pais_fabricacao">
-            </div>
-            <div class="form-group">
-              <label>Cor do Instrumento</label>
-              <input type="text" name="cor">
-            </div>
-            <div class="form-group">
-              <label>Acabamento</label>
-              <select name="acabamento" required>
-                <option value="">Selecione...</option>
-                <option value="Brilhante">Brilhante</option>
-                <option value="Fosco">Fosco</option>
-                <option value="Satinado">Satinado</option>
-                <option value="Relíquia / Envelhecido">Relíquia / Envelhecido</option>
-              </select>
-            </div>
-
-          </div>
-      
-          <div class="right-column">
-            <div class="form-group">
-              <label>Número de Cordas</label>
-              <input type="number" name="cordas" min="1" max="12">
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Madeira (Corpo)</label>
-                <input type="text" name="madeira">
-              </div>
-              <div class="form-group">
-                <label>Configuração de Captadores 
-                  <span class="info-hover" data-img="/images/infos/captadores.png" 
-                        data-texto="S = Single Coil (som mais limpo e brilhante), H = Humbucker (mais encorpado e potente)">[?]</span>
-                </label>
-                <input type="text" name="captadores_config" placeholder="Ex: HSS, SSS, HH...">
-              </div>
-
-              <div class="form-group">
-                <label>Tags (separadas por vírgula)</label>
-                <input type="text" name="tags" placeholder="ex: vintage, jazz, leve, beginner">
-              </div>
-              
-          </div>
-        </div>
-     
-      </details> 
-      <button type="submit">Cadastrar Item</button>     
-    </form>
-
-    
-  </div>
-    <!-- Popup descrição -->
-    <div id="tooltip-tipo" class="tooltip-tipo" style="display: none;">
-      <img id="tooltip-img" src="" alt="Modelo" />
-      <p id="tooltip-texto"></p>
-    </div>
-    <!-- Tooltip captadores -->
-    <div id="tooltip-captadores" class="tooltip-tipo" style="display: none;">
-      <img id="tooltip-captadores-img" src="" alt="Configuração" />
-      <p id="tooltip-captadores-texto"></p>
-    </div>
-    <script>
-      const infoCaptador = document.querySelector('.info-hover');
-      const tooltipC = document.getElementById('tooltip-captadores');
-      const tooltipImgC = document.getElementById('tooltip-captadores-img');
-      const tooltipTextoC = document.getElementById('tooltip-captadores-texto');
-    
-      infoCaptador.addEventListener('mouseenter', () => {
-        const texto = infoCaptador.getAttribute('data-texto');
-        const imagem = infoCaptador.getAttribute('data-img');
-    
-        tooltipImgC.src = imagem;
-        tooltipTextoC.textContent = texto;
-    
-        const rect = infoCaptador.getBoundingClientRect();
-        tooltipC.style.top = rect.top + window.scrollY + 'px';
-        tooltipC.style.left = rect.right + 20 + 'px';
-        tooltipC.style.display = 'flex';
-      });
-    
-      infoCaptador.addEventListener('mouseleave', () => {
-        tooltipC.style.display = 'none';
-      });
-    </script>
-    
-
-  <%- include('partials/footer') %>
-
-  <script>
-    function proximaEtapa(atual, proxima) {
-      const campos = document.querySelectorAll(`#${atual} input:required, #${atual} textarea:required, #${atual} select:required`);
-      let preenchido = true;
-
-      campos.forEach(campo => {
-        if (!campo.value.trim()) preenchido = false;
-      });
-
-      if (!preenchido) {
-        alert("Preencha todos os campos obrigatórios antes de continuar.");
-        return;
-      }
-
-      document.getElementById(atual).removeAttribute("open");
-      document.getElementById(proxima).setAttribute("open", true);
-      document.getElementById(proxima).scrollIntoView({ behavior: "smooth" });
-    }
-  </script>
-     <script>
-      const tipoProduto = document.getElementById('tipo-produto');
-      const categoriaCorda = document.getElementById('categoria-corda');
-      const categoriaCordaSelect = document.getElementById('categoria-corda-select');
-      const guitarraModelos = document.getElementById('guitarra-modelos');
-      const outroTipoBox = document.getElementById('outro-tipo');
-    
-      tipoProduto.addEventListener('change', function() {
-        if (this.value === 'corda') {
-          categoriaCorda.style.display = 'block';
-        } else {
-          categoriaCorda.style.display = 'none';
-          guitarraModelos.style.display = 'none';
-          outroTipoBox.style.display = 'none';
-        }
-      });
-    
-      categoriaCordaSelect.addEventListener('change', function() {
-        if (this.value === 'guitarra') {
-          guitarraModelos.style.display = 'block';
-        } else {
-          guitarraModelos.style.display = 'none';
-          outroTipoBox.style.display = 'none';
-        }
-      });
-    
-      // Tooltip lógica
-      const opcoesTipo = document.querySelectorAll('.tipo-opcao');
-      const tooltip = document.getElementById('tooltip-tipo');
-      const tooltipImg = document.getElementById('tooltip-img');
-      const tooltipTexto = document.getElementById('tooltip-texto');
-    
-      opcoesTipo.forEach(opcao => {
-        opcao.addEventListener('mouseenter', () => {
-          const descricao = opcao.getAttribute('data-descricao');
-          const imagem = opcao.getAttribute('data-img');
-    
-          if (descricao && imagem) {
-            tooltipImg.src = imagem;
-            tooltipTexto.textContent = descricao;
-            const rect = opcao.getBoundingClientRect();
-            tooltip.style.top = rect.top + window.scrollY + 'px';
-            tooltip.style.left = rect.right + 20 + 'px';
-            tooltip.style.display = 'flex';
-          }
-        });
-    
-        opcao.addEventListener('mouseleave', () => {
-          tooltip.style.display = 'none';
-        });
-    
-        opcao.addEventListener('click', () => {
-          const modeloInput = document.getElementById('modelo-guitarra');
-
-          if (opcao.id === 'outro-opcao') {
-            outroTipoBox.style.display = 'block';
-            modeloInput.value = ''; // limpa se for "Outro"
-          } else {
-            outroTipoBox.style.display = 'none';
-            modeloInput.value = opcao.textContent.trim(); // define o modelo selecionado
-          }
-
-          // Estilo de feedback visual (opcional)
-          opcoesTipo.forEach(o => o.classList.remove('ativo'));
-          opcao.classList.add('ativo');
-        });
-      });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script>
-      // Lista de marcas disponíveis
-      const marcas = [
-        "Fender", "Gibson", "Tagima", "Yamaha", "Ibanez", "Epiphone", "Michael", "Giannini", "Groovin", "Strinberg",
-        "Shelter", "Gretsch", "ESP", "PRS", "SX", "Dean", "Washburn", "Cort", "LTD", "Godin", "Outra..."
-      ];
-    
-      // Preenche o <select> com as opções
-      const selectMarca = document.getElementById("marca-select");
-      marcas.forEach(marca => {
-        const option = document.createElement("option");
-        option.value = marca;
-        option.textContent = marca;
-        selectMarca.appendChild(option);
-      });
-    
-      // Ativa o Choices.js
-      const marcaChoices = new Choices("#marca-select", {
-        searchEnabled: true,
-        itemSelectText: '',
-        placeholderValue: 'Selecione uma marca',
-        noResultsText: 'Nenhuma marca encontrada',
-      });
-    </script>
-    <script>
-      const selectMarcaEl = document.getElementById("marca-select");
-      const outraMarcaGroup = document.getElementById("outra-marca-group");
-    
-      selectMarcaEl.addEventListener("change", function () {
-        const selectedValue = selectMarcaEl.value;
-        if (selectedValue === "Outra...") {
-          outraMarcaGroup.style.display = "block";
-        } else {
-          outraMarcaGroup.style.display = "none";
-        }
-      });
-    </script>
-    
-    <script>
-      document.getElementById("gerar-descricao").addEventListener("click", async () => {
-        const nome = document.querySelector('[name="nome"]').value;
-        const modelo = document.querySelector('[name="outro_tipo"]')?.value || "";
-        const marcaSelect = document.getElementById("marca-select");
-        const marca = marcaSelect?.value || "";
-        const tipo = document.getElementById("tipo-produto")?.value || "";
-        const categoria = document.getElementById("categoria-corda-select")?.value || "";
-    
-        if (!nome || !marca || !tipo || !categoria) {
-          return alert("Preencha os campos Nome, Marca, Tipo e Categoria para gerar a descrição.");
-        }
-    
-        const response = await fetch("/gerar-descricao", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nome, modelo, marca, tipo, categoria }),
-        });
-    
-        if (!response.ok) {
-          alert("Erro ao gerar descrição.");
-          return;
-        }
-    
-        const data = await response.json();
-        document.querySelector('[name="descricao"]').value = data.descricao;
-      });
-    </script>
-<script>
-  const previewContainer = document.getElementById('preview-container');
-  const previewTiles = [];
-
-  for (let i = 0; i < 12; i++) {
-    const tile = document.createElement('div');
-    tile.className = 'preview-tile';
-    tile.dataset.index = i;
-
-    const icon = document.createElement('span');
-    icon.className = 'camera-icon';
-    icon.innerHTML = '&#128247;';
-    tile.appendChild(icon);
-
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.style.display = 'none';
-    input.name = 'imagens';
-    tile.appendChild(input);
-
-    tile.addEventListener('click', () => input.click());
-
-    input.addEventListener('change', function () {
-      if (this.files.length > 0) {
-        const file = this.files[0];
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          tile.classList.add('preenchido');
-          tile.innerHTML = '';
-
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          tile.appendChild(img);
-          tile.appendChild(input);
-
-          const removeBtn = document.createElement('button');
-          removeBtn.className = 'remove-btn';
-          removeBtn.innerHTML = '&times;';
-
-          removeBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            tile.innerHTML = '';
-            tile.classList.remove('preenchido');
-            const newIcon = document.createElement('span');
-            newIcon.className = 'camera-icon';
-            newIcon.innerHTML = '&#128247;';
-            tile.appendChild(newIcon);
-            tile.appendChild(input);
-            input.value = '';
-          });
-
-          tile.appendChild(removeBtn);
-        };
-
-        reader.readAsDataURL(file);
-      }
-    });
-
-    previewContainer.appendChild(tile);
-    previewTiles.push(tile);
-  }
-</script>
-
-        
-</body>
-</html>
+	<%- include('partials/navbar') %>
+	
+	<div class="cadastro-item-container">
+		<h2><u>Cadastrar Novo Item</u></h2>
+		<form action="/cadastro-item" method="POST" enctype="multipart/form-data">
+			<details id="etapa-1" open>
+				<summary>Etapa 1 - Imagens do Produto</summary>
+				<div class="form-layout">
+					<div class="left-column">
+						<div class="form-group">
+							<label>📸 Dicas importantes:<br><br>Envie imagens claras e detalhadas do seu produto. Uma boa apresentação faz toda a diferença!<br><br>✅ Algumas sugestões úteis:<br><br>• Fotografe de vários ângulos (frente, costas, laterais, detalhes).<br>• Use boa iluminação, de preferência luz natural.<br>• Mantenha o fundo neutro (ex: parede clara ou tecido liso).<br>• Mostre possíveis desgastes ou marcas (se for usado).<br>• Evite imagens borradas ou com baixa resolução.</label>
+							<small><br>Você pode enviar até 12 imagens.</small>
+							<div id="preview-container" class="preview-grid"></div>
+						</div>
+					</div>
+				</div>
+				<button type="button" onclick="proximaEtapa('etapa-1', 'etapa-2')">Próximo</button>
+			</details>
+			
+			<details id="etapa-2">
+				<summary>Etapa 2 - Marca e Tipo</summary>
+				<div class="form-layout">
+					<div class="left-column">
+						<div class="form-group">
+							<label>Marca</label>
+							<select name="marca" id="marca-select" label="Selecione a Marca" required></select>
+						</div>
+						<div class="form-group" id="outra-marca-group" style="display: none;">
+							<label>Digite a marca</label>
+							<input type="text" name="marca_personalizada" id="marca-personalizada" placeholder="Informe a marca">
+						</div>
+					</div>
+					<div class="right-column">
+						<div class="form-group">
+							<label>Tipo de Produto</label>
+							<select id="tipo-produto" name="tipo" required>
+								<option value="">Selecione...</option>
+								<option value="corda">Corda</option>
+								<option value="percussao">Percussão</option>
+								<option value="teclado">Teclado/Piano</option>
+								<option value="sopro">Sopro</option>
+								<option value="audio">Áudio</option>
+								<option value="acessorio">Acessório</option>
+							</select>
+						</div>
+						<div class="form-group" id="categoria-corda" style="display: none;">
+							<label>Categoria (Instrumento de Corda)</label>
+							<select id="categoria-corda-select" name="categoria">
+								<option value="">Selecione...</option>
+								<option value="guitarra">Guitarra</option>
+								<option value="violao">Violão</option>
+								<option value="baixo">Baixo</option>
+							</select>
+						</div>
+						<div class="form-group" id="guitarra-modelos" style="display: none;">
+							<label>Modelo de Guitarra</label>
+							<div class="tipo-lista">
+								<div class="tipo-opcao" data-descricao="Modelo Telecaster" data-img="/images/guitar_models/telecaster.png">Telecaster</div>
+								<div class="tipo-opcao" data-descricao="Modelo Les Paul" data-img="/images/guitar_models/lespaul.png">Les Paul</div>
+								<div class="tipo-opcao" data-descricao="Modelo Stratocaster" data-img="/images/guitar_models/stratocaster.png">Stratocaster</div>
+								<div class="tipo-opcao" data-descricao="Modelo SG" data-img="/images/guitar_models/sg.png">SG</div>
+								<div class="tipo-opcao" data-descricao="Modelo Flying V" data-img="/images/guitar_models/flyingv.png">Flying V</div>
+								<div class="tipo-opcao" data-descricao="Modelo Explorer" data-img="/images/guitar_models/explorer.png">Explorer</div>
+								<div class="tipo-opcao" id="outro-opcao">Outro</div>
+							</div>
+							<input type="hidden" name="modelo" id="modelo-guitarra">
+						</div>
+						<div class="form-group" id="outro-tipo" style="display: none;">
+							<label>Especifique o modelo</label>
+							<input type="text" name="outro_tipo" id="outro_tipo" placeholder="Digite o modelo...">
+						</div>
+					</div>
+				</div>
+				<button type="button" onclick="proximaEtapa('etapa-2', 'etapa-3')">Próximo</button>
+			</details>
+			
+			<details id="etapa-3">
+				<summary>Etapa 3 - Informações do Produto</summary>
+				<div class="form-layout">
+					<div class="left-column">
+						<div class="form-group">
+							<label>Nome do Item</label>
+							<input type="text" name="nome" required>
+						</div>
+						<div class="form-group">
+							<label>Descrição</label>
+							<textarea name="descricao" rows="6" required></textarea>
+						</div>
+						<div class="form-group">
+							<button type="button" id="gerar-descricao" style="align-self: flex-start;">
+								Gerar descrição automática ✨
+							</button>
+						</div>
+					</div>
+					
+					<div class="right-column">
+						<div class="form-row">
+							<div class="form-group">
+								<label>Preço (R$)</label>
+								<input type="number" name="preco" step="0.01" required>
+							</div>
+							<div class="form-group">
+								<label>Condição</label>
+								<select name="condicao" required>
+									<option value="Novo (Lacrado)">Novo (Lacrado)</option>
+									<option value="Usado - Estado de Novo">Usado (Estado de Novo)</option>
+									<option value="Usado - Com Leves Marcas">Usado (Com Leves Marcas)</option>
+									<option value="Usado - Sinais Evidentes">Usado (Sinais Evidentes)</option>
+									<option value="Defeituoso ou para peças">Defeituoso / Para peças</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button type="button" onclick="proximaEtapa('etapa-3', 'etapa-4')">Próximo</button>
+			</details>     
+			<details id="etapa-4">
+				<summary>Etapa 4 - Especificações Técnicas</summary>
+				<div class="form-layout">
+					<div class="left-column">
+						<div class="form-group">
+							<label>Ano de Fabricação</label>
+							<input type="number" name="ano_fabricacao" min="1900" max="2099">
+						</div>
+						<div class="form-group">
+							<label>País de Fabricação</label>
+							<input type="text" name="pais_fabricacao">
+						</div>
+						<div class="form-group">
+							<label>Cor do Instrumento</label>
+							<input type="text" name="cor">
+						</div>
+						<div class="form-group">
+							<label>Acabamento</label>
+							<select name="acabamento" required>
+								<option value="">Selecione...</option>
+								<option value="Brilhante">Brilhante</option>
+								<option value="Fosco">Fosco</option>
+								<option value="Satinado">Satinado</option>
+								<option value="Relíquia / Envelhecido">Relíquia / Envelhecido</option>
+							</select>
+						</div>
+						
+					</div>
+					
+					<div class="right-column">
+						<div class="form-group">
+							<label>Número de Cordas</label>
+							<input type="number" name="cordas" min="1" max="12">
+						</div>
+						<div class="form-row">
+							<div class="form-group">
+								<label>Madeira (Corpo)</label>
+								<input type="text" name="madeira">
+							</div>
+							<div class="form-group">
+								<label>Configuração de Captadores 
+									<span class="info-hover" data-img="/images/infos/captadores.png" 
+									data-texto="S = Single Coil (som mais limpo e brilhante), H = Humbucker (mais encorpado e potente)">[?]</span>
+								</label>
+								<input type="text" name="captadores_config" placeholder="Ex: HSS, SSS, HH...">
+							</div>
+							
+							<div class="form-group">
+								<label>Tags (separadas por vírgula)</label>
+								<input type="text" name="tags" placeholder="ex: vintage, jazz, leve, beginner">
+							</div>
+							
+						</div>
+					</div>
+					
+				</details> 
+				<button type="submit">Cadastrar Item</button>     
+			</form>
+			
+			
+		</div>
+		<!-- Popup descrição -->
+		<div id="tooltip-tipo" class="tooltip-tipo" style="display: none;">
+			<img id="tooltip-img" src="" alt="Modelo" />
+			<p id="tooltip-texto"></p>
+		</div>
+		<!-- Tooltip captadores -->
+		<div id="tooltip-captadores" class="tooltip-tipo" style="display: none;">
+			<img id="tooltip-captadores-img" src="" alt="Configuração" />
+			<p id="tooltip-captadores-texto"></p>
+		</div>
+		<script>
+			const infoCaptador = document.querySelector('.info-hover');
+			const tooltipC = document.getElementById('tooltip-captadores');
+			const tooltipImgC = document.getElementById('tooltip-captadores-img');
+			const tooltipTextoC = document.getElementById('tooltip-captadores-texto');
+			
+			infoCaptador.addEventListener('mouseenter', () => {
+				const texto = infoCaptador.getAttribute('data-texto');
+				const imagem = infoCaptador.getAttribute('data-img');
+				
+				tooltipImgC.src = imagem;
+				tooltipTextoC.textContent = texto;
+				
+				const rect = infoCaptador.getBoundingClientRect();
+				tooltipC.style.top = rect.top + window.scrollY + 'px';
+				tooltipC.style.left = rect.right + 20 + 'px';
+				tooltipC.style.display = 'flex';
+			});
+			
+			infoCaptador.addEventListener('mouseleave', () => {
+				tooltipC.style.display = 'none';
+			});
+		</script>
+		
+		
+		<%- include('partials/footer') %>
+		
+		<script>
+			function proximaEtapa(atual, proxima) {
+				const campos = document.querySelectorAll(`#${atual} input:required, #${atual} textarea:required, #${atual} select:required`);
+				let preenchido = true;
+				
+				campos.forEach(campo => {
+					if (!campo.value.trim()) preenchido = false;
+				});
+				
+				if (!preenchido) {
+					alert("Preencha todos os campos obrigatórios antes de continuar.");
+					return;
+				}
+				
+				document.getElementById(atual).removeAttribute("open");
+				document.getElementById(proxima).setAttribute("open", true);
+				document.getElementById(proxima).scrollIntoView({ behavior: "smooth" });
+			}
+		</script>
+		<script>
+			const tipoProduto = document.getElementById('tipo-produto');
+			const categoriaCorda = document.getElementById('categoria-corda');
+			const categoriaCordaSelect = document.getElementById('categoria-corda-select');
+			const guitarraModelos = document.getElementById('guitarra-modelos');
+			const outroTipoBox = document.getElementById('outro-tipo');
+			
+			tipoProduto.addEventListener('change', function() {
+				if (this.value === 'corda') {
+					categoriaCorda.style.display = 'block';
+				} else {
+					categoriaCorda.style.display = 'none';
+					guitarraModelos.style.display = 'none';
+					outroTipoBox.style.display = 'none';
+				}
+			});
+			
+			categoriaCordaSelect.addEventListener('change', function() {
+				if (this.value === 'guitarra') {
+					guitarraModelos.style.display = 'block';
+				} else {
+					guitarraModelos.style.display = 'none';
+					outroTipoBox.style.display = 'none';
+				}
+			});
+			
+			// Tooltip lógica
+			const opcoesTipo = document.querySelectorAll('.tipo-opcao');
+			const tooltip = document.getElementById('tooltip-tipo');
+			const tooltipImg = document.getElementById('tooltip-img');
+			const tooltipTexto = document.getElementById('tooltip-texto');
+			
+			opcoesTipo.forEach(opcao => {
+				opcao.addEventListener('mouseenter', () => {
+					const descricao = opcao.getAttribute('data-descricao');
+					const imagem = opcao.getAttribute('data-img');
+					
+					if (descricao && imagem) {
+						tooltipImg.src = imagem;
+						tooltipTexto.textContent = descricao;
+						const rect = opcao.getBoundingClientRect();
+						tooltip.style.top = rect.top + window.scrollY + 'px';
+						tooltip.style.left = rect.right + 20 + 'px';
+						tooltip.style.display = 'flex';
+					}
+				});
+				
+				opcao.addEventListener('mouseleave', () => {
+					tooltip.style.display = 'none';
+				});
+				
+				opcao.addEventListener('click', () => {
+					const modeloInput = document.getElementById('modelo-guitarra');
+					
+					if (opcao.id === 'outro-opcao') {
+						outroTipoBox.style.display = 'block';
+						modeloInput.value = ''; // limpa se for "Outro"
+					} else {
+						outroTipoBox.style.display = 'none';
+						modeloInput.value = opcao.textContent.trim(); // define o modelo selecionado
+					}
+					
+					// Estilo de feedback visual (opcional)
+					opcoesTipo.forEach(o => o.classList.remove('ativo'));
+					opcao.classList.add('ativo');
+				});
+			});
+		</script>
+		<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+		<script>
+			// Lista de marcas disponíveis
+			const marcas = [
+			"Fender", "Gibson", "Tagima", "Yamaha", "Ibanez", "Epiphone", "Michael", "Giannini", "Groovin", "Strinberg",
+			"Shelter", "Gretsch", "ESP", "PRS", "SX", "Dean", "Washburn", "Cort", "LTD", "Godin", "Outra..."
+			];
+			
+			// Preenche o <select> com as opções
+				const selectMarca = document.getElementById("marca-select");
+				marcas.forEach(marca => {
+					const option = document.createElement("option");
+					option.value = marca;
+					option.textContent = marca;
+					selectMarca.appendChild(option);
+				});
+				
+				// Ativa o Choices.js
+				const marcaChoices = new Choices("#marca-select", {
+					searchEnabled: true,
+					itemSelectText: '',
+					placeholderValue: 'Selecione uma marca',
+					noResultsText: 'Nenhuma marca encontrada',
+				});
+			</script>
+			<script>
+				const selectMarcaEl = document.getElementById("marca-select");
+				const outraMarcaGroup = document.getElementById("outra-marca-group");
+				
+				selectMarcaEl.addEventListener("change", function () {
+					const selectedValue = selectMarcaEl.value;
+					if (selectedValue === "Outra...") {
+						outraMarcaGroup.style.display = "block";
+					} else {
+						outraMarcaGroup.style.display = "none";
+					}
+				});
+			</script>
+			
+			<script>
+				document.getElementById("gerar-descricao").addEventListener("click", async () => {
+					const nome = document.querySelector('[name="nome"]').value;
+					const modelo = document.querySelector('[name="outro_tipo"]')?.value || "";
+					const marcaSelect = document.getElementById("marca-select");
+					const marca = marcaSelect?.value || "";
+					const tipo = document.getElementById("tipo-produto")?.value || "";
+					const categoria = document.getElementById("categoria-corda-select")?.value || "";
+					
+					if (!nome || !marca || !tipo || !categoria) {
+						return alert("Preencha os campos Nome, Marca, Tipo e Categoria para gerar a descrição.");
+					}
+					
+					const response = await fetch("/gerar-descricao", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ nome, modelo, marca, tipo, categoria }),
+					});
+					
+					if (!response.ok) {
+						alert("Erro ao gerar descrição.");
+						return;
+					}
+					
+					const data = await response.json();
+					document.querySelector('[name="descricao"]').value = data.descricao;
+				});
+			</script>
+			<script>
+				const previewContainer = document.getElementById('preview-container');
+				const previewTiles = [];
+				
+				for (let i = 0; i < 12; i++) {
+					const tile = document.createElement('div');
+					tile.className = 'preview-tile';
+					tile.dataset.index = i;
+					
+					const icon = document.createElement('span');
+					icon.className = 'camera-icon';
+					icon.innerHTML = '&#128247;';
+					tile.appendChild(icon);
+					
+					const input = document.createElement('input');
+					input.type = 'file';
+					input.accept = 'image/*';
+					input.style.display = 'none';
+					input.name = 'imagens';
+					tile.appendChild(input);
+					
+					tile.addEventListener('click', () => input.click());
+					
+					input.addEventListener('change', function () {
+						if (this.files.length > 0) {
+							const file = this.files[0];
+							const reader = new FileReader();
+							
+							reader.onload = function (e) {
+								tile.classList.add('preenchido');
+								tile.innerHTML = '';
+								
+								const img = document.createElement('img');
+								img.src = e.target.result;
+								tile.appendChild(img);
+								tile.appendChild(input);
+								
+								const removeBtn = document.createElement('button');
+								removeBtn.className = 'remove-btn';
+								removeBtn.innerHTML = '&times;';
+								
+								removeBtn.addEventListener('click', (event) => {
+									event.stopPropagation();
+									tile.innerHTML = '';
+									tile.classList.remove('preenchido');
+									const newIcon = document.createElement('span');
+									newIcon.className = 'camera-icon';
+									newIcon.innerHTML = '&#128247;';
+									tile.appendChild(newIcon);
+									tile.appendChild(input);
+									input.value = '';
+								});
+								
+								tile.appendChild(removeBtn);
+							};
+							
+							reader.readAsDataURL(file);
+						}
+					});
+					
+					previewContainer.appendChild(tile);
+					previewTiles.push(tile);
+				}
+			</script>
+			
+			
+		</body>
+		</html>
+		

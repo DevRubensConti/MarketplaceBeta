@@ -144,13 +144,13 @@ html, body {
 
 .sell-now {
   color: rgb(0, 0, 0);
-  background: var(--cor-primaria);
+  background: var(--cor-primaria-escura);
   padding: 5px 10px;
   border-radius: 5px;
 }
 
 .sell-now:hover {
-  background-color: rgba(39, 39, 39, 0.973);
+  background-color: var(--cor-primaria-escura);
   color: var(--cor-primaria);
   transform: scale(1.05);
   box-shadow: var(--cor-primaria);

@@ -30,16 +30,45 @@
             <p>R$ <%= item.preco %></p>
             <div class="botoes">
               <a href="/painel/produto/<%= item.id %>/editar" class="btn-editar">Editar</a>
-              <form action="/painel/produto/<%= item.id %>/excluir" method="POST">
-                <button type="submit" class="btn-excluir">Excluir</button>
-              </form>
+              <form id="form-excluir-<%= item.id %>" action="/produto/<%= item.id %>/excluir" method="POST" style="display: none;"></form>
+              <button onclick="confirmarExclusao('<%= item.id %>', '<%= item.nome %>')">Excluir Produto</button>
             </div>
           </div>
         <% }) %>
       </div>
     </section>
+    <div id="popup-confirmacao" class="popup-modal" style="display: none;">
+      <div class="popup-conteudo">
+        <p id="mensagem-confirmacao"></p>
+        <div class="popup-botoes">
+          <button id="cancelar-btn">Cancelar</button>
+          <button id="confirmar-btn">Confirmar Exclusão</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <%- include('partials/footer') %>
+  <script>
+    let idProdutoSelecionado = null;
+
+    function confirmarExclusao(id, nome) {
+      idProdutoSelecionado = id;
+      document.getElementById('mensagem-confirmacao').textContent =
+        `Tem certeza que deseja excluir o produto "${nome}"?`;
+      document.getElementById('popup-confirmacao').style.display = 'flex';
+    }
+
+    document.getElementById('cancelar-btn').addEventListener('click', () => {
+      document.getElementById('popup-confirmacao').style.display = 'none';
+      idProdutoSelecionado = null;
+    });
+
+    document.getElementById('confirmar-btn').addEventListener('click', () => {
+      if (idProdutoSelecionado) {
+        document.getElementById(`form-excluir-${idProdutoSelecionado}`).submit();
+      }
+    });
+  </script>
 </body>
 </html>

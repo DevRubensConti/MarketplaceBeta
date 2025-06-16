@@ -22,11 +22,14 @@
         <input type="password" id="senha" name="senha" required placeholder="••••••••">
       </div>
 
-      <button type="submit">Entrar</button>
+      <button type="submit" id="entrar">Entrar</button>
+      <% if (typeof erroLogin !== 'undefined') { %>
+        <div class="mensagem-erro"><%= erroLogin %></div>
+      <% } %>
     </form>
 
     <p class="signup-link">
-      Ainda não tem conta? <a href="/signup">Cadastre-se</a>
+      Ainda não tem conta? <a href="/escolher-cadastro">Cadastre-se</a>
     </p>
   </div>
 </main>

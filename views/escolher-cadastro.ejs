@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Escolha seu tipo de cadastro</title>
+  <link rel="stylesheet" href="/css/escolher-cadastro.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <main class="cadastro-escolha-container">
+    <h1>Como você deseja se cadastrar?</h1>
+    <div class="opcoes-cadastro">
+      <a href="/cadastro-pf" class="card-opcao">
+        <img src="/images/avatar-default.png" alt="Pessoa Física">
+        <h2>Pessoa Física</h2>
+      </a>
+      <a href="/cadastro-pj" class="card-opcao">
+        <img src="/images/loja-default.png" alt="Loja">
+        <h2>Loja / Pessoa Jurídica</h2>
+      </a>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

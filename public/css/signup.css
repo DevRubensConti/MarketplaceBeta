@@ -2,6 +2,7 @@
 
 html, body {
   max-width: 100%;
+  height: 100%;
   overflow-x: hidden;
 }
 
@@ -25,11 +26,14 @@ body {
 }
 
 main.form-etapas-wrapper {
+  min-height: 100%;
   padding: 80px;
   backdrop-filter: blur(10px);
   background-color: rgba(0, 0, 0, 0.5); /* fundo escuro translúcido */
+  display: absolute;
+  flex-direction: column;
+  justify-content: flex-start;
 }
-
 h2 {
   font-size: 32px;
   margin-bottom: 20px;
@@ -37,6 +41,7 @@ h2 {
 
 form {
   width: 100%;
+  height: 100%;
 }
 
 form details {
@@ -118,3 +123,64 @@ select#tipo {
   border-radius: 6px;
   border: none;
 }
+
+.mensagem-erro {
+  color: #ff4d4d;
+  font-size: 13px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.mensagem-erro.topo {
+  background: #ffe6e6;
+  color: #900;
+  padding: 10px;
+  border: 1px solid #f00;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.senha-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.senha-wrapper input {
+  flex: 1;
+  padding-right: 40px;
+  height: 45px; /* opcional: garanta altura mínima */
+}
+
+.senha-wrapper img {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.senha-wrapper img:hover {
+  opacity: 1;
+}
+
+
+.toggle-senha {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggle-senha img {
+    height: 60px;
+    
+}
+
+

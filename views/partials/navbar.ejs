@@ -23,7 +23,8 @@
 
     <div class="nav-links">
       <a href="/">Início</a>
-      <a href="#">Carrinho</a>
+      <a href="/carrinho">Carrinho</a>
+      <a href="/pedidos">Meus Pedidos</a>
 
       <% if (usuario) { %>
         <% 
@@ -44,15 +45,15 @@
               <a href="/painel/usuario">Painel do Usuário</a>
               <a href="/usuario/<%= usuario.id %>">Ver Perfil Público</a>
             <% } %>
+            
             <a href="/logout">Sair</a>
           </div>
         </div>
       <% } else { %>
         <a href="/login">Entrar</a>
-        <a href="/signup" class="signup">Cadastre-se</a>
+        <a href="/escolher-cadastro" class="signup">Cadastre-se</a>
       <% } %>
     </div>
-
   </div>
 </nav>
 

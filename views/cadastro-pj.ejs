@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro Pessoa Jurídica</title>
+  <link rel="stylesheet" href="/css/signup.css">
+</head>
+<body>
+<%- include('partials/navbar.ejs') %>
+
+<main class="form-etapas-wrapper">
+  <% if (mensagemErro) { %>
+    <div class="erro-cadastro">
+        <p><%= mensagemErro %></p>
+    </div>
+    <% } %>  
+  <h2><u>Cadastro - Loja (PJ)</u></h2>
+  <div id="mensagem-erro-pj" class="mensagem-erro topo" style="display: none;"></div>
+  <form id="form-pj" method="POST" action="/cadastro-pj" autocomplete="off">
+    <details id="etapa-pj-1">
+        <summary>Etapa 1 - Informações da Loja</summary>
+        <div class="form-group">
+          <label>Nome Fantasia</label>
+          <input type="text" name="nomeFantasia" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>CNPJ</label>
+            <input type="text" id="cnpj" name="cnpj" placeholder="Digite o CNPJ da sua loja" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Razão Social</label>
+          <input type="text" name="razaoSocial" required>
+        </div>
+        <button type="button" onclick="desbloquearEtapaProxima('etapa-pj-1', 'etapa-pj-2')">Continuar</button>
+      </details>
+      <details id="etapa-pj-2">
+        <summary>Etapa 2 - Contato e Acesso</summary>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Digite o Email da sua loja" required>
+          </div>
+        <div class="form-group">
+        <label>Senha</label>
+            <div class="senha-wrapper">
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+            <img id="icone-senha" src="/images/eye-closed.png" alt="Mostrar senha" onclick="toggleSenha()">
+            </div>
+        </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Telefone</label>
+            <input type="text" name="telefone" placeholder="Digite o Telefone da sua loja" required>
+          </div>
+        </div>
+        <button type="button" onclick="desbloquearEtapaProxima('etapa-pj-2', 'etapa-pj-3')">Continuar</button>
+      </details>
+      
+      <details id="etapa-pj-3">
+        <summary>Etapa 3 - Endereço</summary>
+        <div class="form-row">
+          <div class="form-group">
+            <label>CEP</label>
+            <input type="text" name="cep" placeholder="Digite o CEP da sua loja" required>
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select name="estado" required>
+                <option value="">Selecione o estado</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Endereço</label>
+            <input type="text" name="endereco" placeholder="Digite o Endereço da sua loja" required>
+          </div>
+          <div class="form-group">
+            <label>Número</label>
+            <input type="text" name="numero" placeholder="Digite o numero do estabelecimento" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Bairro</label>
+            <input type="text" name="bairro" placeholder="Digite o Bairro da sua loja"  required>
+          </div>
+          <div class="form-group">
+            <label>Complemento (Opicional)</label>
+            <input type="text" name="complemento" placeholder="Digite um Complemento" >
+          </div>
+        </div>
+        <button type="submit">Cadastrar Loja</button>
+      </details>
+  </form>
+</main>
+
+<%- include('partials/footer.ejs') %>
+
+<script>
+  function desbloquearEtapaProxima(atual, proxima) {
+    const campos = document.querySelectorAll(`#${atual} input:required`);
+    let preenchido = true;
+    campos.forEach(input => {
+      if (!input.value.trim()) preenchido = false;
+    });
+    if (preenchido) {
+      document.getElementById(atual).removeAttribute('open');
+      document.getElementById(proxima).setAttribute('open', true);
+      document.getElementById(proxima).scrollIntoView({ behavior: 'smooth' });
+    } else {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+    }
+  }
+
+  function etapaPreenchida(idEtapa) {
+    const campos = document.querySelectorAll(`#${idEtapa} input:required`);
+    for (let campo of campos) {
+      if (!campo.value.trim()) return false;
+    }
+    return true;
+  }
+
+  document.getElementById('etapa-pj-2').addEventListener('toggle', function () {
+    if (this.open && !etapaPreenchida('etapa-pj-1')) {
+      alert('Por favor, preencha todos os campos da Etapa 1 antes.');
+      this.open = false;
+    }
+  });
+
+  document.getElementById('etapa-pj-3').addEventListener('toggle', function () {
+    if (this.open && !etapaPreenchida('etapa-pj-2')) {
+      alert('Por favor, preencha todos os campos da Etapa 2 antes.');
+      this.open = false;
+    }
+  });
+
+  const cnpjInput = document.getElementById('cnpj');
+  if (cnpjInput) {
+    cnpjInput.addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+      value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+      e.target.value = value;
+    });
+  }
+
+  document.querySelectorAll('input[name="telefone"]').forEach(function (input) {
+    input.addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length <= 10) {
+        value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+      } else {
+        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+      }
+      e.target.value = value;
+    });
+  });
+
+  document.querySelectorAll('input[name="cep"]').forEach(function (input) {
+    input.addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/(\d{5})(\d)/, '$1-$2');
+      e.target.value = value.slice(0, 9);
+    });
+  });
+
+  function validarCNPJ(cnpj) {
+    cnpj = cnpj.replace(/[^\d]+/g, '');
+    if (cnpj.length !== 14) return false;
+    if (/^(\d)\1+$/.test(cnpj)) return false;
+
+    let tamanho = cnpj.length - 2;
+    let numeros = cnpj.substring(0, tamanho);
+    let digitos = cnpj.substring(tamanho);
+    let soma = 0;
+    let pos = tamanho - 7;
+
+    for (let i = tamanho; i >= 1; i--) {
+      soma += parseInt(numeros.charAt(tamanho - i)) * pos--;
+      if (pos < 2) pos = 9;
+    }
+
+    let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != parseInt(digitos.charAt(0))) return false;
+
+    tamanho += 1;
+    numeros = cnpj.substring(0, tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+
+    for (let i = tamanho; i >= 1; i--) {
+      soma += parseInt(numeros.charAt(tamanho - i)) * pos--;
+      if (pos < 2) pos = 9;
+    }
+
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    return resultado == parseInt(digitos.charAt(1));
+  }
+
+    document.getElementById('form-pj').addEventListener('submit', function (e) {
+    const erros = [];
+    const cnpjInput = document.getElementById('cnpj');
+    const mensagemErro = document.getElementById('mensagem-erro-pj');
+    mensagemErro.style.display = 'none';
+    mensagemErro.innerHTML = '';
+
+    if (!validarCNPJ(cnpjInput.value)) {
+        erros.push('CNPJ inválido');
+    }
+
+    // você pode adicionar outras validações aqui, por exemplo:
+    // const email = document.querySelector('[name="email"]').value;
+    // if (!email.includes('@')) erros.push('E-mail inválido');
+
+    if (erros.length > 0) {
+        e.preventDefault();
+        mensagemErro.innerHTML = 'Cadastro não foi possível pois:<br>– ' + erros.join('<br>– ');
+        mensagemErro.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    });
+
+</script>
+<script>
+  function toggleSenha() {
+    const senhaInput = document.getElementById('senha');
+    const icone = document.getElementById('icone-senha');
+
+    const senhaVisivel = senhaInput.type === 'text';
+
+    senhaInput.type = senhaVisivel ? 'password' : 'text';
+    icone.src = senhaVisivel ? '/images/eye-open.png' : '/images/eye-closed.png';
+    icone.alt = senhaVisivel ? 'Mostrar senha' : 'Esconder senha';
+  }
+</script>
+
+
+</body>
+</html>

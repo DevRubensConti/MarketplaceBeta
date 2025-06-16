@@ -137,10 +137,14 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
 
   const marcaFinal = marca === 'Outra...' ? marca_personalizada : marca;
 
+ const precoLimpo = preco.replace(',', '.');
+ const precoFinal = precoLimpo ? Number(parseFloat(precoLimpo).toFixed(2)) : null;
+
+
   const { error: dbError } = await supabase.from('produtos').insert([{
     nome,
     descricao,
-    preco: preco ? parseFloat(preco) : null,
+    preco: precoFinal,
     marca: marcaFinal,
     tipo: tipo || null,
     categoria: categoria || null,
@@ -198,5 +202,131 @@ router.post('/gerar-descricao', async (req, res) => {
     res.status(500).send('Erro ao gerar descrição automática.');
   }
 });
+
+router.get('/painel/produto/:id/editar', requireLogin, async (req, res) => {
+  const produtoId = req.params.id;
+  const usuario_id = req.session.usuario.id;
+
+  const { data: produto, error } = await supabase
+    .from('produtos')
+    .select('*')
+    .eq('id', produtoId)
+    .single();
+
+  if (error || !produto) {
+    return res.status(404).send('Produto não encontrado.');
+  }
+
+  if (produto.usuario_id !== usuario_id) {
+    return res.status(403).send('Acesso negado. Este produto não é seu.');
+  }
+
+  res.render('editar-item', { produto });
+});
+
+router.post('/painel/produto/:id/editar', requireLogin, async (req, res) => {
+  const produtoId = req.params.id;
+  const usuario_id = req.session.usuario.id;
+
+  const { data: produtoExistente, error } = await supabase
+    .from('produtos')
+    .select('*')
+    .eq('id', produtoId)
+    .single();
+
+  if (error || !produtoExistente) {
+    return res.status(404).send('Produto não encontrado.');
+  }
+
+  if (produtoExistente.usuario_id !== usuario_id) {
+    return res.status(403).send('Acesso negado.');
+  }
+
+  const {
+    nome, descricao, preco, marca, tipo, categoria, condicao,
+    ano_fabricacao, captadores_config, madeira, tags,
+    pais_fabricacao, cor, acabamento, cordas, modelo
+  } = req.body;
+
+  const precoLimpo = preco.replace(',', '.');
+  const precoFinal = precoLimpo ? Number(parseFloat(precoLimpo).toFixed(2)) : null;
+
+  const { error: updateError } = await supabase
+    .from('produtos')
+    .update({
+      nome,
+      descricao,
+      preco: precoFinal,
+      marca,
+      tipo,
+      categoria,
+      condicao,
+      ano_fabricacao: ano_fabricacao ? parseInt(ano_fabricacao) : null,
+      captadores_config,
+      madeira,
+      tags,
+      pais_fabricacao,
+      cor,
+      acabamento,
+      cordas: cordas ? parseInt(cordas) : null,
+      modelo
+    })
+    .eq('id', produtoId);
+
+  if (updateError) {
+    console.error(updateError);
+    return res.status(500).send('Erro ao atualizar produto.');
+  }
+
+  res.redirect('/painel/usuario'); // ou /painel/loja se for PJ
+});
+
+router.post('/produto/:id/excluir', requireLogin, async (req, res) => {
+  const { id } = req.params;
+  const usuario_id = req.session.usuario?.id;
+
+  // Busca o produto no banco
+  const { data: produto, error } = await supabase
+    .from('produtos')
+    .select('usuario_id')
+    .eq('id', id)
+    .single();
+
+  if (error || !produto) {
+    console.error('Produto não encontrado:', error);
+    return res.status(404).send('Produto não encontrado.');
+  }
+
+  if (produto.usuario_id !== usuario_id) {
+    return res.status(403).send('Acesso negado.');
+  }
+
+  const { data: deleteData, error: deleteError } = await supabase
+    .from('produtos')
+    .delete()
+    .eq('id', id)
+    .select(); // <-- Adicione isso para forçar o retorno
+
+  if (deleteError) {
+    console.error('Erro ao excluir produto:', deleteError);
+    return res.status(500).send('Erro ao excluir produto.');
+  }
+
+//console.log('Produto excluído:', deleteData);
+
+
+//console.log('ID recebido:', id);
+//console.log('Produto encontrado:', produto);
+//console.log('Usuário logado:', usuario_id);
+
+  if (req.session.usuario.tipo === 'pj') {
+  return res.redirect('/painel/loja');
+} else {
+  return res.redirect('/painel/usuario');
+}
+
+});
+
+
 
 module.exports = router;

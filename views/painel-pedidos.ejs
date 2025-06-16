@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Meus Pedidos</title>
+  <link rel="stylesheet" href="/css/painel-pedidos.css" />
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main class="painel-pedidos">
+    <h2>Histórico de Pedidos</h2>
+
+    <% if (pedidos.length === 0) { %>
+      <p>Você ainda não realizou nenhum pedido.</p>
+    <% } else { %>
+      <% pedidos.forEach(pedido => { %>
+        <div class="pedido-card">
+          <h3>Pedido #<%= pedido.id.slice(0, 8) %></h3>
+          <p><strong>Data:</strong> <%= new Date(pedido.data).toLocaleString() %></p>
+          <p><strong>Status:</strong> <%= pedido.status %></p>
+
+          <ul>
+            <% pedido.itens.forEach(item => { %>
+              <li>
+                <%= item.produtos.nome %> - <%= item.quantidade %>x R$ <%= item.preco_unitario.toFixed(2) %>
+              </li>
+            <% }) %>
+          </ul>
+        </div>
+      <% }) %>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>

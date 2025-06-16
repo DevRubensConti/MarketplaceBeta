@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
+    "axios": "^1.10.0",
+    "bcrypt": "^6.0.0",
     "connect-flash": "^0.1.1",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",

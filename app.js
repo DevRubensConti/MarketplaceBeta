@@ -36,6 +36,7 @@ app.use('/', require('./routes/produtos'));
 app.use('/', require('./routes/perfil'));
 app.use('/', require('./routes/loja'));
 app.use('/', require('./routes/carrinho'));
+app.use('/', require('./routes/pedidos'));
 
 // Inicializa o servidor
 const PORT = process.env.PORT || 3000;

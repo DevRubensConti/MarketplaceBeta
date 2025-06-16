@@ -1,0 +1,68 @@
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a,
+a:visited {
+  color: var(--cor-secundaria);
+  text-decoration: none;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+  background: url('/images/background.png') no-repeat center fixed;
+  background-size: cover;
+}
+
+main.cadastro-escolha-container {
+  padding: 80px 20px;
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.5); /* camada escurecida */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--cor-letras-navbar);
+}
+
+
+.cadastro-escolha-container {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.opcoes-cadastro {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.card-opcao {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 30px;
+  text-decoration: none;
+  color: white;
+  width: 220px;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.card-opcao img {
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+}
+
+.card-opcao:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
