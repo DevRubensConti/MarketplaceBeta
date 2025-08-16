@@ -34,24 +34,31 @@
         <div class="right-column">
           <div class="form-group">
             <label>Marca</label>
-            <input type="text" value="<%= produto.marca %>" readonly>
+            <input type="text" value="<%= produto.marca %>" name="marca" readonly>
           </div>
           <div class="form-group">
             <label>Tipo</label>
-            <input type="text" value="<%= produto.tipo %>" readonly>
+            <input type="text" value="<%= produto.tipo %>" name="tipo" readonly>
           </div>
           <div class="form-group">
             <label>Categoria</label>
-            <input type="text" value="<%= produto.categoria %>" readonly>
+            <input type="text" value="<%= produto.categoria %>" name="categoria" readonly>
           </div>
           <div class="form-group">
-            <label>Modelo</label>
-            <input type="text" value="<%= produto.modelo %>" readonly>
+            <label>Shape</label>
+            <input type="text" value="<%= produto.shape %>" name="shape" readonly>
           </div>
           <div class="form-group">
             <label>Condição</label>
-            <input type="text" value="<%= produto.condicao %>" readonly>
+            <select name="condicao" required>
+              <option value="Novo (Lacrado)" <%= produto.condicao === 'Novo (Lacrado)' ? 'selected' : '' %>>Novo (Lacrado)</option>
+              <option value="Usado - Estado de Novo" <%= produto.condicao === 'Usado - Estado de Novo' ? 'selected' : '' %>>Usado (Estado de Novo)</option>
+              <option value="Usado - Com Leves Marcas" <%= produto.condicao === 'Usado - Com Leves Marcas' ? 'selected' : '' %>>Usado (Com Leves Marcas)</option>
+              <option value="Usado - Sinais Evidentes" <%= produto.condicao === 'Usado - Sinais Evidentes' ? 'selected' : '' %>>Usado (Sinais Evidentes)</option>
+              <option value="Defeituoso ou para peças" <%= produto.condicao === 'Defeituoso ou para peças' ? 'selected' : '' %>>Defeituoso / Para peças</option>
+            </select>
           </div>
+
         </div>
       </div>
 
@@ -61,35 +68,96 @@
         <div class="left-column">
           <div class="form-group">
             <label>Ano de Fabricação</label>
-            <input type="number" value="<%= produto.ano_fabricacao %>" readonly>
+            <input type="number" value="<%= produto.ano_fabricacao %>" name="ano_fabricacao" readonly>
           </div>
           <div class="form-group">
             <label>País de Fabricação</label>
-            <input type="text" value="<%= produto.pais_fabricacao %>" readonly>
+            <input type="text" value="<%= produto.pais_fabricacao %>" name="pais_fabricacao" readonly>
           </div>
           <div class="form-group">
             <label>Cor</label>
-            <input type="text" value="<%= produto.cor %>" readonly>
+            <% const corAtual = (produto.cor || '').toLowerCase(); %>
+            <select name="cor" id="cor-select" required>
+              <option value="" disabled>Selecione...</option>
+              <option value="preto"       <%= corAtual==='preto' ? 'selected' : '' %>>Preto</option>
+              <option value="branco"      <%= corAtual==='branco' ? 'selected' : '' %>>Branco</option>
+              <option value="vermelho"    <%= corAtual==='vermelho' ? 'selected' : '' %>>Vermelho</option>
+              <option value="azul"        <%= corAtual==='azul' ? 'selected' : '' %>>Azul</option>
+              <option value="natural"     <%= corAtual==='natural' ? 'selected' : '' %>>Natural</option>
+              <option value="sunburst"    <%= corAtual==='sunburst' ? 'selected' : '' %>>Sunburst</option>
+              <option value="cinza"       <%= corAtual==='cinza' ? 'selected' : '' %>>Cinza</option>
+              <option value="amarelo"     <%= corAtual==='amarelo' ? 'selected' : '' %>>Amarelo</option>
+              <option value="verde"       <%= corAtual==='verde' ? 'selected' : '' %>>Verde</option>
+              <option value="goldtop"     <%= corAtual==='goldtop' ? 'selected' : '' %>>Goldtop</option>
+              <option value="rosa"        <%= corAtual==='rosa' ? 'selected' : '' %>>Rosa</option>
+              <option value="verde-agua"  <%= corAtual==='verde-agua' ? 'selected' : '' %>>Verde água</option>
+              <option value="coral"       <%= corAtual==='coral' ? 'selected' : '' %>>Coral</option>
+              <option value="marrom"      <%= corAtual==='marrom' ? 'selected' : '' %>>Marrom</option>
+              <option value="roxo"        <%= corAtual==='roxo' ? 'selected' : '' %>>Roxo</option>
+              <option value="__outro__"   <%= corAtual && ![
+                'preto','branco','vermelho','azul','natural','sunburst','cinza','amarelo','verde',
+                'goldtop','rosa','verde-agua','coral','marrom','roxo'
+              ].includes(corAtual) ? 'selected' : '' %>>Outra cor…</option>
+            </select>
+
+            <input type="text"
+                  id="cor-outro"
+                  name="cor_personalizada"
+                  placeholder="Digite a cor"
+                  style="margin-top:8px; display:none;"
+                  value="<%= (![
+                    'preto','branco','vermelho','azul','natural','sunburst','cinza','amarelo','verde',
+                    'goldtop','rosa','verde-agua','coral','marrom','roxo'
+                  ].includes(corAtual)) ? produto.cor : '' %>">
           </div>
+
+          <script>
+            (function(){
+              const sel = document.getElementById('cor-select');
+              const outro = document.getElementById('cor-outro');
+              function sync(){
+                if (sel.value === '__outro__') { outro.style.display='block'; outro.required=true; }
+                else { outro.style.display='none'; outro.required=false; }
+              }
+              sync();
+              sel.addEventListener('change', sync);
+            })();
+          </script>
+
           <div class="form-group">
             <label>Acabamento</label>
-            <input type="text" value="<%= produto.acabamento %>" readonly>
+            <input type="text" value="<%= produto.acabamento %>" name="acabamento" readonly>
           </div>
         </div>
 
         <div class="right-column">
           <div class="form-group">
             <label>Madeira (corpo)</label>
-            <input type="text" value="<%= produto.madeira %>" readonly>
+            <input type="text" value="<%= produto.madeira %>" name="madeira" readonly>
           </div>
           <div class="form-group">
             <label>Configuração de Captadores</label>
-            <input type="text" value="<%= produto.captadores_config %>" readonly>
+            <input type="text" value="<%= produto.captadores_config %>" name="captadores_config" readonly>
           </div>
           <div class="form-group">
             <label>Número de Cordas</label>
-            <input type="number" value="<%= produto.cordas %>" readonly>
+            <input type="number" value="<%= produto.cordas %>" name="cordas" readonly>
           </div>
+          <div class="form-group">
+            <label>Quantidade</label>
+            <input type="number" name="quantidade" id="quantidade" min="0" step="1" value="<%= produto.quantidade || 0 %>" required>
+          </div>
+          <script>
+            (function(){
+              const el = document.getElementById('quantidade');
+              el.addEventListener('keydown', e => { if (e.key==='-' || e.key.toLowerCase()==='e') e.preventDefault(); });
+              el.addEventListener('input', () => {
+                const n = parseInt(el.value, 10);
+                el.value = (isNaN(n) || n<0) ? 0 : n;
+              });
+            })();
+          </script>
+
         </div>
       </div>
 

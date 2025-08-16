@@ -1,5 +1,6 @@
 <head>
   <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/mini-cart.css">
 </head>
 
 <nav class="navbar">
@@ -21,44 +22,61 @@
       </button>
     </form>
 
-    <div class="nav-links">
-      <a href="/">Início</a>
-      <a href="/carrinho">Carrinho</a>
-      <a href="/pedidos">Meus Pedidos</a>
+  <div class="nav-links">
+    <a href="/">Início</a>
 
-      <% if (usuario) { %>
-        <% 
-          const iconePadrao = usuario.tipo === 'pj' 
-            ? '/images/store_logos/store.png' 
-            : '/images/user_default.png';
-          const iconePerfil = usuario.icone_url || iconePadrao;
-        %>
-        <div class="loja-dropdown">
-          <img src="<%= iconePerfil %>" alt="Perfil" class="icone-perfil" id="iconeLoja">
-
-          <div class="dropdown-conteudo" id="dropdownMenu">
-            <% if (usuario.tipo === 'pj') { %>
-              <a href="/painel/loja">Painel da Loja</a>
-              <a href="/loja/<%= usuario.id %>">Ver Loja Pública</a>
-              <a href="/cadastro-item">Novo Produto</a>
-            <% } else { %>
-              <a href="/painel/usuario">Painel do Usuário</a>
-              <a href="/usuario/<%= usuario.id %>">Ver Perfil Público</a>
-            <% } %>
-            
-            <a href="/logout">Sair</a>
-          </div>
+    <% if (usuario) { %>
+      <a href="#" id="btn-carrinho">Carrinho</a>
+      <div id="mini-cart" class="mini-cart hidden">
+        <h3>Seu Carrinho</h3>
+        <div id="mini-cart-itens">
+          <!-- Itens serão carregados via fetch -->
         </div>
-      <% } else { %>
-        <a href="/login">Entrar</a>
-        <a href="/escolher-cadastro" class="signup">Cadastre-se</a>
-      <% } %>
-    </div>
+        <a href="/checkout">
+          <button class="btn-finalizar">Finalizar Compra</button>
+        </a>
+      </div>
+
+      <a href="/meus-pedidos">Meus Pedidos</a>
+
+      <% 
+        const iconePadrao = usuario.tipo === 'pj' 
+          ? '/images/store_logos/store.png' 
+          : '/images/user_default.png';
+        const iconePerfil = usuario.icone_url || iconePadrao;
+      %>
+<div class="loja-dropdown">
+  <button class="loja-trigger" id="lojaTrigger" type="button" aria-expanded="false" aria-controls="dropdownMenu">
+    <img src="<%= iconePerfil %>" alt="Perfil" class="icone-perfil">
+    <span class="nome-usuario">
+      <%= usuario.nome || usuario.username || (usuario.tipo === 'pj' ? 'Minha loja' : 'Minha conta') %>
+    </span>
+    <span class="caret">▾</span>
+  </button>
+
+  <div class="dropdown-conteudo" id="dropdownMenu">
+    <% if (usuario.tipo === 'pj') { %>
+      <a href="/painel/loja">Painel da Loja</a>
+      <a href="/loja/<%= usuario.id %>">Ver Loja Pública</a>
+      <a href="/cadastro-item">Novo Produto</a>
+    <% } else { %>
+      <a href="/painel/usuario">Painel do Usuário</a>
+      <a href="/usuario/<%= usuario.id %>">Ver Perfil Público</a>
+    <% } %>
+    <a href="/logout">Sair</a>
+  </div>
+</div>
+    <% } else { %>
+      <a href="/login">Entrar</a>
+      <a href="/escolher-cadastro" class="signup">Cadastre-se</a>
+    <% } %>
+</div>
+
   </div>
 </nav>
-
 <nav class="navbar-2">
   <div class="navbar-bottom">
+    <a href="/produtos">Explorar</a>
     <a href="#" id="btn-corda">Instrumentos de Corda</a>
     <a href="#" onclick="alert('Em breve!')">Percussão</a>
     <a href="#" onclick="alert('Em breve!')">Teclados e Pianos</a>
@@ -79,12 +97,12 @@
         <div class="coluna">
           <h3>Guitarras Elétricas</h3>
           <ul>
-            <li><a href="/produtos?modelo[]=Stratocaster">Stratocaster</a></li>
-            <li><a href="/produtos?modelo[]=Telecaster">Telecaster</a></li>
-            <li><a href="/produtos?modelo[]=Les Paul">Les Paul</a></li>
-            <li><a href="/produtos?modelo[]=SG">SG</a></li>
-            <li><a href="/produtos?modelo[]=Explorer">Explorer</a></li>
-            <li><a href="/produtos?modelo[]=Flying V">Flying V</a></li>
+            <li><a href="/produtos?shape[]=Stratocaster">Stratocaster</a></li>
+            <li><a href="/produtos?shape[]=Telecaster">Telecaster</a></li>
+            <li><a href="/produtos?shape[]=Les Paul">Les Paul</a></li>
+            <li><a href="/produtos?shape[]=SG">SG</a></li>
+            <li><a href="/produtos?shape[]=Explorer">Explorer</a></li>
+            <li><a href="/produtos?shape[]=Flying V">Flying V</a></li>
           </ul>
 
           <h3>Baixos</h3>
@@ -166,21 +184,93 @@
 </script>
 
 <script>
-  const icone = document.getElementById("iconeLoja");
+  const trigger  = document.getElementById("lojaTrigger");
   const dropdown = document.getElementById("dropdownMenu");
 
-  if (icone && dropdown) {
-    icone.addEventListener("click", () => {
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  if (trigger && dropdown) {
+    const open  = () => { dropdown.style.display = "block"; trigger.setAttribute("aria-expanded","true"); };
+    const close = () => { dropdown.style.display = "none";  trigger.setAttribute("aria-expanded","false"); };
+    const toggle = () => (dropdown.style.display === "block" ? close() : open());
+
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggle();
     });
 
     document.addEventListener("click", (e) => {
-      if (!icone.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = "none";
+      if (!dropdown.contains(e.target) && !trigger.contains(e.target)) {
+        close();
       }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
     });
   }
 </script>
 
+<script>
+// Função para atualizar o mini cart sem fechar
+async function atualizarMiniCart() {
+  const res = await fetch('/api/carrinho');
+  const data = await res.json();
 
+  const container = document.getElementById("mini-cart-itens");
+  container.innerHTML = ""; // limpa
 
+  if (data.length === 0) {
+    container.innerHTML = "<p>Seu carrinho está vazio.</p>";
+  } else {
+    data.forEach(item => {
+      const div = document.createElement("div");
+      div.classList.add("mini-cart-item");
+      div.innerHTML = `
+        <img src="${item.produtos.imagem_url.split(',')[0]}" alt="Produto">
+        <div>
+          <p>${item.produtos.nome}</p>
+          <p>Qtd: 
+            <button class="btn-qtd" data-id="${item.id}" data-action="minus">-</button>
+            ${item.quantidade}
+            <button class="btn-qtd" data-id="${item.id}" data-action="plus">+</button>
+          </p>
+          <p>R$ ${item.produtos.preco}</p>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+
+    // Reatribui os event listeners aos botões + e -
+    document.querySelectorAll(".btn-qtd").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation(); // impede o fechamento do mini cart
+        const id = btn.getAttribute("data-id");
+        const action = btn.getAttribute("data-action");
+        await fetch(`/api/carrinho/${id}/${action}`, { method: "POST" });
+        await atualizarMiniCart(); // atualiza sem fechar
+      });
+    });
+  }
+}
+
+// Event listener do botão carrinho para abrir/fechar
+document.getElementById("btn-carrinho").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const miniCart = document.getElementById("mini-cart");
+
+  if (miniCart.classList.contains("hidden")) {
+    await atualizarMiniCart(); // carrega itens ao abrir
+    miniCart.classList.remove("hidden");
+  } else {
+    miniCart.classList.add("hidden");
+  }
+});
+
+// Fechar o mini cart ao clicar fora
+document.addEventListener("click", function(event) {
+  const miniCart = document.getElementById("mini-cart");
+  const btnCarrinho = document.getElementById("btn-carrinho");
+  if (!miniCart.contains(event.target) && !btnCarrinho.contains(event.target)) {
+    miniCart.classList.add("hidden");
+  }
+});
+</script>

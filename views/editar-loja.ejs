@@ -11,7 +11,16 @@
   <main class="painel-container">
     <h2>Editar Dados da Loja</h2>
     
-    <form method="POST" action="/painel/editar-loja" class="form-loja">
+    <form method="POST" action="/painel/editar-loja" enctype="multipart/form-data" class="form-loja">
+
+      <!-- Exibir imagem atual -->
+      <label>Foto atual:</label>
+      <img src="<%= loja.icone_url %>" alt="Logo atual" style="width: 100px; height: 100px; border-radius: 10px;">
+
+      <!-- Input para nova imagem -->
+      <label>Alterar Foto da Loja</label>
+      <input type="file" name="icone" accept="image/*">
+      
       <label>Nome Fantasia</label>
       <input type="text" name="nomeFantasia" value="<%= loja.nomeFantasia %>" required>
 

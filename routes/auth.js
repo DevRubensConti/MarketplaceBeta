@@ -13,60 +13,62 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, senha } = req.body;
 
-  // 1. Autentica via Supabase Auth
+  // 1) Auth
   const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
     email,
     password: senha
   });
-
   if (loginError || !loginData?.user) {
     console.error('Erro ao logar no Supabase Auth:', loginError);
-    return res.status(401).render('login', {
-      erroLogin: 'E-mail ou senha inválidos.'
-    });
+    return res.status(401).render('login', { erroLogin: 'E-mail ou senha inválidos.' });
   }
 
   const uid = loginData.user.id;
 
-  // 2. Busca dados do usuário PF
-  const { data: pf } = await supabase
-    .from('usuarios_pf')
-    .select('*')
-    .eq('id', uid)
-    .single();
+  // 2) Busca PF
+  const pfResp = await supabase.from('usuarios_pf').select('*').eq('id', uid).single();
+  const pf = pfResp.data;
 
-  // 3. Se não for PF, tenta PJ
+  // 3) Se não for PF, tenta PJ
   let usuario = pf;
   let tipo = 'pf';
 
   if (!usuario) {
-    const { data: pj } = await supabase
-      .from('usuarios_pj')
-      .select('*')
-      .eq('id', uid)
-      .single();
-
+    const pjResp = await supabase.from('usuarios_pj').select('*').eq('id', uid).single();
+    const pj = pjResp.data;
     if (!pj) {
-      return res.status(401).render('login', {
-        erroLogin: 'Usuário não encontrado.'
-      });
+      return res.status(401).render('login', { erroLogin: 'Usuário não encontrado.' });
     }
-
     usuario = pj;
     tipo = 'pj';
   }
 
-  // 4. Salva dados na sessão
-  req.session.usuario = {
-    id: uid, // 👈 UID real do Supabase Auth
-    nome: usuario.nome || usuario.nomeFantasia,
-    tipo,
-    email: usuario.email,
-    telefone: usuario.telefone,
-    icone_url: usuario.icone_url || '/images/user_default.png'
-  };
+  // 4) Regenera a sessão para não herdar dados antigos
+  req.session.regenerate(err => {
+    if (err) {
+      console.error('Erro ao regenerar sessão:', err);
+      return res.status(500).send('Erro de sessão.');
+    }
 
-  res.redirect('/');
+    // 5) Seta a sessão limpa (normalizando tipo)
+    req.session.usuario = {
+      id: uid,
+      nome: usuario.nome || usuario.nome_fantasia || usuario.nomeFantasia || '',
+      tipo: (tipo || '').toLowerCase(), // 'pf' ou 'pj'
+      email: usuario.email,
+      telefone: usuario.telefone,
+      icone_url: usuario.icone_url || '/images/user_default.png'
+    };
+
+    // 6) Garante persistência antes do redirect
+    req.session.save(saveErr => {
+      if (saveErr) {
+        console.error('Erro ao salvar sessão:', saveErr);
+        return res.status(500).send('Erro de sessão.');
+      }
+      res.redirect('/');
+    });
+  });
 });
 
 
@@ -78,9 +80,18 @@ router.get('/logout', (req, res) => {
       console.error('Erro ao fazer logout:', err);
       return res.status(500).send('Erro ao fazer logout.');
     }
+
+    // Remove o cookie de sessão no cliente
+    res.clearCookie('connect.sid', {
+      path: '/',          // caminho onde o cookie é válido
+      httpOnly: true,     // só acessível pelo servidor
+      secure: false       // se estiver em produção com HTTPS, coloque true
+    });
+
     res.redirect('/');
   });
 });
+
 //Cadastro PJ
 router.post('/cadastro-pj', async (req, res) => {
   const {

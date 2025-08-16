@@ -4,25 +4,33 @@ const supabase = require('../supabase');
 
 // Página inicial - lista de produtos recentes
 router.get('/', async (req, res) => {
-  const { data: produtos, error: prodError } = await supabase
-    .from('produtos')
-    .select('*')
-    .order('id', { ascending: false })
-    .limit(8);
+  try {
+    // Mais vistos
+    const { data: maisVistos, error: mvError } = await supabase
+      .from('produtos')
+      .select('id, nome, preco, imagem_url, shape, marca, condicao, acessos')
+      .order('acessos', { ascending: false })
+      .limit(8);
 
-  const { data: lojasTop, error: lojasError } = await supabase
-    .from('usuarios_pj')
-    .select('id, nomeFantasia, icone_url, nota')
-    .order('nota', { ascending: false })
-    .limit(10);
+    // Lojas top
+    const { data: lojasTop, error: lojasError } = await supabase
+      .from('usuarios_pj')
+      .select('id, nomeFantasia, icone_url, nota')
+      .order('nota', { ascending: false })
+      .limit(10);
 
-  if (prodError || lojasError) {
-    console.error('Erro ao buscar dados:', prodError || lojasError);
-    return res.status(500).send('Erro ao buscar dados.');
+    if (mvError || lojasError) {
+      console.error('Erro ao buscar dados:', mvError || lojasError);
+      return res.status(500).send('Erro ao buscar dados.');
+    }
+
+    res.render('index', { maisVistos, lojasTop });
+  } catch (e) {
+    console.error('Erro na home:', e);
+    res.status(500).send('Erro no servidor.');
   }
-
-  res.render('index', { produtos, lojasTop });
 });
+
 
 // Página de plano de assinatura
 router.get('/plano-assinatura', (req, res) => {
@@ -38,5 +46,8 @@ router.get('/teste', (req, res) => {
     usuario: req.session.usuario
   });
 });
+
+
+
 
 module.exports = router;

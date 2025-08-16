@@ -1,0 +1,135 @@
+body {
+  background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.9)),
+              url('/images/background.png') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  color: var(--cor-letras-navbar);
+}
+
+.chats-container {
+  max-width: 1300px;
+  margin: 100px auto;
+  padding: 40px 20px;
+  background-color: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+.chats-header {
+  font-size: 28px;
+  font-family: 'Bebas Neue', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+  color: var(--cor-letras-navbar);
+  text-shadow: 2px 2px 0 var(--cor-primaria-escura);
+}
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* NOVO LAYOUT VISUAL DO CARD */
+.chat-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 20px;
+  border-radius: 12px;
+  transition: background-color 0.3s;
+  gap: 20px;
+}
+
+.chat-card:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Container das imagens */
+.chat-imagens {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.img-produto {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--cor-destaque);
+}
+
+.img-usuario {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--cor-secundaria);
+}
+
+/* Informações à direita das imagens */
+.chat-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--cor-letras-navbar);
+}
+
+.nome-produto {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.nome-usuario {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.chat-actions a {
+  background-color: var(--cor-secundaria);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.chat-actions a:hover {
+  background-color: var(--cor-secundaria-escura);
+}
+
+.sem-chats {
+  text-align: center;
+  font-size: 18px;
+  opacity: 0.8;
+  margin-top: 40px;
+  color: var(--cor-letras-navbar);
+}
+
+/* Responsividade mínima */
+@media (max-width: 768px) {
+  .chat-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chat-imagens {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .chat-actions {
+    align-self: flex-end;
+    margin-top: 10px;
+  }
+}

@@ -14,7 +14,16 @@ function requireTipo(tipo) {
   };
 }
 
+function requirePJ(req, res, next) {
+  const tipo = req.session.usuario?.tipo?.toLowerCase();
+  if (tipo !== 'pj') {
+    return res.status(403).send('Acesso restrito a lojas');
+  }
+  next();
+}
+
 module.exports = {
   requireLogin,
-  requireTipo
+  requireTipo,
+  requirePJ
 };

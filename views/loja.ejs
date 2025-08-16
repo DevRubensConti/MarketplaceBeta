@@ -22,7 +22,7 @@
       </div>
       <div class="filtro-box">
         <label>Preço Máx:</label>
-        <input type="number" name="preco_max" value="<%= typeof preco_max !== 'undefined' ? preco_max : 10000 %>">
+        <input type="number" name="preco_max" value="<%= typeof preco_max !== 'undefined' ? preco_max : 100000000 %>">
       </div>
       <button type="submit">Filtrar</button>
     </form>
@@ -32,29 +32,33 @@
   
   <!-- SUBSTITUI OU LOGO ABAIXO de "loja-info" -->
 
-  <div class="banner-loja">
-    <div class="banner-info">
-      <img src="<%= loja.icone_url %>" alt="Logo da Loja" class="banner-logo">
-      <div class="banner-textos">
-        <h2><%= loja.nomeFantasia %></h2>
-        <p><%= loja.endereco %></p>
-        <p><%= loja.telefone %></p>
-      </div>
-    </div>
+ <div class="banner-loja">
+  <!-- Esquerda: Logo + infos -->
+  <div class="banner-info">
+    <img src="<%= loja.icone_url %>" alt="Logo da Loja" class="banner-logo">
 
-    <div class="banner-avaliacao">
-      <p>Nota da Loja</p>
-        <div class="estrelas">
-        <% for(let i = 1; i <= 5; i++) { %>
-            <% if(i <= loja.nota) { %>
-            <span>⭐</span>
-            <% } else { %>
-            <span style="opacity: 0.3;">⭐</span>
-            <% } %>
-        <% } %>
-        </div>
+    <div class="banner-textos">
+      <h2><%= loja.nomeFantasia %></h2>
+
+      <p class="loja-descricao">
+        <%= (loja.descricao && loja.descricao.trim().length) ? loja.descricao : 'Sem descrição disponível.' %>
+      </p>
+
+      <p class="loja-local"><strong>Localização:</strong> <%= loja.cidade %> - <%= loja.estado %></p>
+      <p class="loja-telefone"><strong>Telefone:</strong> <%= loja.telefone %></p>
     </div>
   </div>
+
+  <!-- Direita: Avaliação -->
+  <div class="banner-avaliacao">
+    <p><strong>Nota da Loja</strong></p>
+    <div class="estrelas">
+      <% for (let i=1; i<=5; i++) { %>
+        <span class="star <%= i <= Number(loja.nota) ? 'filled' : '' %>">★</span>
+      <% } %>
+    </div>
+  </div>
+</div>
 
   <% if (produtos.length > 0) { %>
     <div class="grid-produtos">

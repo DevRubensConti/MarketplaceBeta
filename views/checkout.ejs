@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checkout</title>
+  <link rel="stylesheet" href="/css/checkout.css">
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main class="checkout-container">
+    <h1>🛒 Checkout</h1>
+
+    <% if (itens.length > 0) { %>
+      <% let total = 0; %>
+      <% itens.forEach(item => { %>
+        <% total += item.quantidade * item.produtos.preco; %>
+        <div class="checkout-item">
+          <img src="<%= item.produtos.imagem_url.split(',')[0] %>" alt="Produto">
+          <div class="checkout-item-info">
+            <h3><%= item.produtos.nome %></h3>
+            <p>Quantidade: <%= item.quantidade %></p>
+            <p>Preço unitário: R$ <%= item.produtos.preco %></p>
+            <p>Subtotal: R$ <%= (item.quantidade * item.produtos.preco).toFixed(2) %></p>
+          </div>
+        </div>
+      <% }) %>
+
+      <div class="total-container">
+        <h2>Total: R$ <%= total.toFixed(2) %></h2>
+      </div>
+
+      <form action="/checkout/finalizar" method="POST">
+        <button type="submit" class="btn-pagamento">Ir para pagamento</button>
+      </form>
+
+    <% } else { %>
+      <p>Seu carrinho está vazio.</p>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>

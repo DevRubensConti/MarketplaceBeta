@@ -7,33 +7,38 @@
 </head>
 <body>
   <%- include('partials/navbar.ejs') %>
-  <div class="most-viewed-gallery-wrap">
-    <div class="most-viewed-gallery-title">
-      <h1>Itens mais acessados</h1>
-    </div>
-    <div class="most-viewed-gallery">
-      <% produtos.forEach(item => { %>
-        <a href="/item/<%= item.id %>" class="card-produto">
-          <img src="<%= item.imagem_url.split(',')[0] %>" alt="Imagem do produto">
-          <div class="descricao-hover">
-            <p><%= item.descricao %></p>
-            <p><b>Marca:</b> <%= item.marca %></p>
-            <p><b>Tipo: </b><%= item.tipo %></p>
-            <p><b>Condição: </b><%= item.condicao %></p>
-            <p><b>R$ <%= item.preco %></b></p>
-            <button class="btn-vermais">Ver mais</button>
+  <div class="mais-acessados-header">
+    <h2>Itens mais acessados</h2>
+  </div>
+  <section class="mais-vistos">
+  <div class="most-viewed-gallery">
+    <% maisVistos.forEach(item => { %>
+      <div class="card-produto-uniforme">
+        <a href="/item/<%= item.id %>">
+          <div class="imagem-container">
+            <img src="<%= item.imagem_url.split(',')[0] %>" alt="Imagem do produto">
+          </div>
+          <div class="info-produto">
+            <h3><%= item.nome %></h3>
+            <p><strong>Preço:</strong> R$ <%= item.preco %></p>
+            <p><strong>Shape:</strong> <%= item.shape || '—' %></p>
+            <p><strong>Marca:</strong> <%= item.marca || '—' %></p>
+            <p><strong>Condição:</strong> <%= item.condicao || '—' %></p>
+            <p><strong>Acessos:</strong> <%= item.acessos || 0 %></p>
           </div>
         </a>
-      <% }) %>
-    </div>
+      </div>
+    <% }) %>
   </div>
+</section>
+
+
 
   
-  
-<div class="brands-filter-gallery-wrap">
   <div class="brands-gallery-title">
     <h2>Marcas</h2>
-  </div>
+  </div>  
+<div class="brands-filter-gallery-wrap">
   <div class="brands-carousel-row">
     <img src="/images/back.png" id="backBtn">
     <div class="brands-filter-gallery">
@@ -54,12 +59,10 @@
   </div>
 </div>
 
-
+  <div class="stores-title">
+    <h2>Lojas Favoritas:</h2>
+  </div>
   <div class="stores-carousel-wrap">
-    <div class="stores-title">
-      <h2>Lojas Favoritas:</h2>
-    </div>
-  
     <div class="stores-carousel-row">
       <img src="/images/back.png" id="storesBackBtn">
 

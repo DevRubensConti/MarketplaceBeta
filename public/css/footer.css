@@ -6,9 +6,9 @@
   align-items: flex-start;
   background-color: var(--cor-primaria);
   color: var(--cor-secundaria);
-  padding: 40px 60px;
+  padding: 15px 30px; /* diminuído de 40px 60px */
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 20px; /* diminuído de 40px */
   width: 100%;
 }
 

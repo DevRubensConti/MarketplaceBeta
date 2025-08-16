@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Minhas Conversas</title>
+  <link rel="stylesheet" href="/css/meus-chats.css">
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main class="chats-container">
+    <h1 class="chats-header">💬 Minhas Conversas</h1>
+
+    <% if (chats.length === 0) { %>
+      <p class="sem-chats">Você ainda não iniciou nenhuma conversa.</p>
+    <% } else { %>
+      <div class="chat-list">
+        <% chats.forEach(chat => { %>
+          <div class="chat-card">
+            <div class="chat-imagens">
+              <img class="img-produto" src="<%= chat.produto?.imagem_url || '/images/no-image.png' %>" alt="Produto">
+              <img class="img-usuario" src="<%= chat.outroUsuario?.icone_url || '/images/chat-default.png' %>" alt="Foto do usuário">
+            </div>
+
+            <div class="chat-info">
+              <div class="nome-produto"><%= chat.produto?.nome || 'Produto' %></div>
+              <div class="nome-usuario"><%= chat.outroUsuario?.nome || 'Usuário' %></div>
+              <% if (chat.ultimaMensagem) { %>
+                <div class="ultima-mensagem"><%= chat.ultimaMensagem %></div>
+              <% } else { %>
+                <div class="ultima-mensagem vazio">Sem mensagens ainda</div>
+              <% } %>
+            </div>
+
+            <div class="chat-actions">
+              <a href="/chat/<%= chat.chat_id %>">Acessar</a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>

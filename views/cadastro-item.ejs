@@ -1,194 +1,294 @@
 <html lang="pt-BR">
+
 <head>
 	<meta charset="UTF-8">
 	<title>Cadastrar Item</title>
 	<link rel="stylesheet" href="/css/cadastro-item.css">
 	<style>
-		body { background-color: red !important; }
+		body {
+			background-color: red !important;
+		}
 	</style>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 </head>
+
 <body>
 	<%- include('partials/navbar') %>
-	
-	<div class="cadastro-item-container">
-		<h2><u>Cadastrar Novo Item</u></h2>
-		<form action="/cadastro-item" method="POST" enctype="multipart/form-data">
-			<details id="etapa-1" open>
-				<summary>Etapa 1 - Imagens do Produto</summary>
-				<div class="form-layout">
-					<div class="left-column">
-						<div class="form-group">
-							<label>📸 Dicas importantes:<br><br>Envie imagens claras e detalhadas do seu produto. Uma boa apresentação faz toda a diferença!<br><br>✅ Algumas sugestões úteis:<br><br>• Fotografe de vários ângulos (frente, costas, laterais, detalhes).<br>• Use boa iluminação, de preferência luz natural.<br>• Mantenha o fundo neutro (ex: parede clara ou tecido liso).<br>• Mostre possíveis desgastes ou marcas (se for usado).<br>• Evite imagens borradas ou com baixa resolução.</label>
-							<small><br>Você pode enviar até 12 imagens.</small>
-							<div id="preview-container" class="preview-grid"></div>
+
+		<div class="cadastro-item-container">
+			<h2><u>Cadastrar Novo Item</u></h2>
+			<form action="/cadastro-item" method="POST" enctype="multipart/form-data">
+				<details id="etapa-1" open>
+					<summary>Etapa 1 - Imagens do Produto</summary>
+					<div class="form-layout">
+						<div class="left-column">
+							<div class="form-group">
+								<label>📸 Dicas importantes:<br><br>Envie imagens claras e detalhadas do seu produto.
+									Uma boa apresentação faz toda a diferença!<br><br>✅ Algumas sugestões
+									úteis:<br><br>• Fotografe de vários ângulos (frente, costas, laterais,
+									detalhes).<br>• Use boa iluminação, de preferência luz natural.<br>• Mantenha o
+									fundo neutro (ex: parede clara ou tecido liso).<br>• Mostre possíveis desgastes ou
+									marcas (se for usado).<br>• Evite imagens borradas ou com baixa resolução.</label>
+								<small><br>Você pode enviar até 12 imagens.</small>
+								<div id="preview-container" class="preview-grid"></div>
+							</div>
 						</div>
 					</div>
-				</div>
-				<button type="button" onclick="proximaEtapa('etapa-1', 'etapa-2')">Próximo</button>
-			</details>
-			
-			<details id="etapa-2">
-				<summary>Etapa 2 - Marca e Tipo</summary>
-				<div class="form-layout">
-					<div class="left-column">
-						<div class="form-group">
+					<button type="button" onclick="proximaEtapa('etapa-1', 'etapa-2')">Próximo</button>
+				</details>
+
+				<details id="etapa-2">
+					<summary>Etapa 2 - Marca e Tipo</summary>
+					<div class="form-layout">
+						<div class="left-column">
+							<div class="form-group">
 							<label>Marca</label>
-							<select name="marca" id="marca-select" label="Selecione a Marca" required></select>
-						</div>
-						<div class="form-group" id="outra-marca-group" style="display: none;">
+							<select name="marca" id="marca-select" required>
+								<option value="">Selecione...</option>
+							</select>
+							</div>
+							<div class="form-group" id="outra-marca-group" style="display: none;">
 							<label>Digite a marca</label>
 							<input type="text" name="marca_personalizada" id="marca-personalizada" placeholder="Informe a marca">
-						</div>
-					</div>
-					<div class="right-column">
-						<div class="form-group">
-							<label>Tipo de Produto</label>
-							<select id="tipo-produto" name="tipo" required>
-								<option value="">Selecione...</option>
-								<option value="corda">Corda</option>
-								<option value="percussao">Percussão</option>
-								<option value="teclado">Teclado/Piano</option>
-								<option value="sopro">Sopro</option>
-								<option value="audio">Áudio</option>
-								<option value="acessorio">Acessório</option>
-							</select>
-						</div>
-						<div class="form-group" id="categoria-corda" style="display: none;">
-							<label>Categoria (Instrumento de Corda)</label>
-							<select id="categoria-corda-select" name="categoria">
+							</div>
+							<div class="form-group" id="categoria-corda">
+							<label>Categoria</label>
+							<select id="categoria-corda-select" name="categoria" disabled>
 								<option value="">Selecione...</option>
 								<option value="guitarra">Guitarra</option>
 								<option value="violao">Violão</option>
 								<option value="baixo">Baixo</option>
 							</select>
+							</div>
+							<div class="form-group locked" id="grupo-modelo">
+							<label>Modelo</label>
+							<select id="modelo-select" name="modelo" disabled required>
+								<option value="">Selecione marca e shape...</option>
+							</select>
+
+							<input type="text" id="modelo-outro" name="modelo_outro"
+									placeholder="Digite o modelo..." style="display:none; margin-top:8px;">
+							</div>
 						</div>
-						<div class="form-group" id="guitarra-modelos" style="display: none;">
-							<label>Modelo de Guitarra</label>
-							<div class="tipo-lista">
-								<div class="tipo-opcao" data-descricao="Modelo Telecaster" data-img="/images/guitar_models/telecaster.png">Telecaster</div>
-								<div class="tipo-opcao" data-descricao="Modelo Les Paul" data-img="/images/guitar_models/lespaul.png">Les Paul</div>
-								<div class="tipo-opcao" data-descricao="Modelo Stratocaster" data-img="/images/guitar_models/stratocaster.png">Stratocaster</div>
-								<div class="tipo-opcao" data-descricao="Modelo SG" data-img="/images/guitar_models/sg.png">SG</div>
-								<div class="tipo-opcao" data-descricao="Modelo Flying V" data-img="/images/guitar_models/flyingv.png">Flying V</div>
-								<div class="tipo-opcao" data-descricao="Modelo Explorer" data-img="/images/guitar_models/explorer.png">Explorer</div>
+
+						<div class="right-column">
+							<div class="form-group">
+							<label>Tipo de Produto</label>
+							<select id="tipo-produto" name="tipo" required disabled>
+								<option value="">Selecione...</option>
+								<option value="corda">Instumento de Corda</option>
+								<option value="percussao">Instumento de Percussão</option>
+								<option value="teclado">Instumento de Teclado/Piano</option>
+								<option value="sopro">Instumento de Sopro</option>
+								<option value="audio">Equipamento de Áudio</option>
+								<option value="acessorio">Acessório</option>
+							</select>
+							</div>
+
+
+
+							<div class="form-group" id="guitarra-shapes">
+							<label>Shapes de Guitarra</label>
+							<div class="tipo-lista" id="shapes-lista">
+								<div class="tipo-opcao" data-descricao="Telecaster" data-img="/images/guitar_models/telecaster.png">Telecaster</div>
+								<div class="tipo-opcao" data-descricao="Les Paul" data-img="/images/guitar_models/lespaul.png">Les Paul</div>
+								<div class="tipo-opcao" data-descricao="Stratocaster" data-img="/images/guitar_models/stratocaster.png">Stratocaster</div>
+								<div class="tipo-opcao" data-descricao="SG" data-img="/images/guitar_models/sg.png">SG</div>
+								<div class="tipo-opcao" data-descricao="Flying V" data-img="/images/guitar_models/flyingv.png">Flying V</div>
+								<div class="tipo-opcao" data-descricao="Explorer" data-img="/images/guitar_models/explorer.png">Explorer</div>
 								<div class="tipo-opcao" id="outro-opcao">Outro</div>
 							</div>
-							<input type="hidden" name="modelo" id="modelo-guitarra">
-						</div>
-						<div class="form-group" id="outro-tipo" style="display: none;">
-							<label>Especifique o modelo</label>
-							<input type="text" name="outro_tipo" id="outro_tipo" placeholder="Digite o modelo...">
-						</div>
-					</div>
-				</div>
-				<button type="button" onclick="proximaEtapa('etapa-2', 'etapa-3')">Próximo</button>
-			</details>
-			
-			<details id="etapa-3">
-				<summary>Etapa 3 - Informações do Produto</summary>
-				<div class="form-layout">
-					<div class="left-column">
-						<div class="form-group">
-							<label>Nome do Item</label>
-							<input type="text" name="nome" required>
-						</div>
-						<div class="form-group">
-							<label>Descrição</label>
-							<textarea name="descricao" rows="6" required></textarea>
-						</div>
-						<div class="form-group">
-							<button type="button" id="gerar-descricao" style="align-self: flex-start;">
-								Gerar descrição automática ✨
-							</button>
+							<input type="hidden" name="shape" id="shape-guitarra">
+							</div>
+
+							<div class="form-group" id="outro-tipo" style="display: none;">
+							<label>Especifique o shape</label>
+							<input type="text" name="outro_tipo" id="outro_tipo" placeholder="Digite o shape...">
+							</div>
+
+
 						</div>
 					</div>
-					
-					<div class="right-column">
-						<div class="form-row">
+
+					<button type="button" onclick="proximaEtapa('etapa-2', 'etapa-3')">Próximo</button>
+				</details>
+
+				<details id="etapa-3">
+					<summary>Etapa 3 - Informações do Produto</summary>
+					<div class="form-layout">
+						<div class="left-column">
 							<div class="form-group">
-								<label>Preço (R$)</label>
-								<input type="number" name="preco" step="0.01" required>
+								<label>Nome do Item</label>
+								<input type="text" name="nome" required>
+							</div>
+
+							  <div class="form-group">
+								<label>Conte-nos sobre seu item e uma descrição será gerada automaticamente.</label>
+								<textarea name="caracteristicas" id="caracteristicas" rows="6"
+								placeholder="Fale sobre o item a venda com suas palavras:"></textarea>
+							</div>	
+
+							<div class="form-group">
+								<label>Descrição</label>
+								<textarea name="descricao" rows="6" required></textarea>
+							</div>
+							<div class="descricao-produto">
+								<button type="button" id="gerar-descricao" style="align-self: flex-start;">
+									Gerar descrição automática ✨
+								</button>
+							</div>
+						</div>
+
+						<div class="right-column">
+							<div class="form-row">
+								<div class="form-group">
+									<label>Preço (R$)</label>
+									<input type="number" name="preco" step="0.01" required>
+								</div>
+								<div class="form-group">
+									<label>Condição</label>
+									<select name="condicao" required>
+										<option value="Novo (Lacrado)">Novo (Lacrado)</option>
+										<option value="Usado - Estado de Novo">Usado (Estado de Novo)</option>
+										<option value="Usado - Com Leves Marcas">Usado (Com Leves Marcas)</option>
+										<option value="Usado - Sinais Evidentes">Usado (Sinais Evidentes)</option>
+										<option value="Defeituoso ou para peças">Defeituoso / Para peças</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<button type="button" onclick="proximaEtapa('etapa-3', 'etapa-4')">Próximo</button>
+				</details>
+				<details id="etapa-4">
+					<summary>Etapa 4 - Especificações Técnicas</summary>
+					<div class="form-layout">
+						<div class="left-column">
+							<div class="form-group">
+								<label>Ano de Fabricação</label>
+								<input type="number" name="ano_fabricacao" min="1900" max="2099">
 							</div>
 							<div class="form-group">
-								<label>Condição</label>
-								<select name="condicao" required>
-									<option value="Novo (Lacrado)">Novo (Lacrado)</option>
-									<option value="Usado - Estado de Novo">Usado (Estado de Novo)</option>
-									<option value="Usado - Com Leves Marcas">Usado (Com Leves Marcas)</option>
-									<option value="Usado - Sinais Evidentes">Usado (Sinais Evidentes)</option>
-									<option value="Defeituoso ou para peças">Defeituoso / Para peças</option>
+								<label for="pais-select">País de Fabricação</label>
+								<select name="pais_fabricacao" id="pais-select" required></select>
+							</div>
+							<div class="form-group">
+								<label>Cor do Instrumento</label>
+								<select name="cor" id="cor-select" required>
+									<option value="" disabled selected>Selecione...</option>
+									<option value="preto">Preto</option>
+									<option value="branco">Branco</option>
+									<option value="vermelho">Vermelho</option>
+									<option value="azul">Azul</option>
+									<option value="natural">Natural (madeira exposta ou acabamento transparente)
+									</option>
+									<option value="sunburst">Sunburst (degradê com tons quentes, geralmente amarelo,
+										laranja e vermelho)</option>
+									<option value="cinza">Cinza</option>
+									<option value="amarelo">Amarelo</option>
+									<option value="verde">Verde</option>
+									<option value="goldtop">Ouro / Goldtop (dourado)</option>
+									<option value="rosa">Rosa</option>
+									<option value="verde-agua">Verde água / Aqua</option>
+									<option value="coral">Coral</option>
+									<option value="marrom">Marrom (Chocolate)</option>
+									<option value="roxo">Roxo</option>
+									<option value="outro">Outra cor...</option>
+								</select>
+
+								<div id="outra-cor-group" style="display:none; margin-top:8px;">
+									<label for="cor-personalizada">Digite a cor</label>
+									<input type="text" id="cor-personalizada" name="cor_personalizada"
+										placeholder="Ex.: Champagne Sparkle">
+								</div>
+							</div>
+							<script>
+								const corSelect = document.getElementById('cor-select');
+								const outraCorGroup = document.getElementById('outra-cor-group');
+								const corPersonalizada = document.getElementById('cor-personalizada');
+
+								function syncOutraCor() {
+									const outra = corSelect.value === 'outro';
+									outraCorGroup.style.display = outra ? 'block' : 'none';
+									if (outra) corPersonalizada.setAttribute('required', 'required');
+									else { corPersonalizada.removeAttribute('required'); corPersonalizada.value = ''; }
+								}
+								corSelect.addEventListener('change', syncOutraCor);
+								// chama uma vez para garantir estado correto se tiver valor salvo
+								syncOutraCor();
+							</script>
+
+							<div class="form-group">
+								<label>Acabamento</label>
+								<select name="acabamento" required>
+									<option value="">Selecione...</option>
+									<option value="Brilhante">Brilhante</option>
+									<option value="Fosco">Fosco</option>
+									<option value="Satinado">Satinado</option>
+									<option value="Relíquia / Envelhecido">Relíquia / Envelhecido</option>
 								</select>
 							</div>
-						</div>
-					</div>
-				</div>
-				<button type="button" onclick="proximaEtapa('etapa-3', 'etapa-4')">Próximo</button>
-			</details>     
-			<details id="etapa-4">
-				<summary>Etapa 4 - Especificações Técnicas</summary>
-				<div class="form-layout">
-					<div class="left-column">
-						<div class="form-group">
-							<label>Ano de Fabricação</label>
-							<input type="number" name="ano_fabricacao" min="1900" max="2099">
-						</div>
-						<div class="form-group">
-							<label>País de Fabricação</label>
-							<input type="text" name="pais_fabricacao">
-						</div>
-						<div class="form-group">
-							<label>Cor do Instrumento</label>
-							<input type="text" name="cor">
-						</div>
-						<div class="form-group">
-							<label>Acabamento</label>
-							<select name="acabamento" required>
-								<option value="">Selecione...</option>
-								<option value="Brilhante">Brilhante</option>
-								<option value="Fosco">Fosco</option>
-								<option value="Satinado">Satinado</option>
-								<option value="Relíquia / Envelhecido">Relíquia / Envelhecido</option>
-							</select>
-						</div>
-						
-					</div>
-					
-					<div class="right-column">
-						<div class="form-group">
-							<label>Número de Cordas</label>
-							<input type="number" name="cordas" min="1" max="12">
-						</div>
-						<div class="form-row">
+
 							<div class="form-group">
-								<label>Madeira (Corpo)</label>
-								<input type="text" name="madeira">
+								<label>Quantidade</label>
+								<input type="number" id="quantidade" name="quantidade" min="0" value="0" required>
 							</div>
-							<div class="form-group">
-								<label>Configuração de Captadores 
-									<span class="info-hover" data-img="/images/infos/captadores.png" 
-									data-texto="S = Single Coil (som mais limpo e brilhante), H = Humbucker (mais encorpado e potente)">[?]</span>
-								</label>
-								<input type="text" name="captadores_config" placeholder="Ex: HSS, SSS, HH...">
-							</div>
-							
-							<div class="form-group">
-								<label>Tags (separadas por vírgula)</label>
-								<input type="text" name="tags" placeholder="ex: vintage, jazz, leve, beginner">
-							</div>
-							
+
 						</div>
-					</div>
-					
-				</details> 
-				<button type="submit">Cadastrar Item</button>     
+
+						<div class="right-column">
+							<div class="form-group">
+								<label>Número de Cordas</label>
+								<input type="number" name="cordas" min="1" max="12">
+							</div>
+							<div class="form-row">
+								<div class="form-group">
+									<label for="madeira-select">Madeira (Corpo)</label>
+									<select name="madeira" id="madeira-select" required></select>
+								</div>
+
+								<!-- Campo extra para "Outro" -->
+								<div class="form-group" id="madeira-outro-group" style="display:none;">
+									<label for="madeira-outro">Digite o tipo de madeira:</label>
+									<input type="text" name="madeira_outro" id="madeira-outro"
+										placeholder="Ex: Cedro, Pau-Ferro...">
+								</div>
+								<div class="form-group">
+									<label for="captadores-select">
+										Configuração de Captadores
+										<span class="info-hover" data-img="/images/infos/captadores.png"
+											data-texto="S = Single Coil (som mais limpo e brilhante), H = Humbucker (mais encorpado e potente)">[?]</span>
+									</label>
+									<select name="captadores_config" id="captadores-select" required></select>
+								</div>
+
+								<!-- Campo extra para "Outro" -->
+								<div class="form-group" id="captadores-outro-group" style="display:none;">
+									<label for="captadores-outro">Digite a configuração:</label>
+									<input type="text" name="captadores_config_outro" id="captadores-outro"
+										placeholder="Ex: SSH, HSH...">
+								</div>
+
+								<div class="form-group">
+									<label>Tags</label>
+									<select id="tags-select" multiple></select>
+									<input type="hidden" name="tags" id="tags-hidden">
+									<small>Escolha até 15 tags sugeridas (ou edite depois).</small>
+									<button type="button" id="refazer-tags" style="margin-top:6px;">Sugerir
+										novamente</button>
+								</div>
+							</div>
+						</div>
+
+				</details>
+				<button type="submit">Cadastrar Item</button>
 			</form>
-			
-			
+
+
 		</div>
 		<!-- Popup descrição -->
 		<div id="tooltip-tipo" class="tooltip-tipo" style="display: none;">
-			<img id="tooltip-img" src="" alt="Modelo" />
+			<img id="tooltip-img" src="" alt="Shape" />
 			<p id="tooltip-texto"></p>
 		</div>
 		<!-- Tooltip captadores -->
@@ -201,124 +301,137 @@
 			const tooltipC = document.getElementById('tooltip-captadores');
 			const tooltipImgC = document.getElementById('tooltip-captadores-img');
 			const tooltipTextoC = document.getElementById('tooltip-captadores-texto');
-			
+
 			infoCaptador.addEventListener('mouseenter', () => {
 				const texto = infoCaptador.getAttribute('data-texto');
 				const imagem = infoCaptador.getAttribute('data-img');
-				
+
 				tooltipImgC.src = imagem;
 				tooltipTextoC.textContent = texto;
-				
+
 				const rect = infoCaptador.getBoundingClientRect();
 				tooltipC.style.top = rect.top + window.scrollY + 'px';
 				tooltipC.style.left = rect.right + 20 + 'px';
 				tooltipC.style.display = 'flex';
 			});
-			
+
 			infoCaptador.addEventListener('mouseleave', () => {
 				tooltipC.style.display = 'none';
 			});
 		</script>
-		
-		
+
+
 		<%- include('partials/footer') %>
-		
-		<script>
-			function proximaEtapa(atual, proxima) {
-				const campos = document.querySelectorAll(`#${atual} input:required, #${atual} textarea:required, #${atual} select:required`);
-				let preenchido = true;
-				
-				campos.forEach(campo => {
-					if (!campo.value.trim()) preenchido = false;
-				});
-				
-				if (!preenchido) {
-					alert("Preencha todos os campos obrigatórios antes de continuar.");
-					return;
-				}
-				
-				document.getElementById(atual).removeAttribute("open");
-				document.getElementById(proxima).setAttribute("open", true);
-				document.getElementById(proxima).scrollIntoView({ behavior: "smooth" });
-			}
-		</script>
-		<script>
-			const tipoProduto = document.getElementById('tipo-produto');
-			const categoriaCorda = document.getElementById('categoria-corda');
-			const categoriaCordaSelect = document.getElementById('categoria-corda-select');
-			const guitarraModelos = document.getElementById('guitarra-modelos');
-			const outroTipoBox = document.getElementById('outro-tipo');
-			
-			tipoProduto.addEventListener('change', function() {
-				if (this.value === 'corda') {
-					categoriaCorda.style.display = 'block';
-				} else {
-					categoriaCorda.style.display = 'none';
-					guitarraModelos.style.display = 'none';
-					outroTipoBox.style.display = 'none';
-				}
-			});
-			
-			categoriaCordaSelect.addEventListener('change', function() {
-				if (this.value === 'guitarra') {
-					guitarraModelos.style.display = 'block';
-				} else {
-					guitarraModelos.style.display = 'none';
-					outroTipoBox.style.display = 'none';
-				}
-			});
-			
-			// Tooltip lógica
-			const opcoesTipo = document.querySelectorAll('.tipo-opcao');
-			const tooltip = document.getElementById('tooltip-tipo');
-			const tooltipImg = document.getElementById('tooltip-img');
-			const tooltipTexto = document.getElementById('tooltip-texto');
-			
-			opcoesTipo.forEach(opcao => {
-				opcao.addEventListener('mouseenter', () => {
-					const descricao = opcao.getAttribute('data-descricao');
-					const imagem = opcao.getAttribute('data-img');
-					
-					if (descricao && imagem) {
-						tooltipImg.src = imagem;
-						tooltipTexto.textContent = descricao;
-						const rect = opcao.getBoundingClientRect();
-						tooltip.style.top = rect.top + window.scrollY + 'px';
-						tooltip.style.left = rect.right + 20 + 'px';
-						tooltip.style.display = 'flex';
+
+			<script>
+				function proximaEtapa(atual, proxima) {
+					const campos = document.querySelectorAll(`#${atual} input:required, #${atual} textarea:required, #${atual} select:required`);
+					let preenchido = true;
+
+					campos.forEach(campo => {
+						if (!campo.value.trim()) preenchido = false;
+					});
+
+					if (!preenchido) {
+						alert("Preencha todos os campos obrigatórios antes de continuar.");
+						return;
 					}
-				});
-				
-				opcao.addEventListener('mouseleave', () => {
-					tooltip.style.display = 'none';
-				});
-				
-				opcao.addEventListener('click', () => {
-					const modeloInput = document.getElementById('modelo-guitarra');
-					
-					if (opcao.id === 'outro-opcao') {
-						outroTipoBox.style.display = 'block';
-						modeloInput.value = ''; // limpa se for "Outro"
-					} else {
-						outroTipoBox.style.display = 'none';
-						modeloInput.value = opcao.textContent.trim(); // define o modelo selecionado
-					}
-					
-					// Estilo de feedback visual (opcional)
-					opcoesTipo.forEach(o => o.classList.remove('ativo'));
-					opcao.classList.add('ativo');
-				});
-			});
-		</script>
-		<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-		<script>
-			// Lista de marcas disponíveis
-			const marcas = [
-			"Fender", "Gibson", "Tagima", "Yamaha", "Ibanez", "Epiphone", "Michael", "Giannini", "Groovin", "Strinberg",
-			"Shelter", "Gretsch", "ESP", "PRS", "SX", "Dean", "Washburn", "Cort", "LTD", "Godin", "Outra..."
-			];
-			
-			// Preenche o <select> com as opções
+
+					document.getElementById(atual).removeAttribute("open");
+					document.getElementById(proxima).setAttribute("open", true);
+					document.getElementById(proxima).scrollIntoView({ behavior: "smooth" });
+				}
+			</script>
+			<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const marcaSelect = document.getElementById('marca-select');
+  const tipoSelect = document.getElementById('tipo-produto');
+  const categoriaCordaSelect = document.getElementById('categoria-corda-select');
+  const shapesLista = document.getElementById('shapes-lista');
+  const shapeInput = document.getElementById('shape-guitarra');
+  const modeloSelect = document.getElementById('modelo-select');
+
+  const guitarraShapes = document.getElementById('guitarra-shapes');
+  const outroTipoBox = document.getElementById('outro-tipo');
+
+  // ===== DESBLOQUEIO SEQUENCIAL =====
+  marcaSelect.addEventListener('change', () => {
+    tipoSelect.disabled = !marcaSelect.value;
+  });
+
+  tipoSelect.addEventListener('change', () => {
+    categoriaCordaSelect.disabled = !tipoSelect.value;
+  });
+
+  categoriaCordaSelect.addEventListener('change', () => {
+    // habilita lista de shapes
+    shapesLista.style.pointerEvents = categoriaCordaSelect.value ? 'auto' : 'none';
+    shapesLista.style.opacity = categoriaCordaSelect.value ? '1' : '0.5';
+
+    // mostra/esconde shapes de guitarra
+    if (categoriaCordaSelect.value === 'guitarra') {
+      guitarraShapes.style.opacity = 1;
+    } else {
+      guitarraShapes.style.opacity = 0.5;
+      outroTipoBox.style.display = 'none';
+    }
+  });
+
+  // ===== TOOLTIP =====
+  const opcoesTipo = document.querySelectorAll('.tipo-opcao');
+  const tooltip = document.getElementById('tooltip-tipo');
+  const tooltipImg = document.getElementById('tooltip-img');
+  const tooltipTexto = document.getElementById('tooltip-texto');
+
+  opcoesTipo.forEach(opcao => {
+    opcao.addEventListener('mouseenter', () => {
+      const descricao = opcao.getAttribute('data-descricao');
+      const imagem = opcao.getAttribute('data-img');
+
+      if (descricao && imagem) {
+        tooltipImg.src = imagem;
+        tooltipTexto.textContent = descricao;
+        const rect = opcao.getBoundingClientRect();
+        tooltip.style.top = rect.top + window.scrollY + 'px';
+        tooltip.style.left = rect.right + 20 + 'px';
+        tooltip.style.display = 'flex';
+      }
+    });
+
+    opcao.addEventListener('mouseleave', () => {
+      tooltip.style.display = 'none';
+    });
+
+    opcao.addEventListener('click', () => {
+      if (categoriaCordaSelect.disabled) return; // impede se não desbloqueou
+
+      if (opcao.id === 'outro-opcao') {
+        outroTipoBox.style.display = 'block';
+        shapeInput.value = '';
+      } else {
+        outroTipoBox.style.display = 'none';
+        shapeInput.value = opcao.textContent.trim();
+      }
+
+      modeloSelect.disabled = false; // desbloqueia modelo
+
+      // feedback visual
+      opcoesTipo.forEach(o => o.classList.remove('ativo'));
+      opcao.classList.add('ativo');
+    });
+  });
+});
+</script>
+
+			<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+			<script>
+				// Lista de marcas disponíveis
+				const marcas = [
+					"Fender", "Gibson", "Tagima", "Yamaha", "Ibanez", "Epiphone", "Michael", "Giannini", "Groovin", "Strinberg",
+					"Shelter", "Gretsch", "ESP", "PRS", "SX", "Dean", "Washburn", "Cort", "LTD", "Godin", "Outra..."
+				];
+
+				// Preenche o <select> com as opções
 				const selectMarca = document.getElementById("marca-select");
 				marcas.forEach(marca => {
 					const option = document.createElement("option");
@@ -326,7 +439,11 @@
 					option.textContent = marca;
 					selectMarca.appendChild(option);
 				});
-				
+
+				const marcasOrdenadas = [...new Set(marcasBase)]  // evita duplicatas
+					.sort((a,b)=>a.localeCompare(b,'pt-BR'));
+					marcasOrdenadas.push('Outra...');
+
 				// Ativa o Choices.js
 				const marcaChoices = new Choices("#marca-select", {
 					searchEnabled: true,
@@ -338,7 +455,7 @@
 			<script>
 				const selectMarcaEl = document.getElementById("marca-select");
 				const outraMarcaGroup = document.getElementById("outra-marca-group");
-				
+
 				selectMarcaEl.addEventListener("change", function () {
 					const selectedValue = selectMarcaEl.value;
 					if (selectedValue === "Outra...") {
@@ -348,76 +465,116 @@
 					}
 				});
 			</script>
-			
+
 			<script>
-				document.getElementById("gerar-descricao").addEventListener("click", async () => {
-					const nome = document.querySelector('[name="nome"]').value;
-					const modelo = document.querySelector('[name="outro_tipo"]')?.value || "";
-					const marcaSelect = document.getElementById("marca-select");
-					const marca = marcaSelect?.value || "";
-					const tipo = document.getElementById("tipo-produto")?.value || "";
-					const categoria = document.getElementById("categoria-corda-select")?.value || "";
-					
-					if (!nome || !marca || !tipo || !categoria) {
-						return alert("Preencha os campos Nome, Marca, Tipo e Categoria para gerar a descrição.");
-					}
-					
-					const response = await fetch("/gerar-descricao", {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ nome, modelo, marca, tipo, categoria }),
-					});
-					
-					if (!response.ok) {
-						alert("Erro ao gerar descrição.");
-						return;
-					}
-					
-					const data = await response.json();
-					document.querySelector('[name="descricao"]').value = data.descricao;
-				});
-			</script>
+document.getElementById("gerar-descricao").addEventListener("click", async () => {
+  const get = sel => document.querySelector(sel)?.value?.trim() || "";
+
+  // Campos básicos
+  const nome       = get('[name="nome"]');
+  const tipo       = get('#tipo-produto');
+  const categoria  = get('#categoria-corda-select');
+
+  // Marca: se escolher "Outra...", usa o texto digitado
+  const marcaSel   = get('#marca-select');
+  const marcaPers  = get('#marca-personalizada');
+  const marca      = (marcaSel === 'Outra...' && marcaPers) ? marcaPers : marcaSel;
+
+  // Shape: usa o hidden (#shape-guitarra) OU o campo manual (#outro_tipo), priorizando o manual se houver
+  const shapeHidden = get('#shape-guitarra');
+  const shapeOutro  = get('#outro_tipo');
+  const shape       = shapeOutro || shapeHidden;
+
+  // Modelo: se select == "__outro__", pega o input
+  const modeloSel   = get('#modelo-select');
+  const modeloOutro = get('#modelo-outro');
+  const modelo      = (modeloSel === '__outro__' && modeloOutro) ? modeloOutro : modeloSel;
+
+  // Opcionais que podem enriquecer a descrição (se existirem no seu form)
+  const madeiraSel   = get('#madeira-select');
+  const madeiraOut   = get('#madeira-outro');
+  const madeira      = (madeiraSel === 'Outro' && madeiraOut) ? madeiraOut : (madeiraSel || "");
+  const captSel      = get('#captadores-select');
+  const captOut      = get('#captadores-outro');
+  const captadores   = (captSel === 'Outro' && captOut) ? captOut : (captSel || "");
+  const corSel       = get('#cor-select');
+  const corOut       = get('#cor-outro');
+  const cor          = (corSel === 'Outro' && corOut) ? corOut : (corSel || "");
+
+  const caracteristicas = get('#caracteristicas');
+
+  // Validação mínima
+  if (!nome || !marca || !tipo || !categoria) {
+    return alert("Preencha os campos Nome, Marca, Tipo e Categoria para gerar a descrição.");
+  }
+
+  // DEBUG opcional: veja no console o que está sendo enviado
+  // console.table({ nome, marca, tipo, categoria, shape, modelo, madeira, captadores, cor, caracteristicas });
+
+  const payload = { nome, marca, tipo, categoria, shape, modelo, madeira, captadores, cor, caracteristicas };
+
+  const response = await fetch("/gerar-descricao", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    alert("Erro ao gerar descrição.");
+    return;
+  }
+
+  const data = await response.json();
+  document.querySelector('[name="descricao"]').value = data.descricao || "";
+
+  const especBox = document.querySelector('[name="especificacoes"]');
+  if (especBox && Array.isArray(data.especificacoes)) {
+    especBox.value = data.especificacoes.map(s => `• ${s}`).join('\n');
+  }
+});
+</script>
+
 			<script>
 				const previewContainer = document.getElementById('preview-container');
 				const previewTiles = [];
-				
+
 				for (let i = 0; i < 12; i++) {
 					const tile = document.createElement('div');
 					tile.className = 'preview-tile';
 					tile.dataset.index = i;
-					
+
 					const icon = document.createElement('span');
 					icon.className = 'camera-icon';
 					icon.innerHTML = '&#128247;';
 					tile.appendChild(icon);
-					
+
 					const input = document.createElement('input');
 					input.type = 'file';
 					input.accept = 'image/*';
 					input.style.display = 'none';
 					input.name = 'imagens';
 					tile.appendChild(input);
-					
+
 					tile.addEventListener('click', () => input.click());
-					
+
 					input.addEventListener('change', function () {
 						if (this.files.length > 0) {
 							const file = this.files[0];
 							const reader = new FileReader();
-							
+
 							reader.onload = function (e) {
 								tile.classList.add('preenchido');
 								tile.innerHTML = '';
-								
+
 								const img = document.createElement('img');
 								img.src = e.target.result;
 								tile.appendChild(img);
 								tile.appendChild(input);
-								
+
 								const removeBtn = document.createElement('button');
 								removeBtn.className = 'remove-btn';
 								removeBtn.innerHTML = '&times;';
-								
+
 								removeBtn.addEventListener('click', (event) => {
 									event.stopPropagation();
 									tile.innerHTML = '';
@@ -429,20 +586,571 @@
 									tile.appendChild(input);
 									input.value = '';
 								});
-								
+
 								tile.appendChild(removeBtn);
 							};
-							
+
 							reader.readAsDataURL(file);
 						}
 					});
-					
+
 					previewContainer.appendChild(tile);
 					previewTiles.push(tile);
 				}
 			</script>
-			
-			
-		</body>
-		</html>
-		
+			<script>
+				// ========== INIT Choices (se disponível) ==========
+				function ensureChoicesForTags() {
+					const el = document.getElementById('tags-select');
+					if (!el) return null;
+					if (typeof window.Choices === 'function' && !el.closest('.choices')) {
+						window.tagsChoices = new Choices('#tags-select', {
+							removeItemButton: true,
+							searchEnabled: true,
+							duplicateItemsAllowed: false,
+							maxItemCount: 15,
+							itemSelectText: ''
+						});
+						return window.tagsChoices;
+					}
+					return null;
+				}
+
+				// ========== Helpers ==========
+				const nowYear = new Date().getFullYear();
+
+				function uniqPush(arr, value, label) {
+					if (!value) return;
+					const v = String(value).trim();
+					if (!v) return;
+					const exists = arr.some(x => x.value.toLowerCase() === v.toLowerCase());
+					if (!exists) arr.push({ value: v, label: label || v.replace(/\b\w/g, m => m.toUpperCase()) });
+				}
+
+				function decadeTag(ano) {
+					if (!ano) return null;
+					const dec = Math.floor(ano / 10) * 10;
+					return `anos ${String(dec).slice(-2)}`;
+				}
+
+				function condicionaTags(cond) {
+					if (!cond) return [];
+					cond = cond.toLowerCase();
+					if (cond.includes('novo')) return ['novo', 'lacrado'].filter((v, i) => i === 0 || !cond.includes('lacrado'));
+					if (cond.includes('leves')) return ['usado', 'leves marcas'];
+					if (cond.includes('evidentes')) return ['usado', 'sinais de uso'];
+					if (cond.includes('defeituoso') || cond.includes('peças')) return ['defeituoso', 'para peças'];
+					return ['usado'];
+				}
+
+				function pickupsTags(cfg) {
+					if (!cfg) return [];
+					const up = cfg.toUpperCase().replace(/\s+/g, '');
+					const m = up.match(/[HS]{2,3}/); // pega HSS, SSS, HH, HSH etc
+					const base = [];
+					if (m) { base.push(m[0]); }
+					if (up.includes('H')) base.push('humbucker');
+					if (up.includes('S')) base.push('single coil');
+					// sugestões simples por configuração
+					if (up.includes('HSS')) base.push('versátil');
+					if (up === 'HH') base.push('rock', 'metal');
+					if (up === 'SSS') base.push('blues', 'funk');
+					return Array.from(new Set(base));
+				}
+
+				function corLabelFromSlug(slug) {
+					const map = {
+						'preto': 'Preto', 'branco': 'Branco', 'vermelho': 'Vermelho', 'azul': 'Azul',
+						'natural': 'Natural', 'sunburst': 'Sunburst', 'cinza': 'Cinza', 'amarelo': 'Amarelo',
+						'verde': 'Verde', 'goldtop': 'Goldtop', 'rosa': 'Rosa', 'verde-agua': 'Verde água',
+						'coral': 'Coral', 'marrom': 'Marrom', 'roxo': 'Roxo'
+					};
+					return map[slug] || slug;
+				}
+
+				// ========== Monta 15 sugestões a partir do formulário ==========
+				function buildTagSuggestions() {
+					const out = [];
+
+					const nome = document.querySelector('[name="nome"]')?.value || '';
+					const marca = document.getElementById('marca-select')?.value || '';
+					const tipo = document.getElementById('tipo-produto')?.value || '';
+					const categoria = document.getElementById('categoria-corda-select')?.value || '';
+					const shape = document.getElementById('shape-guitarra')?.value || document.getElementById('outro_tipo')?.value || '';
+					const cond = document.querySelector('[name="condicao"]')?.value || '';
+					const ano = parseInt(document.querySelector('[name="ano_fabricacao"]')?.value) || null;
+					const pais = document.querySelector('[name="pais_fabricacao"]')?.value || '';
+					const cor = document.getElementById('cor-select')?.value || '';
+					const acabamento = document.querySelector('[name="acabamento"]')?.value || '';
+					const madeira = document.querySelector('[name="madeira"]')?.value || '';
+					const cfg = document.querySelector('[name="captadores_config"]')?.value || '';
+					const cordas = parseInt(document.querySelector('[name="cordas"]')?.value) || null;
+
+					// principais
+					uniqPush(out, marca);
+					uniqPush(out, categoria);
+					uniqPush(out, shape);
+					if (tipo) uniqPush(out, tipo === 'corda' ? 'instrumento de corda' : tipo);
+
+					// condição
+					condicionaTags(cond).forEach(t => uniqPush(out, t));
+
+					// ano / vintage
+					if (ano) {
+						uniqPush(out, String(ano));
+						const dec = decadeTag(ano);
+						if (dec) uniqPush(out, dec);
+						if ((nowYear - ano) >= 25) uniqPush(out, 'vintage');
+					}
+
+					// país
+					if (pais) uniqPush(out, `made in ${pais}`);
+
+					// cor & acabamento
+					if (cor) uniqPush(out, cor, corLabelFromSlug(cor));
+					if (acabamento) {
+						const a = acabamento.toLowerCase();
+						uniqPush(out, a);
+						if (a.includes('relíquia') || a.includes('envelhecido')) uniqPush(out, 'relic');
+					}
+
+					// madeira (tenta separar por vírgulas ou /)
+					if (madeira) {
+						madeira.split(/[\/,;|]/).map(s => s.trim()).filter(Boolean).slice(0, 3)
+							.forEach(m => uniqPush(out, m.toLowerCase()));
+					}
+
+					// captadores
+					pickupsTags(cfg).forEach(t => uniqPush(out, t));
+
+					// nº de cordas
+					if (cordas && cordas !== 6) uniqPush(out, `${cordas} cordas`);
+
+					// palavras-chave do nome (básicas)
+					const low = nome.toLowerCase();
+					['telecaster', 'stratocaster', 'les paul', 'sg', 'flying v', 'explorer', 'jazzmaster', 'offset']
+						.forEach(k => { if (low.includes(k)) uniqPush(out, k); });
+
+					// Prioriza e limita a 15
+					// (marca, shape, categoria, config e condição ganham leve prioridade)
+					const priority = new Set([marca, shape, categoria, 'HSS', 'HH', 'SSS', 'novo', 'usado', 'defeituoso']);
+					const ranked = out.sort((a, b) => (priority.has(b.value) - priority.has(a.value)));
+					return ranked.slice(0, 15);
+				}
+
+				// ========== Aplica as sugestões no seletor ==========
+				function applyTagSuggestions() {
+					const suggestions = buildTagSuggestions();
+					const el = document.getElementById('tags-select');
+					if (!el) return;
+
+					// limpa escolhas atuais mas preserva itens já selecionados
+					const selected = (window.tagsChoices?.getValue(true)) || Array.from(el.querySelectorAll('option:checked')).map(o => o.value);
+
+					// recria opções
+					if (window.tagsChoices && typeof window.tagsChoices.setChoices === 'function') {
+						window.tagsChoices.clearStore();
+						window.tagsChoices.setChoices(
+							suggestions.map(s => ({ value: s.value, label: s.label, selected: selected.includes(s.value) })),
+							'value', 'label', true
+						);
+					} else {
+						el.innerHTML = '';
+						suggestions.forEach(s => {
+							const opt = document.createElement('option');
+							opt.value = s.value; opt.textContent = s.label;
+							if (selected.includes(s.value)) opt.selected = true;
+							el.appendChild(opt);
+						});
+					}
+				}
+
+				// ========== Serializa pro hidden ao enviar ==========
+				(function wireFormSubmit() {
+					const form = document.querySelector('form[action="/cadastro-item"]');
+					if (!form) return;
+					form.addEventListener('submit', () => {
+						const hidden = document.getElementById('tags-hidden');
+						const values = window.tagsChoices ? window.tagsChoices.getValue(true)
+							: Array.from(document.querySelectorAll('#tags-select option:checked')).map(o => o.value);
+						hidden.value = Array.isArray(values) ? values.join(',') : (values || '');
+					});
+				})();
+
+				// ========== Gatilhos ==========
+				// 1) Inicializa UI
+				ensureChoicesForTags();
+
+				// 2) Gera sugestões quando a Etapa 4 abrir (onde ficam as especificações/tags)
+				const etapa4 = document.getElementById('etapa-4');
+				if (etapa4) {
+					etapa4.addEventListener('toggle', () => { if (etapa4.open) { applyTagSuggestions(); } });
+				}
+
+				// 3) Botão "Sugerir novamente"
+				document.getElementById('refazer-tags')?.addEventListener('click', applyTagSuggestions);
+			</script>
+			<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+			<script>
+				(function () {
+					// Lista ISO-3166-1 alpha-2 (inclui "XK" para Kosovo)
+					const ISO_CODES = [
+						"AF", "AX", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM", "AW", "AU", "AT", "AZ",
+						"BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ", "BM", "BT", "BO", "BQ", "BA", "BW", "BV", "BR",
+						"IO", "BN", "BG", "BF", "BI", "CV", "KH", "CM", "CA", "KY", "CF", "TD", "CL", "CN", "CX", "CC",
+						"CO", "KM", "CG", "CD", "CK", "CR", "CI", "HR", "CU", "CW", "CY", "CZ", "DK", "DJ", "DM", "DO",
+						"EC", "EG", "SV", "GQ", "ER", "EE", "SZ", "ET", "FK", "FO", "FJ", "FI", "FR", "GF", "PF", "TF",
+						"GA", "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", "GN", "GW", "GY",
+						"HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IM", "IL", "IT", "JM",
+						"JP", "JE", "JO", "KZ", "KE", "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY",
+						"LI", "LT", "LU", "MO", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", "MU", "YT", "MX",
+						"FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", "NA", "NR", "NP", "NL", "NC", "NZ", "NI",
+						"NE", "NG", "NU", "NF", "MK", "MP", "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH",
+						"PN", "PL", "PT", "PR", "QA", "RE", "RO", "RU", "RW", "BL", "SH", "KN", "LC", "MF", "PM", "VC",
+						"WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", "SX", "SK", "SI", "SB", "SO", "ZA", "GS",
+						"SS", "ES", "LK", "SD", "SR", "SJ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK",
+						"TO", "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "US", "UM", "UY", "UZ", "VU",
+						"VE", "VN", "VG", "VI", "WF", "EH", "YE", "ZM", "ZW", "XK"
+					];
+
+					// Pega os nomes em pt-BR
+					const dn = new Intl.DisplayNames(['pt-BR'], { type: 'region' });
+
+					// Constrói lista {value,label}, com Brasil no topo
+					const allCountries = ISO_CODES.map(code => {
+						const label = dn.of(code) || code;
+						return { value: label, label }; // salva o NOME como value
+					}).filter(c => !!c.label);
+
+					// Ordena por nome
+					allCountries.sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'));
+
+					// Coloca Brasil primeiro (se existir)
+					const idxBR = allCountries.findIndex(c => c.label.toLowerCase() === 'brasil');
+					if (idxBR > -1) {
+						const br = allCountries.splice(idxBR, 1)[0];
+						allCountries.unshift(br);
+					}
+
+					// Instancia Choices no select
+					const selectEl = document.getElementById('pais-select');
+					const choices = new Choices(selectEl, {
+						searchEnabled: true,
+						placeholder: true,
+						placeholderValue: 'Selecione ou pesquise…',
+						removeItemButton: false,
+						shouldSort: false,
+						itemSelectText: '',
+						noResultsText: 'Nenhum país encontrado',
+						noChoicesText: 'Sem opções',
+						loadingText: 'Carregando…'
+					});
+
+					// Carrega opções
+					choices.setChoices(allCountries, 'value', 'label', true);
+
+					// (Opcional) Seleciona Brasil como default
+					// choices.setChoiceByValue('Brasil');
+				})();
+			</script>
+
+			<script>
+				(function () {
+					const opcoesCaptadores = [
+						{ value: '1 Single', label: '1 Single' },
+						{ value: '1 Humbucker', label: '1 Humbucker' },
+						{ value: 'HH', label: 'HH' },
+						{ value: 'HS', label: 'HS' },
+						{ value: 'SH', label: 'SH' },
+						{ value: 'SSS', label: 'SSS' },
+						{ value: 'HSS', label: 'HSS' },
+						{ value: 'HHH', label: 'HHH' },
+						{ value: 'Outro', label: 'Outro' }
+					];
+
+					const selectEl = document.getElementById('captadores-select');
+					const outroGroup = document.getElementById('captadores-outro-group');
+
+					const choices = new Choices(selectEl, {
+						searchEnabled: true,
+						placeholder: true,
+						placeholderValue: 'Selecione ou pesquise…',
+						removeItemButton: false,
+						shouldSort: false,
+						itemSelectText: '',
+						noResultsText: 'Nenhuma configuração encontrada',
+						noChoicesText: 'Sem opções',
+						loadingText: 'Carregando…'
+					});
+
+					choices.setChoices(opcoesCaptadores, 'value', 'label', true);
+
+					// Mostra/esconde o campo "Outro"
+					selectEl.addEventListener('change', function () {
+						if (this.value === 'Outro') {
+							outroGroup.style.display = 'block';
+							document.getElementById('captadores-outro').setAttribute('required', 'required');
+						} else {
+							outroGroup.style.display = 'none';
+							document.getElementById('captadores-outro').removeAttribute('required');
+						}
+					});
+				})();
+			</script>
+			<script>
+				(function () {
+					const opcoesMadeiras = [
+						{ value: 'Mogno', label: 'Mogno' },
+						{ value: 'Maple', label: 'Maple' },
+						{ value: 'Spruce', label: 'Spruce' },
+						{ value: 'Rosewood', label: 'Rosewood' },
+						{ value: 'Outro', label: 'Outro' }
+					];
+
+					const selectEl = document.getElementById('madeira-select');
+					const outroGroup = document.getElementById('madeira-outro-group');
+
+					const choices = new Choices(selectEl, {
+						searchEnabled: true,
+						placeholder: true,
+						placeholderValue: 'Selecione ou pesquise…',
+						removeItemButton: false,
+						shouldSort: false,
+						itemSelectText: '',
+						noResultsText: 'Nenhuma madeira encontrada',
+						noChoicesText: 'Sem opções',
+						loadingText: 'Carregando…'
+					});
+
+					choices.setChoices(opcoesMadeiras, 'value', 'label', true);
+
+					// Mostra/esconde campo "Outro"
+					selectEl.addEventListener('change', function () {
+						if (this.value === 'Outro') {
+							outroGroup.style.display = 'block';
+							document.getElementById('madeira-outro').setAttribute('required', 'required');
+						} else {
+							outroGroup.style.display = 'none';
+							document.getElementById('madeira-outro').removeAttribute('required');
+						}
+					});
+				})();
+			</script>
+			<script>
+				(function () {
+					const marcaEl = document.getElementById('marca-select'); // ajuste se seu id for outro
+					const shapeHidden = document.getElementById('shape-guitarra');
+					const shapeOutGroup = document.getElementById('outro-tipo');
+					const shapeOutInput = document.getElementById('outro_tipo');
+
+					const modeloGroup = document.getElementById('grupo-modelo');
+					const modeloSelect = document.getElementById('modelo-select');
+					const modeloOutro = document.getElementById('modelo-outro');
+
+					// Util: pegar shape atual (leva em conta "Outro")
+					function getShapeAtual() {
+						const shape = (shapeHidden.value || '').trim();
+						if (shape) return shape;
+						const outro = (shapeOutInput.value || '').trim();
+						return outro;
+					}
+
+					// Popular select de modelos
+					async function carregarModelos() {
+						const marca = (marcaEl?.value || '').trim();
+						const shape = getShapeAtual();
+
+						// Se não tiver os dois, desabilita modelo
+						if (!marca || !shape) {
+							modeloGroup.style.display = 'none';
+							modeloSelect.innerHTML = `<option value="">Selecione marca e shape...</option>`;
+							modeloSelect.disabled = true;
+							modeloOutro.style.display = 'none';
+							modeloOutro.value = '';
+							return;
+						}
+
+						// Se shape é "Outro" (manual), não existe catálogo → força "Outro"
+						if (!shapeHidden.value && shapeOutInput.value.trim()) {
+							modeloGroup.style.display = 'block';
+							modeloSelect.innerHTML = `
+        <option value="__outro__" selected>Outro (digite abaixo)</option>
+      `;
+							modeloSelect.disabled = false;
+							modeloOutro.style.display = 'block';
+							modeloOutro.required = true;
+							return;
+						}
+
+						// Busca no backend
+						try {
+							const params = new URLSearchParams({ marca, shape });
+							const resp = await fetch(`/api/modelos?${params.toString()}`);
+							const { modelos = [] } = await resp.json();
+
+							modeloGroup.style.display = 'block';
+							modeloSelect.disabled = false;
+
+							if (modelos.length === 0) {
+								// Sem catálogo → só "Outro"
+								modeloSelect.innerHTML = `
+          <option value="__outro__" selected>Outro (digite abaixo)</option>
+        `;
+								modeloOutro.style.display = 'block';
+								modeloOutro.required = true;
+							} else {
+								// Monta opções + "Outro"
+								const opts = modelos.map(m => `<option value="${m}">${m}</option>`).join('');
+								modeloSelect.innerHTML = `
+          <option value="">Selecione...</option>
+          ${opts}
+          <option value="__outro__">Outro...</option>
+        `;
+								modeloOutro.style.display = 'none';
+								modeloOutro.required = false;
+								modeloOutro.value = '';
+							}
+						} catch (e) {
+							console.error('Erro ao carregar modelos:', e);
+							// fallback: só "Outro"
+							modeloGroup.style.display = 'block';
+							modeloSelect.disabled = false;
+							modeloSelect.innerHTML = `<option value="__outro__" selected>Outro (digite abaixo)</option>`;
+							modeloOutro.style.display = 'block';
+							modeloOutro.required = true;
+						}
+					}
+
+					// Listener: quando escolher "Outro" no select de modelo
+					modeloSelect.addEventListener('change', () => {
+						if (modeloSelect.value === '__outro__') {
+							modeloOutro.style.display = 'block';
+							modeloOutro.required = true;
+						} else {
+							modeloOutro.style.display = 'none';
+							modeloOutro.required = false;
+							modeloOutro.value = '';
+						}
+					});
+
+					// Listener: Marca muda → recarrega modelos
+					marcaEl?.addEventListener('change', carregarModelos);
+
+					// Listener: clique nos shapes (suas divs)
+					document.querySelectorAll('#guitarra-shapes .tipo-opcao').forEach(el => {
+						el.addEventListener('click', () => {
+							const texto = el.textContent.trim();
+
+							// Marca visualmente selecionado (opcional)
+							document.querySelectorAll('#guitarra-shapes .tipo-opcao').forEach(x => x.classList.remove('ativo'));
+							el.classList.add('ativo');
+
+							if (el.id === 'outro-opcao') {
+								// Shape manual
+								shapeHidden.value = '';
+								shapeOutGroup.style.display = 'block';
+								shapeOutInput.value = '';
+								shapeOutInput.focus();
+							} else {
+								// Shape do catálogo
+								shapeHidden.value = texto;
+								shapeOutGroup.style.display = 'none';
+								shapeOutInput.value = '';
+							}
+							carregarModelos();
+						});
+					});
+
+					// Listener: digitando shape manual → recarregar modelos (debounce simples)
+					let outTimer;
+					shapeOutInput.addEventListener('input', () => {
+						clearTimeout(outTimer);
+						outTimer = setTimeout(carregarModelos, 300);
+					});
+
+					// Se vier pré-selecionado (edição), tenta carregar
+					document.addEventListener('DOMContentLoaded', carregarModelos);
+				})();
+			</script>
+			<script>
+(function () {
+  const form = document.querySelector('form[action="/cadastro-item"]');
+  if (!form) return;
+
+  function temAlgumaImagem() {
+    return [...document.querySelectorAll('input[type="file"][name="imagens"]')]
+      .some(inp => inp.files && inp.files.length > 0);
+  }
+
+  function showMsg(text) {
+    let box = document.getElementById('form-msg');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'form-msg';
+      box.style.cssText = 'margin:12px 0;padding:10px;border-radius:8px;background:#ffe8e8;color:#a10000;border:1px solid #ffbdbd;';
+      const container = document.querySelector('.cadastro-item-container') || form;
+      container.insertBefore(box, container.firstChild);
+    }
+    box.textContent = text;
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // não navega
+
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.dataset._txt = btn.textContent; btn.textContent = 'Cadastrando...'; }
+
+    // validação no cliente: precisa de pelo menos 1 imagem
+    if (!temAlgumaImagem()) {
+      showMsg('Pelo menos uma imagem é obrigatória.');
+      document.getElementById('etapa-1')?.setAttribute('open', true);
+      document.getElementById('etapa-1')?.scrollIntoView({ behavior: 'smooth' });
+      if (btn) { btn.disabled = false; btn.textContent = btn.dataset._txt || 'Cadastrar Item'; }
+      return;
+    }
+
+    try {
+      const fd = new FormData(form);
+      const resp = await fetch('/cadastro-item', {
+        method: 'POST',
+        body: fd,
+        headers: { 'X-Requested-With': 'fetch' } // faz a rota responder JSON
+      });
+
+      if (!resp.ok) {
+        let msg = 'Erro ao cadastrar item.';
+        try { const data = await resp.json(); if (data?.error) msg = data.error; } catch {}
+        showMsg(msg);
+
+        // se backend retornar 422 (sem imagens), mantém na mesma página
+        if (resp.status === 422) {
+          document.getElementById('etapa-1')?.setAttribute('open', true);
+          document.getElementById('etapa-1')?.scrollIntoView({ behavior: 'smooth' });
+        }
+        return;
+      }
+
+      const data = await resp.json();
+      // sucesso → redireciona manualmente
+      if (data?.redirect) {
+        window.location.href = data.redirect;
+      } else {
+        showMsg('Item cadastrado com sucesso!');
+      }
+    } catch (err) {
+      console.error(err);
+      showMsg('Falha na comunicação com o servidor. Tente novamente.');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = btn.dataset._txt || 'Cadastrar Item'; }
+    }
+  });
+})();
+</script>
+
+
+
+
+</body>
+
+</html>

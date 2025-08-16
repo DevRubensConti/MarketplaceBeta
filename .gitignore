@@ -1,0 +1,39 @@
+# deps
+node_modules/
+
+# env (NUNCA commitar segredos)
+.env
+.env.*.local
+*.env
+!.env.example
+
+# builds / artefatos
+dist/
+build/
+coverage/
+
+# logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# uploads e caches locais
+public/uploads/
+tmp/
+.cache/
+
+# SO / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Supabase CLI (se usar)
+.supabase/
+
+# bancos locais (se algum dia usar sqlite)
+*.sqlite
+*.sqlite-journal

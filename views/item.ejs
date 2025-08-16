@@ -22,61 +22,123 @@
           <% }) %>
         </div>
       </div>
+      <% if (dono) { %>
+        <section class="seller-card">
+          <!-- Coluna esquerda -->
+          <div class="seller-left">
+            <p class="seller-label"><%= item.tipo_usuario === 'pj' ? 'Loja Vendedora' : 'Vendedor' %>:</p>
+
+            <div class="seller-avatar">
+              <img 
+                src="<%= dono.icone_url || '/images/chat-default.png' %>" 
+                alt="Foto do vendedor">
+            </div>
+
+            <p class="seller-name">
+              <strong><%= item.tipo_usuario === 'pj' ? (dono.nome_fantasia || dono.nomeFantasia) : dono.nome %></strong>
+            </p>
+
+            <p class="seller-location">
+              <%= [dono.cidade, dono.estado].filter(Boolean).join(' - ') %>
+            </p>
+
+            <% if (dono.nota !== undefined && dono.nota !== null) { %>
+              <div class="seller-rating">
+                <div class="stars">
+                  <% for (let i=1; i<=5; i++) { %>
+                    <span class="star <%= i <= Number(dono.nota) ? 'filled' : '' %>">★</span>
+                  <% } %>
+                </div>
+              </div>
+            <% } %>
+
+            <a class="seller-profile" href="<%= item.tipo_usuario === 'pj' ? '/loja/' + dono.id : '/usuario/' + dono.id %>">
+              Ver Perfil
+            </a>
+          </div>
+
+          <!-- Coluna direita -->
+          <div class="seller-right">
+            <div class="seller-desc">
+              <%= (typeof dono.descricao === 'string' && dono.descricao.trim().length) ? dono.descricao : 'Sem descrição disponível.' %>
+            </div>
+            <div class="seller-sales">
+              <strong>Itens vendidos:</strong> <%= dono.itens_vendidos || 0 %>
+            </div>
+          </div>
+        </section>
+      <% } %>
 
       <div class="item-info">
-        <div class="buttons">
-          <form action="/comprar/<%= item.id %>" method="POST">
-            <button class="btn-buy">Compre Agora!</button>
-          </form>
-          <form action="/carrinho/adicionar/<%= item.id %>" method="POST">
-            <button class="btn-cart">Adicione ao Carrinho</button>
-          </form>
-          <form action="/oferta/<%= item.id %>" method="GET">
-            <button class="btn-offer">Fazer Oferta</button>
+      <div class="buttons">
+        <!-- Comprar -->
+        <div class="action-row">
+          <form id="checkout-form-<%= item.id %>" action="/checkout" method="GET">
+            <button type="button" class="btn-buy" data-id="<%= item.id %>">Comprar</button>
           </form>
         </div>
+
+        <!-- Adicionar ao Carrinho -->
+        <div class="action-row">
+          <button class="btn-cart" onclick="adicionarCarrinho('<%= item.id %>')">Adicionar ao Carrinho</button>
+        </div>
+
+        <!-- Fale com o Vendedor -->
+        <div class="contact-row">
+          <a href="/iniciar-chat/<%= item.id %>">
+            <button class="btn-chat">Fale com o Vendedor</button>
+          </a>
+        </div>
+
+        <!-- Favoritar -->
+        <div class="favorite-row">
+          <button class="btn-favorite" onclick="favoritarItem('<%= item.id %>')">
+            Favoritar
+          </button>
+        </div>
+      </div>
+
 
         <div class="price-rating">
           <h2>R$ <%= item.preco %></h2>
-          <p class="rating">★★★★★</p>
         </div>
-
+        <% if (item.nota !== undefined && item.nota !== null) { %>
+              <div class="item-rating">
+                <div class="stars-item">
+                  <% for (let i=1; i<=5; i++) { %>
+                    <span class="star-item <%= i <= Number(item.nota) ? 'filled' : '' %>">★</span>
+                  <% } %>
+                  <span class="view-icon">👁</span>
+                  <span class="view-count"><%= item.acessos || 0 %></span>
+                  <span class="days-listed">Anunciado há <%= item.dias_listado %> dias</span>
+                </div>
+              </div>
+              
+            <% } %>  
         <p class="description"><%= item.descricao %></p>
+        <div class="item-specs">
+          <h3>Especificações Técnicas</h3>
+            <ul>
+              <li><strong>Marca:</strong> <%= item.marca %></li>
+              <li><strong>Shape:</strong> <%= item.shape %></li>
+              <li><strong>Modelo:</strong> <%= item.modelo %></li>
+              <li><strong>Condicao:</strong> <%= item.condicao %></li>
+              <li><strong>Cor:</strong> <%= item.cor %></li>
+              <li><strong>Madeira:</strong> <%= item.madeira %></li>
+              <li><strong>Acabamento:</strong> <%= item.acabamento %></li>
+              <li><strong>País de Fabricação:</strong> <%= item.pais_fabricacao %></li>
+              <li><strong>Ano de Fabricação:</strong> <%= item.ano_fabricacao %></li>
+              <li><strong>Configuração de Captadores:</strong> <%= item.captadores_config %></li>
+              <li><strong>Numero de Cordas:</strong> <%= item.cordas %></li>
+            </ul>
+        </div>
+        
 
-        <% if (dono) { %>
-          <div class="loja">
-            <h3><%= item.tipo_usuario === 'pj' ? 'Loja Vendedora' : 'Vendedor' %></h3>
-            <p><strong><%= item.tipo_usuario === 'pj' ? dono.nomeFantasia : dono.nome %></strong></p>
-            
-            <% if (dono.icone_url) { %>
-              <img src="<%= dono.icone_url %>" alt="Ícone do Vendedor" class="banner-logo">
-            <% } %>
-
-            <% if (item.tipo_usuario === 'pj' && dono.nota) { %>
-              <p>Nota: <%= dono.nota %> ⭐</p>
-            <% } %>
-
-            <a href="<%= item.tipo_usuario === 'pj' ? '/loja/' + dono.id : '/usuario/' + dono.id %>">
-              <button class="btn-buy">Ver Perfil</button>
-            </a>
-          </div>
-        <% } %>
 
       </div>
     </div>
 
-    <div class="item-specs">
-      <h3>Especificações Técnicas</h3>
-        <ul>
-          <li><strong>Marca:</strong> <%= item.marca %></li>
-          <li><strong>Tipo:</strong> <%= item.tipo %></li>
-          <li><strong>Modelo:</strong> <%= item.modelo %></li>
-          <li><strong>Cor:</strong> <%= item.cor %></li>
-          <li><strong>Acabamento:</strong> <%= item.acabamento %></li>
-          <li><strong>Ano de Fabricação:</strong> <%= item.ano_fabricacao %></li>
-          <li><strong>Configuração de Captadores:</strong> <%= item.captadores_config %></li>
-        </ul>
-    </div>
+    
 
     <div class="extras">
       <div class="grafico">
@@ -87,16 +149,93 @@
 
   <%- include('partials/footer.ejs') %>
 
-  <script>
-  const mainImage = document.querySelector('.item-img');
-  const thumbnails = document.querySelectorAll('.thumbnail-list img');
+<script>
+  // Galeria (garante que o DOM carregou)
+  document.addEventListener('DOMContentLoaded', () => {
+    const mainImage = document.querySelector('.item-img');
+    const thumbnails = document.querySelectorAll('.thumbnail-list img');
 
-  thumbnails.forEach(thumbnail => {
-    thumbnail.addEventListener('click', () => {
-      const newSrc = thumbnail.getAttribute('src');
-      mainImage.setAttribute('src', newSrc);
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', () => {
+        const newSrc = thumbnail.getAttribute('src');
+        mainImage.setAttribute('src', newSrc);
+      });
     });
   });
 </script>
+
+<script>
+  // Adiciona item ao carrinho pelo mini-botão "Adicionar ao Carrinho"
+  async function adicionarCarrinho(produtoId) {
+    try {
+      const res = await fetch(`/api/carrinho/adicionar/${produtoId}`, {
+        method: 'POST',
+        credentials: 'same-origin'
+      });
+
+      if (res.status === 401) {
+        window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname + location.search);
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error('Erro ao adicionar ao carrinho.');
+      }
+
+      // Se você tem um botão que abre o mini carrinho, dispare aqui (opcional)
+      const btnMini = document.getElementById('btn-carrinho');
+      if (btnMini) btnMini.click();
+
+    } catch (e) {
+      alert(e.message || 'Erro ao adicionar ao carrinho.');
+    }
+  }
+</script>
+
+<script>
+  // Fluxo "Compre Agora": adiciona ao carrinho e vai para /checkout
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.btn-buy[data-id]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const produtoId = btn.dataset.id;
+        btn.disabled = true;
+
+        try {
+          const ok = await adicionarCarrinhoCheckout(produtoId);
+          if (ok) {
+            // Redireciona direto para o checkout com o carrinho completo
+            window.location.href = '/checkout';
+          } else {
+            btn.disabled = false;
+          }
+        } catch (e) {
+          alert('Não foi possível completar a operação. Tente novamente.');
+          btn.disabled = false;
+        }
+      });
+    });
+  });
+
+  async function adicionarCarrinhoCheckout(produtoId) {
+    const res = await fetch(`/api/carrinho/adicionar/${produtoId}`, {
+      method: 'POST',
+      credentials: 'same-origin'
+    });
+
+    if (res.status === 401) {
+      window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname + location.search);
+      return false;
+    }
+
+    if (!res.ok) {
+      alert('Erro ao adicionar ao carrinho.');
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
+
 </body>
 </html>

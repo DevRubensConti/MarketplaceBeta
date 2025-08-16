@@ -302,4 +302,26 @@ button[type="button"]:hover, button[type="submit"]:hover {
   display: flex;
 }
 
+.descricao-produto {
+  white-space: pre-line;
+}
+
+/* garante 100% de largura para todos os inputs */
+.form-group { width: 100%; }
+
+.form-group label { display: block; }
+
+.form-group select,
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="email"],
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Choices já está com 100%, mas reforço */
+.choices,
+.choices__inner { width: 100% !important; box-sizing: border-box; }
+
 

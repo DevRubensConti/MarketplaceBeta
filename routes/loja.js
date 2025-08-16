@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const supabase = require('../supabase');
-const { requireLogin } = require('../middlewares/auth'); 
+const { requireLogin,requirePJ } = require('../middlewares/auth'); 
 //listagem de lojas
 router.get('/lojas', async (req, res) => {
   const { data: lojas, error } = await supabase.from('usuarios_pj').select('*');
@@ -46,7 +46,7 @@ router.get('/loja/:id', async (req, res) => {
   // Busca dados da loja
   const { data: loja, error: lojaError } = await supabase
     .from('usuarios_pj')
-    .select('*')
+    .select('id, nomeFantasia, cidade, estado, telefone, icone_url, nota')
     .eq('id', lojaId)
     .single();
 
@@ -66,7 +66,7 @@ router.get('/loja/:id', async (req, res) => {
 });
 
 // POST: Compra de um item
-router.post('/comprar/:id', requireLogin, async (req, res) => {
+router.post('/comprar/:id', requireLogin,  async (req, res) => {
   const itemId = req.params.id;
 
   // Aqui você pode adicionar lógica real de compra:
@@ -77,7 +77,7 @@ router.post('/comprar/:id', requireLogin, async (req, res) => {
   res.send(`Compra registrada para o produto ${itemId}`);
 });
 
-router.get('/painel/loja', requireLogin, async (req, res) => {
+router.get('/painel/loja', requireLogin,requirePJ, async (req, res) => {
   const usuario = req.session.usuario;
 
   if (usuario.tipo !== 'pj') {
@@ -104,7 +104,7 @@ router.get('/painel/loja', requireLogin, async (req, res) => {
 });
 
 
-router.get('/painel/editar-loja', requireLogin, async (req, res) => {
+router.get('/painel/editar-loja', requireLogin, requirePJ, async (req, res) => {
   const usuario = req.session.usuario;
 
   if (usuario.tipo !== 'pj') {
@@ -125,30 +125,49 @@ router.get('/painel/editar-loja', requireLogin, async (req, res) => {
   res.render('editar-loja', { loja });
 });
 
-router.post('/painel/editar-loja', requireLogin, async (req, res) => {
-  const usuario = req.session.usuario;
+const multer = require('multer');
+const path = require('path');
 
-  if (usuario.tipo !== 'pj') {
-    return res.status(403).send('Acesso restrito a lojas');
+const storage = multer.diskStorage({
+  destination: 'public/uploads/icones/',
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`);
   }
+});
+
+const upload = multer({ storage });
+
+router.post('/painel/editar-loja', upload.single('icone'), async (req, res) => {
+  console.log('Imagem recebida:', req.file); // ← Aqui
 
   const { nomeFantasia, telefone, estado, cidade, endereco, descricao } = req.body;
 
+  const icone_url = req.file ? `/uploads/icones/${req.file.filename}` : undefined;
+
+  const updates = {
+    nomeFantasia,
+    telefone,
+    estado,
+    cidade,
+    endereco,
+    descricao
+  };
+
+  if (icone_url) updates.icone_url = icone_url;
+
   const { error } = await supabase
     .from('usuarios_pj')
-    .update({
-      nomeFantasia,
-      telefone,
-      estado,
-      cidade,
-      endereco,
-      descricao
-    })
-    .eq('id', usuario.id);
+    .update(updates)
+    .eq('id', req.session.usuario.id);
 
   if (error) {
-    console.error('Erro ao atualizar loja:', error);
-    return res.status(500).send('Erro ao atualizar dados da loja');
+    console.error(error);
+    return res.status(500).send('Erro ao atualizar loja');
+  }
+
+  if (icone_url) {
+    req.session.usuario.icone_url = icone_url;
   }
 
   res.redirect('/painel/loja');

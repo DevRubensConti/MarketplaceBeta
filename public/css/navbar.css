@@ -114,7 +114,7 @@ html, body {
 }
 
 .navbar-2 {
-  background-color: #57BD89;
+  background-color: var(--cor-primaria);
   color: white;
   padding: 10px 20px;
   width: 100%;
@@ -126,7 +126,7 @@ html, body {
 .navbar-bottom {
   display: flex;
   justify-content: center;
-  background: #57BD89;
+  background: var(--cor-primaria);
   padding: 10px 0;
   width: 100%;
   flex-wrap: wrap;
@@ -266,8 +266,8 @@ html, body {
 }
 
 .icone-perfil {
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--cor-letras-navbar);
@@ -284,7 +284,8 @@ html, body {
   position: absolute;
   right: 0;
   top: 110%;
-  background-color: rgba(0, 0, 0, 0.9);
+  background: color-mix(in srgb, var(--cor-primaria-escura-2) 80%, transparent);
+
   min-width: 180px;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
@@ -302,13 +303,13 @@ html, body {
 
 .dropdown-conteudo a:hover {
   color: white;
-  background-color: var(--cor-primaria-escura);
+  background-color: var(--cor-primaria);
   border-radius: 8px;
   margin-left: 5px;
   margin-right: 5px;
 }
 
-.navbar,
+
 .nav-links a {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 20px;
@@ -337,3 +338,69 @@ html, body {
     3px 3px 0 #28573F,
     4px 4px 0 #28573F;
 }
+
+.banner-hero {
+  background-image: url('/images/banner-hero.png');
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* texto na direita */
+  color: white;
+}
+
+.banner-conteudo {
+  margin-right: 40px;
+  text-align: right;
+}
+
+.banner-hero h1,
+.banner-hero p {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; /* ajuste se quiser maior */
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: var(--cor-letras-navbar);
+  text-shadow: 
+    1px 1px 0 #28573F,
+    2px 2px 0 #28573F,
+    3px 3px 0 #28573F,
+    4px 4px 0 #28573F;
+}
+
+.loja-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.loja-trigger:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.loja-trigger .icone-perfil {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.loja-trigger .nome-usuario {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.loja-trigger .caret {
+  opacity: .7;
+  font-size: 12px;
+}
+

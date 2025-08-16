@@ -16,7 +16,7 @@
           marca: Array.isArray(query.marca) ? query.marca : query.marca ? [query.marca] : [],
           tipo: Array.isArray(query.tipo) ? query.tipo : query.tipo ? [query.tipo] : [],
           categoria: Array.isArray(query.categoria) ? query.categoria : query.categoria ? [query.categoria] : [],
-          modelo: Array.isArray(query.modelo) ? query.modelo : query.modelo ? [query.modelo] : [],
+          shape: Array.isArray(query.shape) ? query.shape : query.shape ? [query.shape] : [],
           condicao: query.condicao || '',
           preco_min: query.preco_min || '0',
           preco_max: query.preco_max || '100000-',
@@ -45,8 +45,8 @@
           <span>Mín: R$ <span id="preco-min">0</span></span>
           <input type="range" id="range-min" name="preco_min" min="0" max="100000" step="50" value="<%= selected.preco_min %>">
       
-          <span>Máx: R$ <span id="preco-max">100000</span></span>
-          <input type="range" id="range-max" name="preco_max" min="0" max="100000" step="50" value="<%= selected.preco_max %>">
+          <span>Máx: R$ <span id="preco-max">1000000</span></span>
+          <input type="range" id="range-max" name="preco_max" min="0" max="1000000" step="50" value="<%= selected.preco_max %>">
         </div>
       </div>
       <div class="filtro-box">
@@ -68,13 +68,13 @@
         <label><input type="checkbox" name="categoria[]" value="baixo" <%= selected.categoria.includes('baixo') ? 'checked' : '' %>> Baixo</label>
       </div>
       <div class="filtro-box">
-        <h3>Modelo</h3>
-        <label><input type="checkbox" name="modelo[]" value="Stratocaster" <%= selected.modelo.includes('Stratocaster') ? 'checked' : '' %>> Stratocaster</label>
-        <label><input type="checkbox" name="modelo[]" value="Telecaster" <%= selected.modelo.includes('Telecaster') ? 'checked' : '' %>> Telecaster</label>
-        <label><input type="checkbox" name="modelo[]" value="Les Paul" <%= selected.modelo.includes('Les Paul') ? 'checked' : '' %>> Les Paul</label>
-        <label><input type="checkbox" name="modelo[]" value="SG" <%= selected.modelo.includes('SG') ? 'checked' : '' %>> SG</label>
-        <label><input type="checkbox" name="modelo[]" value="Explorer" <%= selected.modelo.includes('Explorer') ? 'checked' : '' %>> Explorer</label>
-        <label><input type="checkbox" name="modelo[]" value="Flying V" <%= selected.modelo.includes('Flying V') ? 'checked' : '' %>> Flying V</label>
+        <h3>Shape</h3>
+        <label><input type="checkbox" name="shape[]" value="Stratocaster" <%= selected.shape.includes('Stratocaster') ? 'checked' : '' %>> Stratocaster</label>
+        <label><input type="checkbox" name="shape[]" value="Telecaster" <%= selected.shape.includes('Telecaster') ? 'checked' : '' %>> Telecaster</label>
+        <label><input type="checkbox" name="shape[]" value="Les Paul" <%= selected.shape.includes('Les Paul') ? 'checked' : '' %>> Les Paul</label>
+        <label><input type="checkbox" name="shape[]" value="SG" <%= selected.shape.includes('SG') ? 'checked' : '' %>> SG</label>
+        <label><input type="checkbox" name="shape[]" value="Explorer" <%= selected.shape.includes('Explorer') ? 'checked' : '' %>> Explorer</label>
+        <label><input type="checkbox" name="shape[]" value="Flying V" <%= selected.shape.includes('Flying V') ? 'checked' : '' %>> Flying V</label>
       </div>
       <div class="filtro-box">
       <h3>Marca</h3>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat</title>
+  <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <div class="chat-wrapper">
+    <!-- Lista de outros chats -->
+    <aside class="chat-lista">
+      <h3>Outros Chats</h3>
+      <% if (listaChats && listaChats.length > 0) { %>
+        <% listaChats.forEach(c => { %>
+          <a href="/chat/<%= c.chat_id %>" class="chat-link <%= c.chat_id === chatId ? 'ativo' : '' %>">
+            <%= c.outroUsuario.nome %>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <p class="sem-chats">Nenhum outro chat</p>
+      <% } %>
+    </aside>
+
+    <!-- Área do chat atual -->
+    <section class="chat-area">
+      <!-- Cabeçalho do produto -->
+      <% if (produto) { %>
+        <div class="chat-produto-header">
+          <img src="<%= produto.imagem_url?.split(',')[0] || '/images/no-image.png' %>" alt="Produto">
+          <div>
+            <h3><%= produto.nome %></h3>
+            <p>R$ <%= produto.preco %></p>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Info do vendedor -->
+      <% if (outroUsuario) { %>
+        <div class="chat-vendedor">
+          <img src="<%= outroUsuario.icone_url || '/images/chat-default.png' %>" alt="Foto do usuário">
+          <span><%= outroUsuario.nome %></span>
+        </div>
+      <% } %>
+
+      <!-- Mensagens -->
+      <div class="chat-mensagens">
+        <% if (mensagens.length === 0) { %>
+          <p class="sem-mensagens">Nenhuma mensagem ainda. Comece a conversa!</p>
+        <% } else { %>
+          <% mensagens.forEach(msg => { %>
+            <div class="mensagem <%= msg.id_remetente === usuarioAtual ? 'minha' : 'dele' %>">
+              <p><%= msg.mensagem %></p>
+              <span class="data-msg"><%= new Date(msg.created_at).toLocaleString('pt-BR') %></span>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+
+      <!-- Enviar mensagem -->
+      <form class="chat-input">
+        <input type="hidden" name="chat_id" value="<%= chatId %>">
+        <textarea name="mensagem" placeholder="Digite sua mensagem..." required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </div>
+
+  <%- include('partials/footer.ejs') %>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const chatId = "<%= chatId %>";
+    const usuarioAtual = "<%= String(usuarioAtual) %>";
+
+    // Entrar na sala do chat
+    socket.emit('joinRoom', chatId);
+
+    // Receber novas mensagens em tempo real
+    socket.on('mensagemRecebida', (msg) => {
+      const container = document.querySelector('.chat-mensagens');
+      const div = document.createElement('div');
+      const remetente = String(msg.id_remetente || '');
+      div.classList.add('mensagem', remetente === usuarioAtual ? 'minha' : 'dele');
+      const criado = msg.created_at ? new Date(msg.created_at) : new Date();
+      div.innerHTML = `
+        <p>${msg.mensagem}</p>
+        <span class="data-msg">${criado.toLocaleString('pt-BR')}</span>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    });
+
+    // Intercepta envio do formulário
+    const form = document.querySelector('.chat-input');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const textarea = form.querySelector('textarea[name="mensagem"]');
+      const texto = textarea.value.trim();
+      if (!texto) return;
+
+      // Envia para o servidor (o server já salva no Supabase e faz broadcast)
+      socket.emit('send_message', {
+        chatId,
+        mensagem: texto
+      });
+
+      textarea.value = '';
+    });
+
+    // Rola para o fim ao carregar
+    const box = document.querySelector('.chat-mensagens');
+    box.scrollTop = box.scrollHeight;
+  </script>
+
+</body>
+</html>

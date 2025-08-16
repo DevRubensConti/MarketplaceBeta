@@ -31,7 +31,7 @@
             <div class="botoes">
               <a href="/painel/produto/<%= item.id %>/editar" class="btn-editar">Editar</a>
               <form id="form-excluir-<%= item.id %>" action="/produto/<%= item.id %>/excluir" method="POST" style="display: none;"></form>
-              <button onclick="confirmarExclusao('<%= item.id %>', '<%= item.nome %>')">Excluir Produto</button>
+              <button class="btn-excluir" onclick="confirmarExclusao('<%= item.id %>', '<%= item.nome %>')">Excluir Produto</button>
             </div>
           </div>
         <% }) %>

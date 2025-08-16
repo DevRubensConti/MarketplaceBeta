@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Meus Pedidos</title>
+  <link rel="stylesheet" href="/css/pedidos.css">
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main class="pedidos-container">
+    <h1>🛒 Meus Pedidos</h1>
+
+    <% if (pedidos.length > 0) { %>
+      <% pedidos.forEach(pedido => { %>
+        <div class="pedido-box">
+          <div class="pedido-header">
+            <div>
+              <p><strong>Pedido realizado:</strong> <%= new Date(pedido.data_pedido).toLocaleDateString() %></p>
+              <p><strong>Total:</strong> R$ <%= pedido.preco_total %></p>
+            </div>
+            <div>
+              <p><strong>Pedido Nº:</strong> <%= pedido.id %></p>
+              <a href="#">Exibir detalhes do pedido</a> | <a href="#">Exibir recibo</a>
+            </div>
+          </div>
+
+          <div class="pedido-body">
+  <div class="pedido-img">
+    <% if (pedido.produto && pedido.produto.imagem_url) { %>
+      <img src="<%= pedido.produto.imagem_url.split(',')[0] %>" alt="Produto">
+    <% } else { %>
+      <div class="no-img">Sem imagem</div>
+    <% } %>
+  </div>
+
+  <div class="pedido-info">
+    <h3><%= pedido.produto?.nome || 'Produto indisponível' %></h3>
+    <p class="sub-info">Instrumento Musical</p> <!-- ajuste conforme tipo real -->
+    <p class="status-info">Status: <%= pedido.status %></p>
+  </div>
+</div>
+
+
+            <div class="pedido-actions">
+              <button class="btn-acao">Ver produto</button>
+              <button class="btn-acao">Avaliar produto</button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="no-pedidos">Você ainda não realizou nenhum pedido.</p>
+    <% } %>
+
+  </main>
+    <%- include('partials/footer.ejs') %>
+
+</body>
+</html>

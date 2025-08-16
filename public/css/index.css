@@ -23,6 +23,27 @@ body {
   background-size: cover;
 }
 
+.mais-acessados-header {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 10px;
+}
+
+.mais-acessados-header h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: white;
+  text-shadow: 
+    1px 1px 0 #28573F,
+    2px 2px 0 #28573F,
+    3px 3px 0 #28573F,
+    4px 4px 0 #28573F;
+}
+
+
 .most-viewed-gallery-wrap {
   width: 100%;
   max-width: 1300px;
@@ -45,7 +66,7 @@ body {
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: normal;
-  color: var(--cor-letras-navbar);
+  color: white;
 
   text-shadow: 
     1px 1px 0 #28573F,
@@ -55,14 +76,64 @@ body {
 }
 
 .most-viewed-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.card-produto-uniforme {
+  width: 250px;
+  background: rgba(0, 0, 0, 0.4); /* fundo escuro transparente */
+  backdrop-filter: blur(8px);     /* efeito fosco */
+  -webkit-backdrop-filter: blur(8px); /* compatibilidade Safari */
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  text-align: center;
+  color: white; /* para garantir contraste no texto */
+}
+
+
+.card-produto-uniforme:hover {
+  transform: scale(1.02);
+}
+
+.card-produto-uniforme a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.imagem-container {
   width: 100%;
-  height: auto;
-  margin-bottom: 2%;
-  margin-top: 2%;
-  background-color: rgba(255, 255, 255, 0);
+  height: 220px;
+  background: #f6f6f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.imagem-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info-produto {
+  padding: 10px 12px;
+}
+
+.info-produto h3 {
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+.info-produto p {
+  margin: 4px 0;
+  font-size: 14px;
 }
 
 .card-produto {
@@ -77,10 +148,11 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 200px;
+  max-width: 300px;
   align-items: center;
   margin: 10px auto;
 }
+
 
 .card-produto img {
   width: 100%;
@@ -159,13 +231,19 @@ body {
   max-width: 1300px;
   margin: auto;
   gap: 30px;
-  background-color: rgba(255, 255, 255, 0.08);
+  
+  /* Fundo escuro translúcido com efeito fosco */
+  background-color: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
   border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   margin-bottom: 60px;
+  color: white; /* opcional, se houver texto dentro */
 }
+
+
 
 .brands-gallery-title {
   text-align: center;
@@ -173,11 +251,11 @@ body {
 
 .brands-gallery-title h2 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px; /* AUMENTO DA FONTE */
+  font-size: 40px; /* AUMENTO DA FONTE */
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: normal;
-  color: var(--cor-letras-navbar);
+  color: white;
 
   text-shadow: 
     1px 1px 0 #28573F,
@@ -252,13 +330,18 @@ body {
   max-width: 1300px;
   margin: auto;
   gap: 30px;
-  background-color: rgba(255, 255, 255, 0.08);
+
+  /* Novo fundo escuro e translúcido */
+  background-color: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
   border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
+  color: white; /* caso queira textos claros também */
 }
+
 
 .stores-title {
   text-align: center;
@@ -266,11 +349,11 @@ body {
 
 .stores-title h2 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px; /* AUMENTO DA FONTE */
+  font-size: 40px; /* AUMENTO DA FONTE */
   letter-spacing: 1px;
   text-transform: uppercase;
   font-weight: normal;
-  color: var(--cor-letras-navbar);
+  color: white;
 
   text-shadow: 
     1px 1px 0 #28573F,
