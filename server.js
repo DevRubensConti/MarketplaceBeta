@@ -1,7 +1,10 @@
-const app = require('./app');
+// server.js
+const http = require('http');
+const app = require('./app'); // <- importa o app exportado acima
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = http.createServer(app);
+
+server.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-// Exporta a instância do app
-module.exports = app;

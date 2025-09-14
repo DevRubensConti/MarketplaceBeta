@@ -37,3 +37,12 @@ Thumbs.db
 # bancos locais (se algum dia usar sqlite)
 *.sqlite
 *.sqlite-journal
+
+# opcional: lockfiles (se não quiser no repo)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# opcional: frameworks de front
+.next/
+out/
