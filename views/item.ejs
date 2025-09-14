@@ -41,16 +41,19 @@
             <p class="seller-location">
               <%= [dono.cidade, dono.estado].filter(Boolean).join(' - ') %>
             </p>
-
-            <% if (dono.nota !== undefined && dono.nota !== null) { %>
-              <div class="seller-rating">
-                <div class="stars">
-                  <% for (let i=1; i<=5; i++) { %>
-                    <span class="star <%= i <= Number(dono.nota) ? 'filled' : '' %>">★</span>
-                  <% } %>
-                </div>
-              </div>
-            <% } %>
+          
+          <% const mediaDono = Number(dono?.nota_media || 0); %>
+          <div class="seller-rating">
+            <div class="stars">
+              <% for (let i=1; i<=5; i++) { %>
+                <span class="star <%= i <= Math.round(mediaDono) ? 'filled' : '' %>">★</span>
+              <% } %>
+            </div>
+            <small>
+              <strong><%= mediaDono.toFixed(1) %>/5</strong>
+              · <%= dono?.total_avaliacoes || 0 %> avaliações
+            </small>
+          </div>
 
             <a class="seller-profile" href="<%= item.tipo_usuario === 'pj' ? '/loja/' + dono.id : '/usuario/' + dono.id %>">
               Ver Perfil
@@ -80,7 +83,27 @@
 
         <!-- Adicionar ao Carrinho -->
         <div class="action-row">
-          <button class="btn-cart" onclick="adicionarCarrinho('<%= item.id %>')">Adicionar ao Carrinho</button>
+          <% if (!usuario) { %>
+            <!-- Não logado: redireciona direto -->
+            <a href="/login?redirect=<%= encodeURIComponent('/item/' + item.id) %>">
+              <button class="btn-cart">Adicionar ao Carrinho</button>
+            </a>
+          <% } else { %>
+            <!-- Logado: usa a função normal -->
+            <button class="btn-cart" onclick="adicionarCarrinho('<%= item.id %>')">Adicionar ao Carrinho</button>
+          <% } %>
+        </div>
+
+        <div class="action-row">
+          <% if (!usuario) { %>
+            <a href="/login?redirect=<%= encodeURIComponent('/item/' + item.id) %>">
+              <button class="btn-offer">Fazer Oferta</button>
+            </a>
+          <% } else { %>
+            <button class="btn-offer" data-produto-id="<%= item.id %>" data-preco="<%= Number(item.preco) %>">
+              Fazer Oferta
+            </button>
+          <% } %>
         </div>
 
         <!-- Fale com o Vendedor -->
@@ -102,19 +125,22 @@
         <div class="price-rating">
           <h2>R$ <%= item.preco %></h2>
         </div>
-        <% if (item.nota !== undefined && item.nota !== null) { %>
-              <div class="item-rating">
-                <div class="stars-item">
-                  <% for (let i=1; i<=5; i++) { %>
-                    <span class="star-item <%= i <= Number(item.nota) ? 'filled' : '' %>">★</span>
-                  <% } %>
-                  <span class="view-icon">👁</span>
-                  <span class="view-count"><%= item.acessos || 0 %></span>
-                  <span class="days-listed">Anunciado há <%= item.dias_listado %> dias</span>
-                </div>
-              </div>
-              
-            <% } %>  
+        <% const mediaProd = Number(item?.nota_media || 0); %>
+        <div class="item-rating">
+          <div class="stars-item">
+            <% for (let i=1; i<=5; i++) { %>
+              <span class="star-item <%= i <= Math.round(mediaProd) ? 'filled' : '' %>">★</span>
+            <% } %>
+            <span style="margin-left:8px;">
+              <strong><%= mediaProd.toFixed(1) %>/5</strong>
+              · <%= item?.total_avaliacoes || 0 %> avaliações
+            </span>
+            <span class="view-icon">👁</span>
+            <span class="view-count"><%= item.acessos || 0 %></span>
+            <span class="days-listed">Anunciado há <%= item.dias_listado %> dias</span>
+          </div>
+        </div>
+ 
         <p class="description"><%= item.descricao %></p>
         <div class="item-specs">
           <h3>Especificações Técnicas</h3>
@@ -234,6 +260,139 @@
 
     return true;
   }
+</script>
+<!-- Modal de Oferta -->
+<div id="modal-oferta" class="oferta-modal hidden" aria-hidden="true">
+  <div class="oferta-dialog" role="dialog" aria-modal="true" aria-labelledby="ofertaTitulo">
+    <button class="oferta-close" title="Fechar">×</button>
+    <h3 id="ofertaTitulo">Enviar Oferta</h3>
+
+    <div class="oferta-price-line">
+      <span>Preço do anúncio:</span>
+      <strong>R$ <span id="ofertaPrecoAnuncio"><%= Number(item.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %></span></strong>
+    </div>
+
+    <label class="oferta-label">Valor da sua oferta (R$)</label>
+    <input id="ofertaValor" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off">
+
+    <label class="oferta-label">Mensagem (opcional)</label>
+    <textarea id="ofertaMensagem" rows="3" placeholder="Ex.: Posso retirar em mãos, consigo pagar à vista."></textarea>
+
+    <div class="oferta-actions">
+      <button id="ofertaCancelar" class="btn-outline">Cancelar</button>
+      <button id="ofertaEnviar" class="btn-primary" data-produto-id="<%= item.id %>">Enviar Oferta</button>
+    </div>
+
+    <p id="ofertaFeedback" class="oferta-feedback" role="status" aria-live="polite"></p>
+  </div>
+</div>
+<script>
+(function() {
+  const btnOffer = document.querySelector('.btn-offer');
+  const modal = document.getElementById('modal-oferta');
+  if (!btnOffer || !modal) return;
+
+  const dialog = modal.querySelector('.oferta-dialog');
+  const btnClose = modal.querySelector('.oferta-close');
+  const btnCancelar = modal.querySelector('#ofertaCancelar');
+  const btnEnviar = modal.querySelector('#ofertaEnviar');
+  const inputValor = modal.querySelector('#ofertaValor');
+  const textareaMsg = modal.querySelector('#ofertaMensagem');
+  const feedback = modal.querySelector('#ofertaFeedback');
+
+  const precoAnuncio = Number(btnOffer.dataset.preco || 0);
+
+  // Helpers
+  const openModal = () => {
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    inputValor.value = '';
+    textareaMsg.value = '';
+    feedback.textContent = '';
+    setTimeout(() => inputValor.focus(), 50);
+  };
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+  };
+
+  // Mascara/parse BRL simples
+  const parseBR = (str) => {
+    if (!str) return NaN;
+    const s = str.replace(/\./g,'').replace(',', '.').replace(/[^\d.]/g,'');
+    return Number(s);
+  };
+  const formatBR = (num) => num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  inputValor.addEventListener('input', () => {
+    // permite digitar livre e só valida no envio
+  });
+
+  // Abrir
+  btnOffer.addEventListener('click', () => openModal());
+
+  // Fechar
+  [btnClose, btnCancelar].forEach(el => el.addEventListener('click', closeModal));
+  modal.addEventListener('click', (ev) => { if (ev.target === modal) closeModal(); });
+  document.addEventListener('keydown', (ev) => {
+    if (!modal.classList.contains('hidden') && ev.key === 'Escape') closeModal();
+  });
+
+  // Enviar
+  btnEnviar.addEventListener('click', async () => {
+    const produto_id = btnOffer.dataset.produtoId;
+    const valor = parseBR(inputValor.value);
+
+    if (!valor || isNaN(valor) || valor <= 0) {
+      feedback.textContent = 'Informe um valor de oferta válido.';
+      return;
+    }
+    // Validação leve: geralmente a oferta é <= preço do anúncio
+    if (precoAnuncio && valor > precoAnuncio) {
+      feedback.textContent = 'A oferta costuma ser menor ou igual ao preço do anúncio.';
+      return;
+    }
+
+    btnEnviar.disabled = true;
+    feedback.textContent = 'Enviando sua oferta...';
+
+    try {
+      const res = await fetch('/api/ofertas', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          produto_id,
+          valor: Number(valor.toFixed(2)),
+          mensagem: textareaMsg.value?.trim() || null
+        })
+      });
+
+      if (res.status === 401) {
+        // redireciona para login preservando retorno
+        window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname + location.search);
+        return;
+      }
+
+      if (!res.ok) {
+        const msg = (await res.json().catch(()=>({})))?.error || 'Não foi possível enviar a oferta.';
+        throw new Error(msg);
+      }
+
+      feedback.textContent = 'Oferta enviada com sucesso! O vendedor será notificado.';
+      // Fechar depois de um tempinho
+      setTimeout(() => {
+        closeModal();
+        // opcional: abrir chat
+        // window.location.href = '/iniciar-chat/<%= item.id %>';
+      }, 900);
+    } catch (e) {
+      feedback.textContent = e.message || 'Erro ao enviar oferta.';
+    } finally {
+      btnEnviar.disabled = false;
+    }
+  });
+})();
 </script>
 
 

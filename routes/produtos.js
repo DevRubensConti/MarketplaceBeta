@@ -1,11 +1,24 @@
 
 const express = require('express');
 const router = express.Router();
-const supabase = require('../supabase');
+const supabaseDb = require('../supabase/supabaseDb');
 const { requireLogin } = require('../middlewares/auth');
 const upload = require('../middlewares/upload');
 const { parsePrecoFlex, toCentavos } = require('../utils/preco'); 
 const { normalizeSimple } = require('../utils/normalizeText'); 
+
+// Detecta se a requisição espera JSON (fetch/AJAX ou Accept: application/json)
+function wantsJson(req) {
+  return (
+    req.get('X-Requested-With') === 'fetch' ||      // fetch no front
+    req.xhr === true ||                              // AJAX "clássico"
+    req.accepts(['html', 'json']) === 'json' ||      // header Accept prioriza JSON
+    (req.get('Accept') || '').includes('application/json') ||
+    (req.headers['content-type'] || '').includes('application/json')
+  );
+}
+
+
 // Página inicial de listagem (sem filtros aplicados)
 router.get('/listings', (req, res) => {
   res.render('listings');
@@ -32,7 +45,7 @@ router.get('/produtos', async (req, res) => {
 
   const toArr = v => v ? (Array.isArray(v) ? v : [v]) : [];
 
-  let query = supabase.from('produtos').select('*');
+  let query = supabaseDb.from('produtos').select('*');
 
   // Preço: aplique apenas quando vier número válido
   const min = parseFloat(preco_min);
@@ -45,7 +58,13 @@ router.get('/produtos', async (req, res) => {
   // Filtros simples
   if (condicao && condicao.trim())    query = query.eq('condicao', condicao);
   if (acabamento && acabamento.trim())query = query.eq('acabamento', acabamento);
-  if (cor && cor.trim())              query = query.ilike('cor', cor);
+  // ...
+  if (cor && cor.trim()) {
+    const corLike = `%${cor.trim().replace(/[%_]/g, '\\$&')}%`;
+    query = query.ilike('cor', corLike);
+  }
+  // ...
+
   if (promo != null)                  query = query.eq('em_promocao', true);
 
   // Arrays
@@ -104,72 +123,132 @@ router.get('/item/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 1) verifica se existe (ou já pode buscar tudo e depois incrementar)
-    const { data: item, error } = await supabase
+    // 1) Produto com agregados
+    const { data: item, error: itemErr } = await supabaseDb
       .from('produtos')
-      .select('id, nome, preco, imagem_url, descricao, condicao, marca, shape, modelo, cor, madeira, acabamento, pais_fabricacao, ano_fabricacao, captadores_config, cordas,tipo_usuario, usuario_id, acessos, nota, created_at')
+      .select(`
+        id, nome, preco, imagem_url, descricao, condicao, marca, shape, modelo, cor,
+        madeira, acabamento, pais_fabricacao, ano_fabricacao, captadores_config, cordas,
+        tipo_usuario, usuario_id, acessos, created_at,
+        nota_media, total_avaliacoes
+      `)
       .eq('id', id)
-      .single();
+      .maybeSingle();
 
-    if (error || !item) {
-      console.error('Erro ao buscar item:', error);
+    if (itemErr || !item) {
+      console.error('Erro ao buscar item:', itemErr);
       return res.status(404).send('Produto não encontrado');
     }
 
+    // Dias listado
     if (item.created_at) {
-    const dataCriacao = new Date(item.created_at);
-    const hoje = new Date();
-    const diffMs = hoje - dataCriacao; // diferença em milissegundos
-    const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24)); // converte para dias
-    item.dias_listado = diffDias;
-  }
-  
-    // 2) incrementa acessos de forma atômica
-    const { error: incErr } = await supabase.rpc('increment_acessos', { p_id: id });
+      const d = new Date(item.created_at);
+      item.dias_listado = Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
+    } else {
+      item.dias_listado = 0;
+    }
+
+    // 2) Incrementa acessos (RPC)
+    const { error: incErr } = await supabaseDb.rpc('increment_acessos', { p_id: id });
     if (incErr) console.error('Erro ao incrementar acessos:', incErr);
 
-    // 3) busca dono
+    // 3) Dono (PF ou PJ) com agregados
     let dono = null;
     if (item.tipo_usuario === 'pj') {
-      const { data, error: erroPJ } = await supabase
+      const { data, error: pjErr } = await supabaseDb
         .from('usuarios_pj')
-        .select('id, nomeFantasia, nota, icone_url, descricao, itens_vendidos, cidade, estado, created_at')
+        .select(`
+          id, nomeFantasia, icone_url, descricao, itens_vendidos, cidade, estado, created_at,
+          nota_media, total_avaliacoes
+        `)
         .eq('id', item.usuario_id)
-        .single();
+        .maybeSingle();
       dono = data;
-      if (erroPJ) console.error('Erro ao buscar loja:', erroPJ);
+      if (pjErr) console.error('Erro ao buscar usuário PJ:', pjErr);
     } else {
-      const { data, error: erroPF } = await supabase
+      const { data, error: pfErr } = await supabaseDb
         .from('usuarios_pf')
-        .select('id, nome, icone_url, nota, itens_vendidos')
+        .select(`
+          id, nome, sobrenome, icone_url, descricao, itens_vendidos, cidade, estado,
+          nota_media, total_avaliacoes
+        `)
         .eq('id', item.usuario_id)
-        .single();
+        .maybeSingle();
       dono = data;
-      if (erroPF) console.error('Erro ao buscar usuário PF:', erroPF);
+      if (pfErr) console.error('Erro ao buscar usuário PF:', pfErr);
+    }
+
+    // 4) Reviews do produto (últimas 20)
+    const { data: reviewsRaw, error: revErr } = await supabaseDb
+      .from('avaliacoes_produtos')
+      .select('id, usuario_id, nota, comentario, created_at')
+      .eq('produto_id', id)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (revErr) console.error('Erro ao buscar reviews do produto:', revErr);
+
+    // 4.1) Enriquecer com nome + avatar do autor (PF ou PJ)
+    let reviews = [];
+    if (reviewsRaw && reviewsRaw.length > 0) {
+      const userIds = [...new Set(reviewsRaw.map(r => r.usuario_id))];
+
+      let pfMap = new Map(), pjMap = new Map();
+      if (userIds.length > 0) {
+        const [pfRes, pjRes] = await Promise.all([
+          supabaseDb
+            .from('usuarios_pf')
+            .select('id, nome, sobrenome, icone_url')
+            .in('id', userIds),
+          supabaseDb
+            .from('usuarios_pj')
+            .select('id, nomeFantasia, icone_url')
+            .in('id', userIds)
+        ]);
+        (pfRes.data || []).forEach(p => pfMap.set(p.id, p));
+        (pjRes.data || []).forEach(p => pjMap.set(p.id, p));
+      }
+
+      const DEFAULT_AVATAR = process.env.DEFAULT_AVATAR_URL || '/images/chat-default.png';
+      reviews = reviewsRaw.map(r => {
+        const pf = pfMap.get(r.usuario_id);
+        const pj = pjMap.get(r.usuario_id);
+        const autor_nome = pf
+          ? [pf.nome, pf.sobrenome].filter(Boolean).join(' ')
+          : (pj?.nomeFantasia || 'Usuário');
+        const autor_avatar = pf?.icone_url || pj?.icone_url || DEFAULT_AVATAR;
+        return { ...r, autor_nome, autor_avatar };
+      });
     }
 
     const { voltar } = req.query;
-    res.render('item', { item, dono, voltar });
+    return res.render('item', { item, dono, voltar, reviews });
   } catch (err) {
     console.error('Erro inesperado:', err);
-    res.status(500).send('Erro no servidor');
+    return res.status(500).send('Erro no servidor');
   }
 });
 
-// Cadastro de novo item com imagens
-// helper: decide se a rota deve responder JSON (sem navegação)
-function wantsJson(req) {
-  return req.headers['x-requested-with'] === 'fetch' ||
-         req.headers['x-requested-with'] === 'XMLHttpRequest' ||
-         (req.headers.accept || '').includes('application/json') ||
-         req.xhr === true;
-}
-
 router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (req, res) => {
   try {
-    const usuario_id = req.session.usuario?.id;
+    const usuario_id  = req.session.usuario?.id;
     const tipo_usuario = req.session.usuario?.tipo;
     const files = req.files;
+
+    // 🔹 [NOVO] Busca a loja do usuário para preencher loja_id no produto
+    //    (se for PF e não tiver loja, loja_id ficará null e tudo bem)
+    let loja_id = null;
+    try {
+      const { data: loja } = await supabaseDb
+        .from('lojas')
+        .select('id')
+        .eq('usuario_id', usuario_id)
+        .maybeSingle();
+
+      if (loja?.id) loja_id = loja.id;
+    } catch (e) {
+      console.warn('Aviso: falha ao buscar loja para este usuário:', e?.message || e);
+    }
 
     // Regra: pelo menos 1 imagem
     if (!files || files.length === 0) {
@@ -178,6 +257,7 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
       }
       return res.status(400).send('Pelo menos uma imagem é obrigatória.');
     }
+
     const quantidade = parseInt(req.body.quantidade, 10);
     if (isNaN(quantidade) || quantidade < 0) {
       return res.status(400).send('Quantidade inválida. Deve ser maior ou igual a 0.');
@@ -189,7 +269,7 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
       const safeName = file.originalname.replace(/[^\w.\-]/g, '_');
       const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}_${safeName}`;
 
-      const { error: uploadError } = await supabase
+      const { error: uploadError } = await supabaseDb
         .storage
         .from('imagens')
         .upload(filename, file.buffer, { contentType: file.mimetype });
@@ -200,7 +280,7 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
         return res.status(500).send('Erro ao fazer upload de imagem.');
       }
 
-      const { data: publicUrlData } = supabase.storage.from('imagens').getPublicUrl(filename);
+      const { data: publicUrlData } = supabaseDb.storage.from('imagens').getPublicUrl(filename);
       imagemUrls.push(publicUrlData.publicUrl);
     }
 
@@ -216,7 +296,7 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
     // Marca final (respeita "Outra...")
     const marcaFinal = (marca === 'Outra...' ? marca_personalizada : marca)?.trim() || null;
 
-    // Shape final: hidden selecionado OU texto manual
+    // Shape final
     const shapeFinal = (shape && shape.trim()) || (outro_tipo && outro_tipo.trim()) || null;
 
     // Modelo final
@@ -226,15 +306,16 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
 
     // Preço (pt-BR -> número)
     const precoFinal = (() => {
-    const n = parsePrecoFlex(preco); // -> Number(1234.56) ou null
-    if (n == null || n < 0) return null; // validação simples
-    return Math.round(n * 100) / 100;     // garante 2 casas
-  })();
+      const n = parsePrecoFlex(preco); // -> Number(1234.56) ou null
+      if (n == null || n < 0) return null;
+      return Math.round(n * 100) / 100;
+    })();
+
     console.log('req.body.quantidade =', req.body?.quantidade);
     console.log('quantidade (parsed) =', quantidade);
 
     // Inserção no banco
-    const { data: inserted, error: dbError } = await supabase.from('produtos').insert([{
+    const { data: inserted, error: dbError } = await supabaseDb.from('produtos').insert([{
       nome: nome?.trim(),
       descricao,
       preco: precoFinal,
@@ -244,11 +325,12 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
       condicao: condicao || null,
       imagem_url: imagemUrls.join(','), // CSV de URLs
       usuario_id,
-      tipo_usuario, // PF/PJ
+      tipo_usuario,                      // PF/PJ
+      loja_id,                           // 🔹 [NOVO] vincula à loja se existir
       ano_fabricacao: ano_fabricacao ? parseInt(ano_fabricacao) : null,
       captadores_config: captadores_config || null,
       madeira: madeira || null,
-      tags: tags || null, // se vier "a,b,c" mantenho string (ajuste se usar array)
+      tags: tags || null,
       pais_fabricacao: pais_fabricacao || null,
       cor: cor || null,
       acabamento: acabamento || null,
@@ -267,12 +349,11 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
     // Upsert no catálogo quando modelo novo é digitado
     try {
       if (marcaFinal && shapeFinal && modeloFinal) {
-
         const marcaN  = normalizeSimple(marcaFinal);
         const shapeN  = normalizeSimple(shapeFinal);
         const modeloN = normalizeSimple(modeloFinal);
 
-        await supabase.from('catalogo_modelos').upsert(
+        await supabaseDb.from('catalogo_modelos').upsert(
           { marca: marcaN, shape: shapeN, modelo: modeloN, ativo: true },
           { onConflict: 'marca,shape,modelo', ignoreDuplicates: true }
         );
@@ -295,19 +376,15 @@ router.post('/cadastro-item', requireLogin, upload.array('imagens', 12), async (
   }
 });
 
-
-
-
-
 router.get('/painel/produto/:id/editar', requireLogin, async (req, res) => {
   const produtoId = req.params.id;
   const usuario_id = req.session.usuario.id;
 
-  const { data: produto, error } = await supabase
+  const { data: produto, error } = await supabaseDb
     .from('produtos')
     .select('*')
     .eq('id', produtoId)
-    .single();
+    .maybeSingle();
 
   if (error || !produto) {
     return res.status(404).send('Produto não encontrado.');
@@ -332,7 +409,7 @@ router.post('/painel/produto/:id/editar', requireLogin, async (req, res) => {
     }
 
     // 1) Busca produto e valida dono
-    const { data: produtoExistente, error: fetchErr } = await supabase
+    const { data: produtoExistente, error: fetchErr } = await supabaseDb
       .from('produtos')
       .select('*')
       .eq('id', produtoId)
@@ -410,7 +487,7 @@ router.post('/painel/produto/:id/editar', requireLogin, async (req, res) => {
     });
 
     // 4) Update
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseDb
       .from('produtos')
       .update(updatePayload)
       .eq('id', produtoId);
@@ -441,11 +518,11 @@ router.post('/produto/:id/excluir', requireLogin, async (req, res) => {
   const usuario_id = req.session.usuario?.id;
 
   // Busca o produto no banco
-  const { data: produto, error } = await supabase
+  const { data: produto, error } = await supabaseDb
     .from('produtos')
     .select('usuario_id')
     .eq('id', id)
-    .single();
+    .maybeSingle();
 
   if (error || !produto) {
     console.error('Produto não encontrado:', error);
@@ -456,7 +533,7 @@ router.post('/produto/:id/excluir', requireLogin, async (req, res) => {
     return res.status(403).send('Acesso negado.');
   }
 
-  const { data: deleteData, error: deleteError } = await supabase
+  const { data: deleteData, error: deleteError } = await supabaseDb
     .from('produtos')
     .delete()
     .eq('id', id)
@@ -482,52 +559,53 @@ router.post('/produto/:id/excluir', requireLogin, async (req, res) => {
 
 });
 
-router.post('/comprar/:id', async (req, res) => {
+// PROTEGER a rota
+router.post('/comprar/:id', requireLogin, async (req, res) => {
   const compradorId = req.session.usuario.id;
+  const tipoComprador = req.session.usuario.tipo; // 'pf' | 'pj'
   const produtoId = req.params.id;
-  const quantidade = 1; // ajuste se quiser múltiplas quantidades
+  const quantidade = 1;
 
-  // 🟠 Buscar vendedor_id do produto
-  const { data: produto, error: produtoError } = await supabase
+  // Buscar produto (preço/estoque/dono)
+  const { data: produto, error: produtoError } = await supabaseDb
     .from('produtos')
-    .select('usuario_id, preco')
+    .select('id, usuario_id, tipo_usuario, preco, quantidade')
     .eq('id', produtoId)
-    .single();
+    .maybeSingle();
 
   if (produtoError || !produto) {
     console.error(produtoError);
-    return res.status(500).send('Erro ao buscar produto');
+    return res.status(404).send('Produto não encontrado');
   }
 
-  const vendedorId = produto.usuario_id;
-
-  // 🟢 Buscar preco_total do req.body ou produto
-  let precoTotal = req.body.preco_total;
-
-  if (!precoTotal) {
-    precoTotal = produto.preco; // usa o preco do produto como fallback
+  if (produto.quantidade == null || produto.quantidade < quantidade) {
+    return res.status(400).send('Produto sem estoque suficiente');
   }
 
-  // 📝 Inserir pedido
-  const { data, error } = await supabase
-    .from('pedidos')
-    .insert([{
-      usuario_id: compradorId,
-      produto_id: produtoId,
-      vendedor_id: vendedorId,
-      quantidade,
-      preco_total: precoTotal,
-      status: 'Em processamento',
-      data_pedido: new Date()
-    }]);
+  try {
+    // Usa o helper para respeitar o schema de pedidos do projeto
+    const pedido = await criarPedido({
+      compradorIdPF: tipoComprador === 'pf' ? compradorId : null,
+      compradorIdPJ: tipoComprador === 'pj' ? compradorId : null,
+      produtoId,
+      qtd: quantidade,
+      precoTotal: (produto.preco || 0) * quantidade
+    });
 
-  if (error) {
-    console.error(error);
+    // (Opcional) decrementar estoque
+    const { error: decErr } = await supabaseDb.rpc('decrementa_estoque', {
+      p_id: produtoId,
+      p_qtd: quantidade
+    });
+    if (decErr) console.error('Erro ao decrementar estoque:', decErr);
+
+    return res.redirect('/meus-pedidos');
+  } catch (e) {
+    console.error('Erro ao criar pedido:', e);
     return res.status(500).send('Erro ao processar pedido');
   }
-
-  res.redirect('/meus-pedidos');
 });
+
 
 
 

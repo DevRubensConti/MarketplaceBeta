@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../supabase');
+const supabaseDb = require('../supabase/supabaseDb');
 
 // Página inicial - lista de produtos recentes
 router.get('/', async (req, res) => {
   try {
     // Mais vistos
-    const { data: maisVistos, error: mvError } = await supabase
+    const { data: maisVistos, error: mvError } = await supabaseDb
       .from('produtos')
       .select('id, nome, preco, imagem_url, shape, marca, condicao, acessos')
       .order('acessos', { ascending: false })
       .limit(8);
 
     // Lojas top
-    const { data: lojasTop, error: lojasError } = await supabase
+    const { data: lojasTop, error: lojasError } = await supabaseDb
       .from('usuarios_pj')
       .select('id, nomeFantasia, icone_url, nota')
       .order('nota', { ascending: false })

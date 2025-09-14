@@ -23,56 +23,52 @@
     </form>
 
   <div class="nav-links">
-    <a href="/">Início</a>
+  <a href="/">Início</a>
 
-    <% if (usuario) { %>
-      <a href="#" id="btn-carrinho">Carrinho</a>
-      <div id="mini-cart" class="mini-cart hidden">
-        <h3>Seu Carrinho</h3>
-        <div id="mini-cart-itens">
-          <!-- Itens serão carregados via fetch -->
-        </div>
-        <a href="/checkout">
-          <button class="btn-finalizar">Finalizar Compra</button>
-        </a>
+  <% if (usuario) { %>
+    <a href="#" id="btn-carrinho">Carrinho</a>
+    <div id="mini-cart" class="mini-cart hidden">
+      <h3>Seu Carrinho</h3>
+      <div id="mini-cart-itens"></div>
+      <a href="/checkout"><button class="btn-finalizar">Finalizar Compra</button></a>
+    </div>
+
+    <a href="/meus-pedidos">Meus Pedidos</a>
+
+    <% 
+      const tipo = (usuario.tipo || '').toLowerCase();
+      const iconePadrao = tipo === 'pj' ? '/images/store_logos/store.png' : '/images/user_default.png';
+      const temIcone = usuario.icone_url && usuario.icone_url !== 'null' && usuario.icone_url.trim() !== '';
+      const iconePerfil = temIcone ? usuario.icone_url : iconePadrao;
+      const nomeExibicao = usuario.nome || usuario.username || (tipo === 'pj' ? 'Minha loja' : 'Minha conta');
+    %>
+    <a href="/meus-chats">Meus Chats</a>
+    <div class="loja-dropdown">
+      <button class="loja-trigger" id="lojaTrigger" type="button" aria-expanded="false" aria-controls="dropdownMenu">
+        <img src="<%= iconePerfil %>" alt="Perfil" class="icone-perfil">
+        <span class="nome-usuario"><%= nomeExibicao %></span>
+        <span class="caret">▾</span>
+      </button>
+
+      <div class="dropdown-conteudo" id="dropdownMenu">
+        <% if (tipo === 'pj') { %>
+          <a href="/painel/loja">Painel da Loja</a>
+          <a href="/loja/<%= usuario.id %>">Ver Loja Pública</a>
+          <a href="/cadastro-item">Novo Produto</a>
+        <% } else { %>
+          <a href="/painel/usuario">Painel do Usuário</a>
+          <a href="/usuario/<%= usuario.id %>">Ver Perfil Público</a>
+        <% } %>
+        <a href="/logout">Sair</a>
       </div>
-
-      <a href="/meus-pedidos">Meus Pedidos</a>
-
-      <% 
-        const iconePadrao = usuario.tipo === 'pj' 
-          ? '/images/store_logos/store.png' 
-          : '/images/user_default.png';
-        const iconePerfil = usuario.icone_url || iconePadrao;
-      %>
-<div class="loja-dropdown">
-  <button class="loja-trigger" id="lojaTrigger" type="button" aria-expanded="false" aria-controls="dropdownMenu">
-    <img src="<%= iconePerfil %>" alt="Perfil" class="icone-perfil">
-    <span class="nome-usuario">
-      <%= usuario.nome || usuario.username || (usuario.tipo === 'pj' ? 'Minha loja' : 'Minha conta') %>
-    </span>
-    <span class="caret">▾</span>
-  </button>
-
-  <div class="dropdown-conteudo" id="dropdownMenu">
-    <% if (usuario.tipo === 'pj') { %>
-      <a href="/painel/loja">Painel da Loja</a>
-      <a href="/loja/<%= usuario.id %>">Ver Loja Pública</a>
-      <a href="/cadastro-item">Novo Produto</a>
-    <% } else { %>
-      <a href="/painel/usuario">Painel do Usuário</a>
-      <a href="/usuario/<%= usuario.id %>">Ver Perfil Público</a>
-    <% } %>
-    <a href="/logout">Sair</a>
+    </div>
+  <% } else { %>
+    <a href="/login">Entrar</a>
+    <a href="/escolher-cadastro" class="signup">Cadastre-se</a>
+  <% } %>
   </div>
-</div>
-    <% } else { %>
-      <a href="/login">Entrar</a>
-      <a href="/escolher-cadastro" class="signup">Cadastre-se</a>
-    <% } %>
-</div>
 
-  </div>
+</div>
 </nav>
 <nav class="navbar-2">
   <div class="navbar-bottom">

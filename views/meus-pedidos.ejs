@@ -42,10 +42,16 @@
 </div>
 
 
-            <div class="pedido-actions">
-              <button class="btn-acao">Ver produto</button>
-              <button class="btn-acao">Avaliar produto</button>
-            </div>
+          <div class="pedido-actions">
+            <a
+              href="/item/<%= pedido.produto?.id || pedido.produto_id %>"
+              class="btn-acao"
+            >
+              Ver produto
+            </a>
+
+            <a href="/avaliar/<%= pedido.id %>" class="btn-acao">Avaliar produto</a>
+          </div>
           </div>
         </div>
       <% }) %>

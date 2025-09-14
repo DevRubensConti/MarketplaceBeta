@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../supabase');
+const supabaseDb = require('../supabase/supabaseDb');
 const { requireLogin } = require('../middlewares/auth');
 
 // GET: Exibir carrinho
@@ -13,7 +13,7 @@ router.get('/carrinho', requireLogin, async (req, res) => {
 
   const ids = carrinho.map(i => i.id);
 
-  const { data: produtos, error } = await supabase
+  const { data: produtos, error } = await supabaseDb
     .from('produtos')
     .select('*')
     .in('id', ids);
@@ -71,11 +71,11 @@ router.post('/carrinho/remover/:id', requireLogin, (req, res) => {
   res.redirect('/carrinho');
 });
 
-router.get('/api/carrinho', async (req, res) => {
+router.get('/api/carrinho', requireLogin, async (req, res) => {
   const usuarioId = req.session.usuario.id;
   const tipoUsuario = req.session.usuario.tipo; // 'pf' ou 'pj'
 
-  const { data: itens, error } = await supabase
+  const { data: itens, error } = await supabaseDb
     .from('carrinho')
     .select(`
       *,
@@ -96,25 +96,25 @@ router.get('/api/carrinho', async (req, res) => {
   res.json(itens);
 });
 
-router.post('/api/carrinho/adicionar/:id', async (req, res) => {
+router.post('/api/carrinho/adicionar/:id', requireLogin, async (req, res) => {
   const produtoId = req.params.id;
   const usuarioId = req.session.usuario.id;
   const tipoUsuario = req.session.usuario.tipo; // 'pf' ou 'pj'
 
   // Verifica se já existe no carrinho
-  const { data: existente, error: erroExistente } = await supabase
+  const { data: existente, error: erroExistente } = await supabaseDb
     .from('carrinho')
     .select('*')
     .eq('usuario_id', usuarioId)
     .eq('tipo_usuario', tipoUsuario)
     .eq('produto_id', produtoId)
-    .single();
+    .maybeSingle();
 
   if (erroExistente) console.error(erroExistente);
 
   if (existente) {
     // Atualiza quantidade
-    const { error } = await supabase
+    const { error } = await supabaseDb
       .from('carrinho')
       .update({ quantidade: existente.quantidade + 1 })
       .eq('id', existente.id);
@@ -124,7 +124,7 @@ router.post('/api/carrinho/adicionar/:id', async (req, res) => {
     }
   } else {
     // Insere novo item
-    const { error } = await supabase
+    const { error } = await supabaseDb
       .from('carrinho')
       .insert([{
         usuario_id: usuarioId,
@@ -147,11 +147,11 @@ router.post('/api/carrinho/:id/:action', async (req, res) => {
   const itemId = req.params.id;
   const action = req.params.action;
 
-  const { data: item, error: errorItem } = await supabase
+  const { data: item, error: errorItem } = await supabaseDb
     .from('carrinho')
     .select('*')
     .eq('id', itemId)
-    .single();
+    .maybeSingle();
 
   if (errorItem || !item) {
     console.error(errorItem);
@@ -162,7 +162,7 @@ router.post('/api/carrinho/:id/:action', async (req, res) => {
   if (action === 'plus') novaQtd++;
   if (action === 'minus' && novaQtd > 1) novaQtd--;
 
-  const { error } = await supabase
+  const { error } = await supabaseDb
     .from('carrinho')
     .update({ quantidade: novaQtd })
     .eq('id', itemId);

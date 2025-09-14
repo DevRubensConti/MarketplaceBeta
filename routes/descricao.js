@@ -45,7 +45,8 @@ Parte 2: "especificacoes" (lista)
 - Liste cada especificação em um item curto, no formato "Chave: valor".
 
 Nunca invente informações não citadas.
-Se o texto não se referir a itens do ramo da músicas, responda com "Não foi possivel gerar a descrição a partir deste texto.".
+Se o texto não se referir a itens do ramo da músicas, responda com "Não foi possivel gerar a descrição a partir deste texto.
+Se necessário traduza o texto para português do Brasil.".
 `.trim();
 
     const prompt = `

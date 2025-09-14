@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../supabase');
+const supabaseDb = require('../supabase/supabaseDb');
 const { requireLogin } = require('../middlewares/auth'); // ✅ CORRETO
 
 // GET: Página de perfil de Pessoa Física
@@ -12,7 +12,7 @@ router.get('/perfil', requireLogin, async (req, res) => {
     return res.redirect('/login');
   }
 
-  const { data: usuario, error } = await supabase
+  const { data: usuario, error } = await supabaseDb
     .from('usuarios_pf')
     .select('*')
     .eq('id', usuarioId)
@@ -29,7 +29,7 @@ router.get('/perfil', requireLogin, async (req, res) => {
 router.get('/painel/usuario', requireLogin, async (req, res) => {
   const usuarioId = req.session.usuario.id;
 
-  const { data: produtos, error } = await supabase
+  const { data: produtos, error } = await supabaseDb
     .from('produtos')
     .select('*')
     .eq('usuario_id', usuarioId);
@@ -51,7 +51,7 @@ router.post('/painel/editar-usuario', requireLogin, async (req, res) => {
   const { nome, telefone, icone_url } = req.body;
   const usuarioId = req.session.usuario.id;
 
-  const { error } = await supabase
+  const { error } = await supabaseDb
     .from('usuarios_pf')
     .update({ nome, telefone, icone_url })
     .eq('id', usuarioId);
@@ -70,33 +70,81 @@ router.post('/painel/editar-usuario', requireLogin, async (req, res) => {
 });
 
 router.get('/usuario/:id', async (req, res) => {
-  const usuarioId = req.params.id;
+  try {
+    const usuarioId = req.params.id;
 
-  const { data: usuario, error: usuarioError } = await supabase
-    .from('usuarios_pf')
-    .select('*')
-    .eq('id', usuarioId)
-    .single();
+    // ----- filtros vindos da querystring -----
+    const {
+      marca = '',
+      tipo = '',
+      preco_min = '',
+      preco_max = ''
+    } = req.query;
 
-  if (usuarioError || !usuario) {
-    console.error(usuarioError);
-    return res.status(404).send('Usuário não encontrado.');
+    // ----- usuário PF com agregados (nota_media/total_avaliacoes) -----
+    const { data: usuario, error: usuarioError } = await supabaseDb
+      .from('usuarios_pf')
+      .select(`
+        id, nome, email, telefone, icone_url,
+        descricao, cidade, estado,
+        nota_media, total_avaliacoes
+      `)
+      .eq('id', usuarioId)
+      .maybeSingle();
+
+    if (usuarioError || !usuario) {
+      console.error('Erro PF:', usuarioError);
+      return res.status(404).send('Usuário não encontrado.');
+    }
+
+    // ----- produtos do usuário PF com filtros -----
+    let query = supabaseDb
+      .from('produtos')
+      .select(`
+        id, nome, preco, imagem_url, tags, created_at
+      `)
+      .eq('usuario_id', usuarioId)
+      .eq('tipo_usuario', 'pf');
+
+    if (marca && String(marca).trim()) {
+      query = query.ilike('marca', `%${marca.trim()}%`);
+    }
+    if (tipo && String(tipo).trim()) {
+      // se sua coluna for outra (ex.: categoria), troque aqui
+      query = query.ilike('tipo', `%${tipo.trim()}%`);
+    }
+
+    const min = parseFloat(preco_min);
+    if (!Number.isNaN(min)) {
+      query = query.gte('preco', min);
+    }
+
+    const max = parseFloat(preco_max);
+    if (!Number.isNaN(max)) {
+      query = query.lte('preco', max);
+    }
+
+    // ordena mais novos primeiro (ajuste se quiser)
+    query = query.order('created_at', { ascending: false });
+
+    const { data: produtos, error: produtosError } = await query;
+
+    if (produtosError) {
+      console.error('Erro produtos PF:', produtosError);
+      return res.status(500).send('Erro ao buscar produtos do usuário.');
+    }
+
+    return res.render('usuario-publico', {
+      usuario,
+      produtos: produtos || [],
+      // devolve filtros pro template manter os valores preenchidos
+      marca, tipo, preco_min, preco_max
+    });
+  } catch (err) {
+    console.error('Erro inesperado /usuario/:id:', err);
+    return res.status(500).send('Erro no servidor.');
   }
-
-  const { data: produtos, error: produtosError } = await supabase
-    .from('produtos')
-    .select('*')
-    .eq('usuario_id', usuarioId)
-    .eq('tipo_usuario', 'pf');
-
-  if (produtosError) {
-    console.error(produtosError);
-    return res.status(500).send('Erro ao buscar produtos do usuário.');
-  }
-
-  res.render('usuario-publico', { usuario, produtos });
 });
-
 
 
 module.exports = router;
