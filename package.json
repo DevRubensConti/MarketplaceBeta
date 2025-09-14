@@ -1,7 +1,7 @@
 {
   "name": "marketplace",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,6 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "description": "Marketplace Musical - Node.js + Express + Supabase",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.49.4",
@@ -23,5 +24,7 @@
     "openai": "^4.104.0",
     "socket.io": "^4.8.1"
   },
-  "description": "adding signup page"
+  "engines": {
+    "node": "20.x"
+  }
 }
