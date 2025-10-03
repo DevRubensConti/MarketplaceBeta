@@ -164,14 +164,17 @@
       </div>
     </div>
 
-    
+    <section class="recs">
+      <h2>Você também pode gostar</h2>
+      <div id="recs-grid" class="grid-produtos"></div>
+    </section>
 
-    <div class="extras">
-      <div class="grafico">
-        Gráfico de preços (em desenvolvimento)
+      <div class="extras">
+        <div class="grafico">
+          Gráfico de preços (em desenvolvimento)
+        </div>
       </div>
-    </div>
-  </main>
+    </main>
 
   <%- include('partials/footer.ejs') %>
 
@@ -394,7 +397,37 @@
   });
 })();
 </script>
+<script>
+  (async () => {
+    // Log de visualização
+    fetch('/api/recs/event', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ item_id: '<%= item.id %>', event_type: 'view' })
+    });
 
+    // Carrega recomendações
+    const r = await fetch('/api/recs/item/<%= item.id %>');
+    const items = await r.json();
+
+    const grid = document.getElementById('recs-grid');
+    const section = document.querySelector('section.recs');
+
+    if (!items || !items.length) {
+      // se não tiver nada, esconde a seção
+      if (section) section.style.display = 'none';
+      return;
+    }
+
+    grid.innerHTML = items.map(it => `
+      <a class="card-produto" href="/item/${it.id}">
+        <img src="${(it.imagem_url||'').split(',')[0]}" alt="${it.nome}">
+        <div class="info">
+          <h3>${it.nome}</h3>
+          <p>R$ ${Number(it.preco).toFixed(2)}</p>
+        </div>
+      </a>`).join('');
+  })();
+  </script>
 
 </body>
 </html>

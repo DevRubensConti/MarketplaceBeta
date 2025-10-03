@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Redefinir Senha</title>
+  <link rel="stylesheet" href="/css/login.css">
+  <style>
+    .reset-container {
+      max-width: 400px;
+      margin: 60px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,.1);
+    }
+    .reset-container h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
+    input[type=password] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: var(--cor-primaria, #333);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #msg {
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main>
+    <div class="reset-container">
+      <h2>Redefinir Senha</h2>
+      <form id="reset-form">
+        <div class="form-group">
+          <label for="password">Nova Senha</label>
+          <input type="password" id="password" required minlength="6" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label for="confirm">Confirmar Nova Senha</label>
+          <input type="password" id="confirm" required minlength="6" placeholder="••••••••">
+        </div>
+        <button type="submit">Atualizar senha</button>
+      </form>
+      <p id="msg"></p>
+    </div>
+  </main>
+
+  <%- include('partials/footer.ejs') %>
+
+  <!-- Supabase JS v2 -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const supabase = window.supabase.createClient('<%= supabaseUrl %>', '<%= supabaseAnon %>');
+
+    async function ensureRecoverySession() {
+      // Caso a URL contenha ?code=... (fluxo PKCE moderno)
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      if (code) {
+        try {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) console.error('exchangeCodeForSession error:', error);
+        } catch (e) {
+          console.error('exchangeCodeForSession catch:', e);
+        }
+      }
+
+      // Caso venha com #access_token=... no hash (fluxo legado)
+      if (window.location.hash.includes('access_token')) {
+        const hash = new URLSearchParams(window.location.hash.substring(1));
+        const access_token = hash.get('access_token');
+        const refresh_token = hash.get('refresh_token');
+        if (access_token && refresh_token) {
+          try {
+            await supabase.auth.setSession({ access_token, refresh_token });
+          } catch (e) {
+            console.error('setSession error:', e);
+          }
+        }
+      }
+    }
+
+    ensureRecoverySession();
+
+    document.getElementById('reset-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pass = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+      const msgEl = document.getElementById('msg');
+
+      if (pass !== confirm) {
+        msgEl.textContent = "As senhas não coincidem.";
+        msgEl.style.color = "red";
+        return;
+      }
+
+      const { error } = await supabase.auth.updateUser({ password: pass });
+
+      if (error) {
+        msgEl.textContent = "Não foi possível atualizar a senha. Tente abrir o link novamente.";
+        msgEl.style.color = "red";
+        return;
+      }
+
+      msgEl.textContent = "Senha atualizada com sucesso! Você já pode fazer login.";
+      msgEl.style.color = "green";
+      setTimeout(() => { window.location.href = "/login"; }, 2000);
+    });
+  </script>
+</body>
+</html>

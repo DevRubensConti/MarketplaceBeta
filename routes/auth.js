@@ -6,6 +6,11 @@ const supabaseDb   = require('../supabase/supabaseDb');   // ADDED: SERVICE ROLE
 const bcrypt = require('bcrypt'); // (opcional) remova se não usar
 const { ensureLoja, onlyDigits } = require('../helpers/loja');
 const redirectUrl = process.env.AUTH_REDIRECT_URL
+
+const resetRedirectUrl =
+  process.env.AUTH_RESET_REDIRECT_URL // ex.: https://seu-dominio.com/auth/reset
+  || (process.env.SITE_URL ? `${process.env.SITE_URL}/reset` : null)
+  || redirectUrl; // fallback
 // Página de login
 router.get('/login', (req, res) => {
   res.render('login');
@@ -342,6 +347,47 @@ router.get('/verifique-email', (req, res) => {
 // Página de confirmação de e-mail
 router.get('/email-confirmado', (req, res) => {
   res.render('email-confirmado', { loginUrl: '/login' });
+});
+
+router.get('/forgot', (req, res) => {
+  res.render('forgot'); // views/auth/forgot.ejs
+});
+
+router.post('/forgot', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).render('forgot', {
+        mensagemErro: 'Informe um e-mail válido.'
+      });
+    }
+
+    const { error } = await supabaseAuth.auth.resetPasswordForEmail(email, {
+      redirectTo: resetRedirectUrl
+    });
+
+    if (error) {
+      console.error('resetPasswordForEmail error:', error);
+      return res.status(400).render('forgot', {
+        mensagemErro: 'Não foi possível enviar o e-mail de recuperação. Confira o endereço e tente novamente.'
+      });
+    }
+
+    // Reaproveitando sua tela de "verifique seu e-mail"
+    return res.redirect(`/verifique-email?email=${encodeURIComponent(email)}`);
+  } catch (e) {
+    console.error('POST /auth/forgot exception:', e);
+    return res.status(500).render('forgot', {
+      mensagemErro: 'Erro interno. Tente novamente em instantes.'
+    });
+  }
+});
+
+router.get('/reset', (req, res) => {
+  return res.render('reset', {
+    supabaseUrl: process.env.SUPABASE_URL,
+    supabaseAnon: process.env.SUPABASE_ANON_KEY
+  });
 });
 
 module.exports = router;

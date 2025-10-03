@@ -31,7 +31,13 @@
     <% }) %>
   </div>
 </section>
-
+<div class="mais-acessados-header">
+  <h2>Recomendações para você</h2>
+</div>
+<section class="home-recs">
+  <!-- Reuso o mesmo grid/estilo dos mais vistos pra manter layout -->
+  <div id="home-recs" class="most-viewed-gallery"></div>
+</section>
 
 
   
@@ -128,6 +134,47 @@
       behavior: "smooth"
     });
   });
+</script>
+
+<script>
+(async () => {
+  const sec   = document.querySelector('.home-recs');
+  const grid  = document.getElementById('home-recs');
+  const hdr   = document.querySelectorAll('.mais-acessados-header')[1]; // o segundo header (logo acima da seção)
+
+  try {
+    // Chama as recomendações da HOME (sem categoria = populares gerais)
+    const res = await fetch('/api/recs/home');
+    if (!res.ok) throw new Error('Falha ao carregar recomendações');
+    const items = await res.json();
+
+    if (!items || !items.length) {
+      // Se vier vazio, remove a seção e o título pra não ficar “buraco”
+      if (hdr) hdr.remove();
+      if (sec) sec.remove();
+      return;
+    }
+
+    // Renderiza usando o mesmo card da seção "mais acessados"
+    grid.innerHTML = items.map(it => `
+      <div class="card-produto-uniforme">
+        <a href="/item/${it.id}">
+          <div class="imagem-container">
+            <img src="${(it.imagem_url || '').split(',')[0]}" alt="${it.nome}">
+          </div>
+          <div class="info-produto">
+            <h3>${it.nome}</h3>
+            <p><strong>Preço:</strong> R$ ${Number(it.preco).toFixed(2)}</p>
+          </div>
+        </a>
+      </div>
+    `).join('');
+  } catch (err) {
+    if (hdr) hdr.remove();
+    if (sec) sec.remove();
+    // opcional: console.error(err);
+  }
+})();
 </script>
 
 <%- include('partials/footer.ejs') %>

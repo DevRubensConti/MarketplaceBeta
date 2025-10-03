@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Esqueci Minha Senha</title>
+  <link rel="stylesheet" href="/css/login.css">
+  <style>
+    .forgot-container {
+      max-width: 400px;
+      margin: 60px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,.1);
+    }
+    .forgot-container h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
+    input[type=email] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: var(--cor-primaria, #333);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .mensagem-erro {
+      margin-top: 10px;
+      color: red;
+      text-align: center;
+    }
+    .voltar-login {
+      margin-top: 15px;
+      text-align: center;
+    }
+    .voltar-login a {
+      color: var(--cor-primaria, #333);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <%- include('partials/navbar.ejs') %>
+
+  <main>
+    <div class="forgot-container">
+      <h2>Recuperar Senha</h2>
+      <form method="POST" action="/forgot">
+        <div class="form-group">
+          <label for="email">Digite seu e-mail</label>
+          <input type="email" id="email" name="email" required placeholder="seuemail@exemplo.com">
+        </div>
+        <button type="submit">Enviar link de recuperação</button>
+
+        <% if (typeof mensagemErro !== 'undefined' && mensagemErro) { %>
+          <div class="mensagem-erro"><%= mensagemErro %></div>
+        <% } %>
+      </form>
+
+      <div class="voltar-login">
+        <a href="/login">Voltar ao login</a>
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/footer.ejs') %>
+</body>
+</html>

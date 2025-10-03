@@ -43,17 +43,18 @@ body {
 /* -------------------------- */
 .item-main {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;    /* mesma proporção que você já usa */
+  grid-template-columns: 1.05fr 1fr;    /* mesma proporção */
   grid-template-areas:
     "gallery info"
-    "specs   info";                     /* specs cola embaixo da galeria */
-  gap: 24px;                            /* um pouco menos de gap para aproximar */
+    "specs   info";
+  gap: 24px;
 }
 
-/* Mapeia cada bloco às áreas do grid */
+/* Áreas do grid */
 .item-gallery { grid-area: gallery; }
 .item-info    { grid-area: info; }
 .item-specs   { grid-area: specs; }
+
 /* -------------------------- */
 /* GALERIA                    */
 /* -------------------------- */
@@ -98,39 +99,47 @@ body {
 }
 
 /* -------------------------- */
-/* INFO DO ITEM               */
+//* INFO DO ITEM               */
 /* -------------------------- */
-.item-info { min-width: 300px; display: flex; flex-direction: column; gap: 12px; }
+.item-info {
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
 .price-rating h2 {
   color: var(--cor-primaria);
   font-size: 22px;
   margin: 0 0 4px;
 }
+
 .rating { font-size: 18px; color: var(--cor-destaque); }
-.description { margin: 8px 0 6px; font-size: 14px; line-height: 1.55; color: var(--cor-letras-navbar); }
+
+.description {
+  margin: 8px 0 6px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-letras-navbar);
+}
 
 /* -------------------------- */
-/* BOTÕES (sem mudar HTML)    */
+/* BOTÕES                     */
 /* -------------------------- */
 .buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Espaço entre os botões */
+  gap: 12px;
   width: 100%;
-  /* largura máxima */
-  margin: 0 auto; /* centraliza na tela */
-  
+  margin: 0 auto;
 }
-
-/* permite que <form> não quebre o grid */
 .buttons form { display: contents; }
 
 .buttons button {
   width: 100%;
   padding: 14px 20px;
   border: none;
-  border-radius: 30px; /* borda arredondada estilo pílula */
+  border-radius: 30px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -138,16 +147,14 @@ body {
 }
 button:active { transform: translateY(1px); }
 
-/* Botão Comprar */
+/* Comprar */
 .btn-buy {
   background-color: var(--cor-secundaria-escura);
   color: #fff;
 }
-.btn-buy:hover {
-  background-color: var(--cor-secundaria-escura-2);
-}
+.btn-buy:hover { background-color: var(--cor-secundaria-escura-2); }
 
-/* Botão Carrinho */
+/* Carrinho */
 .btn-cart {
   background-color: var(--cor-secundaria);
   color: var(--cor-fundo);
@@ -158,16 +165,14 @@ button:active { transform: translateY(1px); }
   color: #fff;
 }
 
-/* Botão Fale com o Vendedor */
+/* Fale com o Vendedor */
 .btn-chat {
   background-color: var(--cor-primaria);
   color: #fff;
 }
-.btn-chat:hover {
-  background-color: var(--cor-primaria-escura);
-}
+.btn-chat:hover { background-color: var(--cor-primaria-escura); }
 
-/* Botão Favoritar */
+/* Favoritar */
 .btn-favorite {
   background-color: var(--cor-fundo);
   color: var(--cor-secundaria);
@@ -197,32 +202,33 @@ button:active { transform: translateY(1px); }
   border: 2px solid var(--cor-secundaria);
 }
 
-
-/* Tira o espaçamento grande de cima e harmoniza o bloco */
+/* -------------------------- */
+/* ESPECIFICAÇÕES             */
+/* -------------------------- */
 .item-specs {
-  margin-top: 0;                        /* remove espaço extra */
+  margin-top: 0;
   margin-bottom: 32px;
-  background: rgba(255,255,255,0.04);   /* mesmo “vidro” suave da galeria */
+  background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 14px;
   padding: 16px 18px;
 }
-
 .item-specs h3 {
   margin: 0 0 10px;
   font-size: 16px;
   color: var(--cor-primaria);
 }
 .item-specs ul { list-style: none; padding: 0; }
-.item-specs li { margin-bottom: 6px; font-size: 13px; color: var(--cor-letras-navbar);}
+.item-specs li { margin-bottom: 6px; font-size: 13px; color: var(--cor-letras-navbar); }
 .item-specs strong {
-  color: var(--cor-secundaria); /* Ou a cor laranja que você usa no site */
-  margin-bottom: 6px; 
+  color: var(--cor-secundaria);
+  margin-bottom: 6px;
   font-size: 13px;
 }
 
-
-
+/* -------------------------- */
+/* EXTRAS                     */
+/* -------------------------- */
 .extras .grafico {
   background-color: rgba(255,255,255,0.08);
   padding: 20px; border-radius: 10px;
@@ -230,7 +236,7 @@ button:active { transform: translateY(1px); }
 }
 
 /* -------------------------- */
-/* SELLER CARD (mantido)      */
+/* SELLER CARD                */
 /* -------------------------- */
 .seller-card{
   display:flex; gap:28px; padding:22px;
@@ -254,19 +260,21 @@ button:active { transform: translateY(1px); }
 .seller-name{ margin-top:6px; text-align:center; }
 .seller-location{ color:#9aa1a6; font-size:.95rem; }
 
-.seller-rating{ display:flex; flex-direction:column; align-items:center; gap:6px; margin-top:6px; }
+.seller-rating{
+  display:flex; flex-direction:column; align-items:center; gap:6px; margin-top:6px;
+}
 .rating-badge{
   display:inline-block; min-width:72px; text-align:center;
   padding:8px 14px; border:2px solid #1c2f25; border-radius:14px;
   font-weight:700; background:#2a2a2a; color:#ffb347;
 }
 .stars .star{ font-size:18px; opacity:.25; }
-
 .stars .star.filled{ opacity:1; }
 
-.stars-item{align-self: left;}
-.star-item.filled{ font-size:18px; opacity:1; }
+.item-rating { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.stars-item{ align-self: flex-start; } /* fix: 'left' -> 'flex-start' */
 .star-item{ font-size:18px; opacity:.25; }
+.star-item.filled{ font-size:18px; opacity:1; }
 
 .item-views {
   display: flex;
@@ -274,14 +282,8 @@ button:active { transform: translateY(1px); }
   font-size: 14px;
   color: #666;
 }
-.view-count{
-  margin-right: 10%;
-}
-.view-icon {
-  margin-right: 4px;
-  font-size: 20px;
-  margin-left: 10%;
-}
+.view-count{ margin-right: 10%; }
+.view-icon { margin-right: 4px; font-size: 20px; margin-left: 10%; }
 
 .seller-profile{
   margin-top:8px; text-decoration:none; padding:10px 14px;
@@ -301,40 +303,66 @@ button:active { transform: translateY(1px); }
 }
 
 /* -------------------------- */
-/* RESPONSIVO                 */
+/* RECOMENDAÇÕES              */
 /* -------------------------- */
-@media (max-width: 1024px) {
-  .item-title { text-align:center; }
-    .item-main {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "gallery"
-      "info"
-      "specs"; /* specs vem logo depois da info no mobile */
-    gap: 20px;
-  }
-  .item-specs { margin-bottom: 24px; }
-  .item-gallery, .item-info { width: 100%; max-width: 820px; margin: 0 auto; }
-  .price-rating, .description, .rating, .loja { text-align:center; }
-  .loja { align-items:center; }
+.recs { margin-top: 28px; }
+.recs h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  letter-spacing: .5px;
+  color: var(--cor-letras-navbar);
+  text-shadow: 1px 1px rgba(40,87,63,.6);
 }
 
-@media (max-width: 600px) {
-  .item-title { font-size: 20px; }
-  .thumbnail-list img { width: 40px; height: 40px; }
-  .buttons button { padding: 10px 14px; font-size: 14px; }
-  .price-rating h2 { font-size: 18px; }
-  .rating { font-size: 16px; }
-  .description { font-size: 13px;}
-  .item-specs h3 { font-size: 14px; }
-  .item-specs li { font-size: 12px; }
-  .seller-card{ flex-direction:column; }
-  .seller-left{ width:auto; align-items:flex-start; }
-  .seller-avatar{ width:110px; height:110px; }
-  .seller-desc{ min-height:120px; }
+.grid-produtos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
 }
 
-/* --- Modal de Oferta --- */
+.card-produto {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  will-change: transform;
+}
+.card-produto:hover {
+  transform: translateY(-2px);
+  border-color: var(--cor-primaria);
+  box-shadow: 0 8px 18px rgba(0,0,0,.25);
+}
+
+.card-produto img {
+  width: 100%;
+  height: 180px;            /* padroniza as imagens */
+  object-fit: cover;
+  display: block;
+  background: #202020;
+}
+
+.card-produto .info {
+  padding: 10px 12px 14px;
+}
+.card-produto h3 {
+  font-size: 14px;
+  margin: 6px 0 6px;
+  line-height: 1.25;
+  color: var(--cor-letras-navbar);
+}
+.card-produto p {
+  margin: 0;
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
+/* -------------------------- */
+/* MODAL OFERTA               */
+/* -------------------------- */
 .oferta-modal {
   position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,.45); z-index: 1000; padding: 20px;
@@ -365,10 +393,44 @@ button:active { transform: translateY(1px); }
   width: 100%; background: var(--cor-primaria-clara, #ff9060); color: #fff; border: 0; padding: 12px 14px; border-radius: 12px; cursor: pointer;
   font-weight: 600;
 }
+.btn-offer:hover { background: var(--cor-primaria-escura); }
+.oferta-feedback { margin-top: 10px; font-size: 0.95rem; color: #333; }
 
-.btn-offer:hover {
-  background: var(--cor-primaria-escura);
-  
+/* -------------------------- */
+/* RESPONSIVO                 */
+/* -------------------------- */
+@media (max-width: 1024px) {
+  .item-title { text-align:center; }
+  .item-main {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "gallery"
+      "info"
+      "specs";
+    gap: 20px;
+  }
+  .item-specs { margin-bottom: 24px; }
+  .item-gallery, .item-info { width: 100%; max-width: 820px; margin: 0 auto; }
+  .price-rating, .description, .rating, .loja { text-align:center; }
+  .loja { align-items:center; }
+
+  .card-produto img { height: 160px; } /* ajusta na grade em telas médias */
 }
 
-.oferta-feedback { margin-top: 10px; font-size: 0.95rem; color: #333; }
+@media (max-width: 600px) {
+  .item-title { font-size: 20px; }
+  .thumbnail-list img { width: 40px; height: 40px; }
+  .buttons button { padding: 10px 14px; font-size: 14px; }
+  .price-rating h2 { font-size: 18px; }
+  .rating { font-size: 16px; }
+  .description { font-size: 13px; }
+  .item-specs h3 { font-size: 14px; }
+  .item-specs li { font-size: 12px; }
+  .seller-card{ flex-direction:column; }
+  .seller-left{ width:auto; align-items:flex-start; }
+  .seller-avatar{ width:110px; height:110px; }
+  .seller-desc{ min-height:120px; }
+
+  .grid-produtos { gap: 12px; }
+  .card-produto img { height: 150px; } /* padroniza em mobile */
+}

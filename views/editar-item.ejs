@@ -21,10 +21,41 @@
             <label>Descrição</label>
             <textarea name="descricao" rows="6" required><%= produto.descricao %></textarea>
           </div>
-          <div class="form-group">
-            <label>Preço (R$)</label>
-            <input type="number" name="preco" step="0.01" value="<%= produto.preco %>" required>
-          </div>
+        <div class="form-group">
+          <label>Preço (R$)</label>
+          <input 
+            type="text" 
+            name="preco" 
+            id="preco" 
+            required 
+            value="<%= produto.preco ? produto.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' %>" 
+            placeholder="0,00"
+          >
+        </div>
+
+        <script>
+          const precoInput = document.getElementById("preco");
+
+          precoInput.addEventListener("input", function (e) {
+            let valor = e.target.value;
+
+            // Remove tudo que não for número
+            valor = valor.replace(/\D/g, "");
+
+            if (valor) {
+              // Transforma em centavos
+              valor = (parseInt(valor, 10) / 100).toFixed(2);
+
+              // Troca ponto por vírgula
+              valor = valor.replace(".", ",");
+
+              // Coloca separadores de milhar
+              valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+
+            e.target.value = valor;
+          });
+        </script>
           <div class="form-group">
             <label>Tags</label>
             <input type="text" name="tags" value="<%= produto.tags %>">
